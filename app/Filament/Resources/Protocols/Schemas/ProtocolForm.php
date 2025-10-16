@@ -61,7 +61,8 @@ class ProtocolForm
                     ->format('Y/m/d')
                     ->closeOnDateSelection(true)
                     ->before('tgl_selesai_review')
-                    ->required(),
+                    ->required()
+                    ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                 DatePicker::make('tgl_selesai_review')
                     ->label('Tanggal Selesai Review')
                     ->native(false)
@@ -69,7 +70,8 @@ class ProtocolForm
                     ->closeOnDateSelection(true)
                     ->afterOrEqual('tgl_mulai_review')
                     ->format('Y/m/d')
-                    ->required(),
+                    ->required()
+                    ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
 
                 // Repeater::make('documents')
                 //     ->table([
