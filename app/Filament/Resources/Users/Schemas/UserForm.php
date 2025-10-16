@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Pages\Page;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\Select;
+use Illuminate\Support\Facades\Hash;
 
 class UserForm
 {
@@ -19,15 +21,23 @@ class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
-                DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
-                    ->revealable(),
+                    // 1. Hash password hanya jika field diisi
+                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                    // 2. Hanya simpan (hydrate) ke database jika field diisi
+                    ->dehydrated(fn ($state) => filled($state))
+                    // 3. Wajibkan hanya di halaman 'create'
+                    ->required(fn (Page $livewire): bool => $livewire instanceof CreateRecord)
+                ->maxLength(255),
                 Select::make('roles')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload()
                     ->searchable(),
+                Select::make('reviewer_kelompok_id')
+                    ->label('Kelompok Reviewer')
+                    ->relationship('reviewerKelompok', 'kelompok_reviewer')
             ]);
     }
 }

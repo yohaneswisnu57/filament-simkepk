@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->registration()
             ->profile()
+            ->brandName('SIM-KEPK')
             ->colors([
                 'primary' => Color::Emerald,
             ])
