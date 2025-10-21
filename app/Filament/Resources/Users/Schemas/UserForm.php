@@ -37,7 +37,7 @@ class UserForm
                     ->searchable(),
                 Select::make('reviewer_kelompok_id')
                     ->label('Kelompok Reviewer')
-                    ->relationship('reviewerKelompok', 'kelompok_reviewer')
+                    ->relationship('reviewerKelompok', 'name')
             ]);
     }
 }

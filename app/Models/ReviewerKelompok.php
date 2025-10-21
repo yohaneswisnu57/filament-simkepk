@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReviewerKelompok extends Model
 {
     //
+
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -14,4 +17,6 @@ class ReviewerKelompok extends Model
     {
         return $this->hasMany(User::class, 'reviewer_kelompok_id');
     }
+
+
 }

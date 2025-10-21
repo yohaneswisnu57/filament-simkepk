@@ -52,8 +52,6 @@ class User extends Authenticatable
         return $this->hasMany(Protocol::class, 'user_id');
     }
 
-    public function reviewerKelompok()
-    {
-        return $this->belongsTo(ReviewerKelompok::class, 'reviewer_kelompok_id');
-    }
+    
+
 }

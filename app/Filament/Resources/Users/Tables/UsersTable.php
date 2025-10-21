@@ -39,6 +39,7 @@ class UsersTable
             ])
             ->filters([
                 //
+                
             ])
             ->recordActions([
                 ViewAction::make(),

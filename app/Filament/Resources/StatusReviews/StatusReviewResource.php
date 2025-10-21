@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class StatusReviewResource extends Resource
 {
@@ -23,6 +24,8 @@ class StatusReviewResource extends Resource
     protected static ?string $slug = 'status-reviews';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
     protected static ?string $recordTitleAttribute = 'StatusReview';
 
