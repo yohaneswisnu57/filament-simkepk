@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Protocols\Schemas;
 use App\Models\Protocol;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
 
 class ProtocolInfolist
 {
@@ -12,29 +13,52 @@ class ProtocolInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('perihal_pengajuan'),
-                TextEntry::make('jenis_protocol'),
-                TextEntry::make('tanggal_pengajuan')
-                    ->dateTime(),
-                TextEntry::make('StatusReview.status_name')
-                    ->numeric(),
-                TextEntry::make('uploadpernyataan'),
-                TextEntry::make('buktipembayaran'),
-                TextEntry::make('user.name')
-                    ->numeric(),
-                TextEntry::make('tgl_mulai_review')
-                    ->date(),
-                TextEntry::make('tgl_selesai_review')
-                    ->date(),
-                TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('deleted_at')
-                    ->dateTime()
-                    ->visible(fn (Protocol $record): bool => $record->trashed()),
+
+                Section::make('Informasi Protocol')
+                    // ->label('Informasi Protocol')
+                    ->schema([
+                        TextEntry::make('perihal_pengajuan'),
+                        TextEntry::make('jenis_protocol'),
+                        TextEntry::make('tanggal_pengajuan')
+                            ->dateTime(),
+                        TextEntry::make('StatusReview.status_name')
+                            ->label('Status')
+                            ->badge()
+                            ->color(fn (string $state): string => match ($state) {
+                                'FULL BOARD' => 'success',
+                                'EXEMPTED' => 'warning',
+                                'EXPEDITED' => 'success',
+                                default => 'gray',
+                            })
+                            ->numeric(),
+                    ]),
+                Section::make('Document')
+                    // ->label('Informasi Protocol')
+                    ->schema([
+                            TextEntry::make('uploadpernyataan')
+                                ->label('Upload Pernyataan'),
+                                
+                            TextEntry::make('buktipembayaran')
+                                ->label('Bukti Pembayaran'),
+                            TextEntry::make('user.name')->label('Created By')
+                                ->numeric(),
+                    ]),
+                Section::make('Review Timeline')
+                    // ->label('Informasi Protocol')
+                    ->schema([
+                            TextEntry::make('tgl_mulai_review')
+                                ->label('Tanggal Mulai Review')
+                                ->placeholder('-')
+                                ->date(),
+                            TextEntry::make('tgl_selesai_review')
+                                ->label('Tanggal Selesai Review')
+                                ->placeholder('-')
+                                ->date(),                    
+                    ]),
+                    
+                
+                
+                
             ]);
     }
 }

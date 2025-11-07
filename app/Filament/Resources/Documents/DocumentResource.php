@@ -158,4 +158,20 @@ class DocumentResource extends Resource
         $data['user_id'] = auth()->user()->id;
         return $data;
     }
+
+    public static function getEloquentQuery(): Builder{
+        $user = auth()->user();
+        
+        $query = parent::getEloquentQuery();
+        // dd($query);
+        // Ganti 'Admin' dengan nama peran admin Anda jika berbeda
+        // Logika ini: "Jika pengguna TIDAK memiliki peran Admin..."
+        if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
+            // "...maka filter data hanya untuk user_id miliknya."
+            $query->where('user_id', $user->id);
+        }
+
+        // Admin akan melewati 'if' dan mendapatkan semua data
+        return $query;
+    }
 }

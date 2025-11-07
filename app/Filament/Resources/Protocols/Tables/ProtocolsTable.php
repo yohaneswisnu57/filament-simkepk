@@ -78,6 +78,8 @@ class ProtocolsTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+        ]);   
     }
+
+    
 }

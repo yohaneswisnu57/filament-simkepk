@@ -11,6 +11,7 @@ use App\Filament\Resources\Protocols\Schemas\ProtocolInfolist;
 use App\Filament\Resources\Protocols\Tables\ProtocolsTable;
 use App\Models\Protocol;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -45,6 +46,23 @@ class ProtocolResource extends Resource
             RelationManagers\DocumentRelationManager::class,
         ];
     }
+
+    public static function getEloquentQuery(): Builder{
+        $user = auth()->user();
+        
+        $query = parent::getEloquentQuery();
+        // dd($query);
+        // Ganti 'Admin' dengan nama peran admin Anda jika berbeda
+        // Logika ini: "Jika pengguna TIDAK memiliki peran Admin..."
+        if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
+            // "...maka filter data hanya untuk user_id miliknya."
+            $query->where('user_id', $user->id);
+        }
+
+        // Admin akan melewati 'if' dan mendapatkan semua data
+        return $query;
+    }
+    
 
     public static function getPages(): array
     {
