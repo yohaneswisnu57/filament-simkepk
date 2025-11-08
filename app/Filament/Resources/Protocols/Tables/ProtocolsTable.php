@@ -72,14 +72,14 @@ class ProtocolsTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()->requiresConfirmation(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-        ]);   
+        ]);
     }
 
-    
+
 }

@@ -124,7 +124,7 @@ class DocumentResource extends Resource
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()->requiresConfirmation(),
                 ForceDeleteAction::make(),
                 RestoreAction::make(),
             ])
@@ -161,7 +161,7 @@ class DocumentResource extends Resource
 
     public static function getEloquentQuery(): Builder{
         $user = auth()->user();
-        
+
         $query = parent::getEloquentQuery();
         // dd($query);
         // Ganti 'Admin' dengan nama peran admin Anda jika berbeda

@@ -37,7 +37,7 @@ class ProtocolInfolist
                     ->schema([
                             TextEntry::make('uploadpernyataan')
                                 ->label('Upload Pernyataan'),
-                                
+
                             TextEntry::make('buktipembayaran')
                                 ->label('Bukti Pembayaran'),
                             TextEntry::make('user.name')->label('Created By')
@@ -53,12 +53,35 @@ class ProtocolInfolist
                             TextEntry::make('tgl_selesai_review')
                                 ->label('Tanggal Selesai Review')
                                 ->placeholder('-')
-                                ->date(),                    
+                                ->date(),
                     ]),
-                    
-                
-                
-                
+
+                Section::make('Timestamps')
+                    // ->label('Timestamps')
+                    ->schema([
+                        TextEntry::make('created_at')
+                            ->label('Created At')
+                            ->dateTime(),
+                        TextEntry::make('updated_at')
+                            ->label('Updated At')
+                            ->dateTime(),
+                    ]),
+
+                Section::make('Comments')
+                    // ->label('Comments')
+                    ->schema([
+                        TextEntry::make('comments.created_at')
+                            ->label('Created At')
+                            ->dateTime(),
+                        TextEntry::make('comments.updated_at')
+                            ->label('Updated At')
+                            ->dateTime(),
+                    ]),
+
+
+
+
+
             ]);
     }
 }
