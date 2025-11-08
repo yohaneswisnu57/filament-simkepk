@@ -18,6 +18,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -47,7 +48,12 @@ class ReviewerKelompokResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),        
+                    ->required(),
+                Select::make('users')
+                    ->label('Anggota Reviewer')
+                    ->multiple()
+                    ->relationship('users', 'name')
+                    ->preload(),
             ]);
     }
 
@@ -69,6 +75,12 @@ class ReviewerKelompokResource extends Resource
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
+                TextEntry::make('users.name')
+                    ->label('Anggota Reviewer')
+                    ->placeholder('-')
+                    ->listWithLineBreaks(),
+
+
             ]);
     }
 
