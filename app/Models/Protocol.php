@@ -26,4 +26,9 @@ class Protocol extends Model
     public function document(){
         return $this->hasMany(Document::class, 'protocol_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'protocol_id');
+    }
 }
