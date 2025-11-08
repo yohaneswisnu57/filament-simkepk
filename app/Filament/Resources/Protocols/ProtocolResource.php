@@ -44,12 +44,13 @@ class ProtocolResource extends Resource
     {
         return [
             RelationManagers\DocumentRelationManager::class,
+            RelationManagers\ReviewsRelationManager::class,
         ];
     }
 
     public static function getEloquentQuery(): Builder{
         $user = auth()->user();
-        
+
         $query = parent::getEloquentQuery();
         // dd($query);
         // Ganti 'Admin' dengan nama peran admin Anda jika berbeda
@@ -62,7 +63,7 @@ class ProtocolResource extends Resource
         // Admin akan melewati 'if' dan mendapatkan semua data
         return $query;
     }
-    
+
 
     public static function getPages(): array
     {

@@ -17,6 +17,7 @@ use Filament\Tables\Table;
 use Filament\Schemas\Schema;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 
 class DocumentRelationManager extends RelationManager
@@ -131,6 +132,10 @@ class DocumentRelationManager extends RelationManager
                 Hidden::make('protocol_id')
                     ->default(fn (RelationManager $livewire) => $livewire->ownerRecord->id),
         ]);
+    }
+
+    public static function getBadge(Model $ownerRecord, string $pageClass): string{
+        return $ownerRecord->document()->count();
     }
 
     public function table(Table $table): Table

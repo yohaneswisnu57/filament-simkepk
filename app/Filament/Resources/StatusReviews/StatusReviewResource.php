@@ -21,13 +21,13 @@ class StatusReviewResource extends Resource
 {
     protected static ?string $model = StatusReview::class;
 
-    protected static ?string $slug = 'status-reviews';
+    protected static ?string $slug = 'status-review';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
 
     protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
-    protected static ?string $recordTitleAttribute = 'StatusReview';
+    // protected static ?string $recordTitleAttribute = 'Status Review';
 
     public static function form(Schema $schema): Schema
     {
