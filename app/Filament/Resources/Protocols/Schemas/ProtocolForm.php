@@ -40,7 +40,8 @@ class ProtocolForm
                             ->required(),
                         Select::make('status_id')
                             ->label('Status Pengajuan')
-                            ->required()
+                            ->default('null')
+                            // ->required()
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                             // ->default(fn () => 1), // Set default status_id to 1 (e.g., 'PENDING')
@@ -49,6 +50,7 @@ class ProtocolForm
                 Section::make('Review Timeline')
                     // ->label('Review Timeline')
                     ->columns(2)
+                    ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin'))
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
                             ->label('Tanggal Mulai Review')
@@ -68,16 +70,16 @@ class ProtocolForm
                             ->format('Y/m/d')
                             ->required()
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
-                        
-                            
+
+
                     ]),
 
 
-               
-                
+
+
 
                 Section::make('File Pendukung')
-                    // ->label('File Pendukung')                    
+                    // ->label('File Pendukung')
                     ->columns(1)
                     ->schema([
                         FileUpload::make('uploadpernyataan')

@@ -35,6 +35,7 @@ class ProtocolInfolist
                                 'EXPEDITED' => 'success',
                                 default => 'gray',
                             })
+
                             ->numeric(),
                     ]),
                 Section::make('Document')

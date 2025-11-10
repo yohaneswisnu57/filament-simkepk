@@ -52,7 +52,7 @@ class ProtocolResource extends Resource
         $user = auth()->user();
 
         $query = parent::getEloquentQuery();
-        // dd($query);
+
         // Ganti 'Admin' dengan nama peran admin Anda jika berbeda
         // Logika ini: "Jika pengguna TIDAK memiliki peran Admin..."
         if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
