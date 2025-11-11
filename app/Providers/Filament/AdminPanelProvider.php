@@ -33,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->registration()
+            ->emailVerification()
             ->profile()
             ->brandName('SIM-KEPK')
             ->colors([

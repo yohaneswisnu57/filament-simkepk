@@ -52,8 +52,16 @@ class DocumentResource extends Resource
                     ->label('Jenis Dokumen')
                     ->required(),
                 Select::make('protocol_id')
+                    // ->searchable()
                     ->required()
-                    ->relationship('protocol', 'perihal_pengajuan'),
+                    ->relationship('protocol', 'perihal_pengajuan')
+                    ->label('Protocol')
+                    ->when(fn (Select $component) => !Auth::user()->hasRole('super_admin') && !Auth::user()->hasRole('admin'), function (Select $component) {
+                        $userId = Auth::id();
+                        $component->options(fn () => Document::whereHas('protocol', function (Builder $query) use ($userId) {
+                            $query->where('user_id', $userId);
+                        })->with('protocol')->get()->pluck('protocol.perihal_pengajuan', 'protocol.id')->unique());
+                    }),
                 FileUpload::make('path')
                     ->label('Upload Dokumen')
                     ->disk('public')
