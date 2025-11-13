@@ -31,4 +31,9 @@ class Protocol extends Model
     {
         return $this->hasMany(Review::class, 'protocol_id');
     }
+
+    public function assignedReviewerKelompok()
+    {
+        return $this->belongsTo(ReviewerKelompok::class, 'reviewer_kelompok_id');
+    }
 }

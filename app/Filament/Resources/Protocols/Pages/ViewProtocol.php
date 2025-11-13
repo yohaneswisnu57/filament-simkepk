@@ -30,7 +30,7 @@ class ViewProtocol extends ViewRecord
                 ->color('info')
 
                 // Hanya tampilkan jika user adalah 'reviewer' (sesuaikan nama role)
-                ->visible(fn () => auth()->user()->hasRole(['reviewer', 'admin', 'super_admin']))
+                ->visible(fn () => auth()->user()->hasRole(['reviewer', 'admin', 'super_admin', 'sekertaris']))
 
                 // Ini akan memunculkan form modal
                 ->form([

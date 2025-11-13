@@ -54,6 +54,11 @@ class ReviewerKelompokResource extends Resource
                     ->multiple()
                     ->relationship('users', 'name')
                     ->preload(),
+                // Select::make('users')
+                //     ->label('Sekertaris Reviewer')
+                //     ->multiple()
+                //     ->relationship('users', 'name')
+                //     ->preload(),
             ]);
     }
 
@@ -79,8 +84,6 @@ class ReviewerKelompokResource extends Resource
                     ->label('Anggota Reviewer')
                     ->placeholder('-')
                     ->listWithLineBreaks(),
-
-
             ]);
     }
 

@@ -18,5 +18,9 @@ class ReviewerKelompok extends Model
         return $this->hasMany(User::class, 'reviewer_kelompok_id');
     }
 
+    public function assignedProtocols()
+{
+    return $this->hasMany(Protocol::class, 'reviewer_kelompok_id');
+}
 
 }

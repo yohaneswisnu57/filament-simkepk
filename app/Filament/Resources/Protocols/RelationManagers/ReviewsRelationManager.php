@@ -2,23 +2,17 @@
 
 namespace App\Filament\Resources\Protocols\RelationManagers;
 
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Form;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-// use Filament\Forms\Components\Textarea;
 
 class ReviewsRelationManager extends RelationManager
 {
@@ -82,7 +76,7 @@ class ReviewsRelationManager extends RelationManager
     // Opsi: Sembunyikan jika user bukan admin/reviewer
     public static function canViewForRecord(Model $ownerRecord, string $pageName): bool
     {
-        return auth()->user()->hasAnyRole(['admin', 'super_admin', 'reviewer']);
+        return auth()->user()->hasAnyRole(['admin', 'super_admin', 'reviewer', 'sekertaris']);
     }
     // protected static string $relationship = 'reviews';
 

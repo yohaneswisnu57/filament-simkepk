@@ -28,8 +28,13 @@ class ProtocolForm
                         TextInput::make('perihal_pengajuan')
                             ->label('Perihal Pengajuan')
                             ->required(),
-                        TextInput::make('jenis_protocol')
+                        Select::make('jenis_protocol')
                             ->label('Jenis Protocol')
+                            ->options([
+                                'Manusia' => 'Manusia',
+                                'Hewan' => 'Hewan',
+                            ])
+                            ->searchable()
                             ->required(),
                         DatePicker::make('tanggal_pengajuan')
                             ->label('Tanggal Pengajuan')
@@ -70,13 +75,15 @@ class ProtocolForm
                             ->format('Y/m/d')
                             ->required()
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
-
-
+                        Select::make('reviewer_kelompok_id')
+                            ->label('Assign to Reviewer Group')
+                            ->relationship('assignedReviewerKelompok', 'name') // Ganti 'nama_kelompok' dengan kolom nama di ReviewerKelompok
+                            ->searchable()
+                            ->preload()
+                            ->nullable()
+                            // Hanya 'super_admin' atau role tertentu yang bisa meng-assign
+                            ->visible(fn () => auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])),
                     ]),
-
-
-
-
 
                 Section::make('File Pendukung')
                     // ->label('File Pendukung')
@@ -94,10 +101,7 @@ class ProtocolForm
                             ->preserveFilenames()
                             ->disk('public')
                             ->directory('buktipembayaran'),
-                    ]),
-
-        ]);
-    }
-
-
+                ]),
+            ]);
+        }
 }

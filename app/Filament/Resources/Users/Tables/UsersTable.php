@@ -24,6 +24,9 @@ class UsersTable
                     ->label('Roles')
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
                     ->searchable(),
+                TextColumn::make('reviewerKelompok.name')
+                    ->label('Reviewer Kelompok')
+                    ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
@@ -39,7 +42,7 @@ class UsersTable
             ])
             ->filters([
                 //
-                
+
             ])
             ->recordActions([
                 ViewAction::make(),

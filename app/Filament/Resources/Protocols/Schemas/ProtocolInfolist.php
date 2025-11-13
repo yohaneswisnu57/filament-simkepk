@@ -31,11 +31,10 @@ class ProtocolInfolist
                             ->badge()
                             ->color(fn (string $state): string => match ($state) {
                                 'FULL BOARD' => 'success',
-                                'EXEMPTED' => 'warning',
-                                'EXPEDITED' => 'success',
-                                default => 'gray',
+                                'EXEMPTED'   => 'warning',
+                                'EXPEDITED'  => 'success',
+                                default      => 'primary',
                             })
-
                             ->numeric(),
                     ]),
                 Section::make('Document')
@@ -87,6 +86,10 @@ class ProtocolInfolist
                                 ->label('Tanggal Selesai Review')
                                 ->placeholder('-')
                                 ->date(),
+                            TextEntry::make('assignedReviewerKelompok.name')
+                                ->label('Reviewer Group')
+                                ->placeholder('-')
+                                ->listWithLineBreaks(),
                     ]),
 
                 Section::make('Timestamps')
