@@ -23,7 +23,7 @@ class ProtocolResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::DocumentText;
 
-    protected static ?string $recordTitleAttribute = 'Protocol';
+    // protected static ?string $recordTitleAttribute = 'Protocol';
 
     public static function form(Schema $schema): Schema
     {
@@ -90,5 +90,10 @@ class ProtocolResource extends Resource
             'view' => ViewProtocol::route('/{record}'),
             'edit' => EditProtocol::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

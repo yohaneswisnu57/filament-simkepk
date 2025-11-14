@@ -25,7 +25,7 @@ class UserResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Management Access';
 
-    protected static ?string $recordTitleAttribute = 'User';
+    // protected static ?string $recordTitleAttribute = 'User';
 
     public static function form(Schema $schema): Schema
     {
@@ -57,5 +57,9 @@ class UserResource extends Resource
             'view' => ViewUser::route('/{record}'),
             'edit' => EditUser::route('/{record}/edit'),
         ];
+    }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

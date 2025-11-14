@@ -35,7 +35,7 @@ class DocumentResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Document';
+    // protected static ?string $recordTitleAttribute = 'Document';
 
     public static function form(Schema $schema): Schema
     {
@@ -181,5 +181,10 @@ class DocumentResource extends Resource
 
         // Admin akan melewati 'if' dan mendapatkan semua data
         return $query;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
