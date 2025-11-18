@@ -7,9 +7,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 
 class ProtocolsTable
@@ -68,6 +70,17 @@ class ProtocolsTable
             ])
             ->filters([
                 //
+                Filter::make('created_at')
+                ->schema([
+                    DatePicker::make('tanggal_pengajuan')
+                        ->label('Tanggal Pengajuan'),
+                ])
+                ->query(function ($query, $data) {
+                    return $query->when(
+                        $data['tanggal_pengajuan'],
+                        fn ($query, $date) => $query->where('tanggal_pengajuan', $date),
+                    );
+                })
             ])
             ->recordActions([
                 ViewAction::make(),

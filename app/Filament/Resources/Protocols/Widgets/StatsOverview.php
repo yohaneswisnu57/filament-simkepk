@@ -6,6 +6,7 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Carbon;
 use App\Models\Protocol;
+use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends StatsOverviewWidget
 {
@@ -68,5 +69,11 @@ class StatsOverview extends StatsOverviewWidget
             // Anda bisa menambahkan Stat lain di sini jika diperlukan
             // Stat::make('Total Users', \App\Models\User::count()),
         ];
+    }
+
+    public static function canView():bool
+    {
+        $user = auth()->user();
+        return $user?->hasRole('admin') || $user?->hasRole('super_admin');
     }
 }
