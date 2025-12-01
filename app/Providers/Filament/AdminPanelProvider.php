@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->profile()
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
-            ->brandName('SIM-KEPK')
+            ->brandName('SIKEPK')
             ->colors([
                 'primary' => Color::Emerald,
             ])
