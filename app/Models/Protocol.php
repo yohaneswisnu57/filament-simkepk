@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Observers\ProtocolObserver;
 
+
+#[ObservedBy(ProtocolObserver::class)]
 class Protocol extends Model
 {
 
     use SoftDeletes;
     protected $guarded = [];
-
-
 
     public function statusReview()
     {
@@ -36,4 +38,6 @@ class Protocol extends Model
     {
         return $this->belongsTo(ReviewerKelompok::class, 'reviewer_kelompok_id');
     }
+
+
 }
