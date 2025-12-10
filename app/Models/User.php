@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\ReviewerKelompok;
 
 
 class User extends Authenticatable
@@ -66,8 +67,12 @@ class User extends Authenticatable
     }
 
 
-    // public function roles() {
-    //     return this
-    // }
+    public function isKetuaDariKelompok(int $kelompokId): bool
+    {
+        // Cek apakah user ini terdaftar sebagai ketua di kelompok tersebut
+        return ReviewerKelompok::where('id', $kelompokId)
+            ->where('ketua_user_id', $this->id)
+            ->exists();
+    }
 
 }

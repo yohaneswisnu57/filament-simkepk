@@ -74,6 +74,28 @@ class ProtocolObserver
             }
         }
 
+        if ($protocol->wasChanged('status_id') && $protocol->statusReview->id == 2) {
+
+            $admins = User::role('admin')->get();
+
+            Notification::make()
+                ->title('Review Selesai (Final)')
+                ->body("Review protokol \"{$protocol->judul}\" telah diselesaikan (Final Decision oleh Ketua).")
+                ->success()
+                ->actions([
+                    Action::make('lihat')
+                        ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                ])
+                ->sendToDatabase($admins);
+
+            // Kirim juga ke Peneliti bahwa protokolnya sudah selesai direview
+            Notification::make()
+                ->title('Hasil Review Keluar')
+                ->body('Protokol Anda telah selesai direview oleh tim etik.')
+                ->success()
+                ->sendToDatabase($protocol->User);
+        }
+
     }
 
     /**

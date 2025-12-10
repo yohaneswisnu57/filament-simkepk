@@ -52,7 +52,12 @@ class ReviewerKelompokResource extends Resource
                 Select::make('users')
                     ->label('Anggota Reviewer')
                     ->multiple()
-                    ->relationship('users', 'name')
+                    ->relationship('anggota', 'name')
+                    ->preload(),
+                Select::make('ketua_user_id')
+                    ->label('Ketua Reviewer')
+                    ->searchable()
+                    ->relationship('ketua', 'name')
                     ->preload(),
                 // Select::make('users')
                 //     ->label('Sekertaris Reviewer')
@@ -80,7 +85,10 @@ class ReviewerKelompokResource extends Resource
                 TextEntry::make('updated_at')
                     ->dateTime()
                     ->placeholder('-'),
-                TextEntry::make('users.name')
+                TextEntry::make('ketua.name')
+                    ->label('Ketua Reviewer')
+                    ->placeholder('-'),
+                TextEntry::make('anggota.name')
                     ->label('Anggota Reviewer')
                     ->placeholder('-')
                     ->listWithLineBreaks(),
