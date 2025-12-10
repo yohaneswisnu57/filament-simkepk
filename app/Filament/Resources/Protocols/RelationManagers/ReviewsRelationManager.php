@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReviewsRelationManager extends RelationManager
 {
     protected static string $relationship = 'reviews';
-    protected static ?string $title = 'Riwayat Review'; // Judul custom
+    protected static ?string $title = 'History Reviews'; // Judul custom
 
     public function form(Schema $schema): Schema
     {

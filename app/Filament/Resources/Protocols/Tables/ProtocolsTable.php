@@ -21,16 +21,16 @@ class ProtocolsTable
         return $table
             ->columns([
                 TextColumn::make('perihal_pengajuan')
-                    ->label('Perihal')
+                    ->label('Concerning')
                     ->searchable(),
                 // TextColumn::make('User.name')
                 //     ->label('User')
                 //     ->numeric(),
                 TextColumn::make('jenis_protocol')
-                    ->label('Jenis Protocol')
+                    ->label('Type Protocol')
                     ->searchable(),
                 TextColumn::make('tanggal_pengajuan')
-                    ->label('Tanggal Pengajuan')
+                    ->label('Submission Date')
                     ->dateTime('d M Y')
                     ->sortable(),
                 // ImageColumn::make('uploadpernyataan')
@@ -40,9 +40,11 @@ class ProtocolsTable
                 //     ->label('Bukti Pembayaran')
                 //     ->disk('public'),
                 TextColumn::make('tgl_mulai_review')
+                    ->label('Review Start Date')
                     ->date('d M Y')
                     ->sortable(),
                 TextColumn::make('tgl_selesai_review')
+                    ->label('Review End Date')
                     ->date('d M Y')
                     ->sortable(),
                 TextColumn::make('statusReview.status_name')
@@ -73,7 +75,7 @@ class ProtocolsTable
                 Filter::make('created_at')
                 ->schema([
                     DatePicker::make('tanggal_pengajuan')
-                        ->label('Tanggal Pengajuan'),
+                        ->label('Submission Date'),
                 ])
                 ->query(function ($query, $data) {
                     return $query->when(

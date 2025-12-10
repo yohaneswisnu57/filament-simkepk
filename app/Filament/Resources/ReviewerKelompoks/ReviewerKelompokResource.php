@@ -41,7 +41,7 @@ class ReviewerKelompokResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Settings';
 
-    protected static ?string $navigationLabel = 'Kelompok Reviewer';
+    protected static ?string $navigationLabel = 'Reviewer Groups';
 
     public static function form(Schema $schema): Schema
     {

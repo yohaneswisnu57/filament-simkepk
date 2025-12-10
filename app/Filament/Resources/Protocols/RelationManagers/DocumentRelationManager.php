@@ -98,7 +98,7 @@ class DocumentRelationManager extends RelationManager
     /* relasi manager untuk document */
 
     protected static string $relationship = 'document';
-    protected static ?string $title = 'Dokumen Pendukung';
+    protected static ?string $title = 'Documents';
 
     public function form(Schema $schema): Schema
     {
