@@ -105,11 +105,11 @@ class DocumentRelationManager extends RelationManager
         return $schema
             ->components([
                 TextInput::make('namadokumen')
-                    ->label('Nama Dokumen')
+                    ->label('Name Document')
                     ->required(),
 
                 Select::make('jenisdokumen')
-                    ->label('Jenis Dokumen')
+                    ->label('Type Document')
                     ->options([
                         'docx' => 'Docx',
                         'pdf' => 'PDF',
@@ -117,7 +117,7 @@ class DocumentRelationManager extends RelationManager
                     ->required(),
 
                 FileUpload::make('path')
-                    ->label('Upload Dokumen')
+                    ->label('Upload Document')
                     ->disk('public')
                     ->directory('dokumen_pendukung')
                     ->preserveFilenames()
@@ -143,25 +143,25 @@ class DocumentRelationManager extends RelationManager
         return $table
             ->columns([
                 TextColumn::make('namadokumen')
-                    ->label('Nama Dokumen')
+                    ->label('Name Document')
                     ->searchable(),
 
                 TextColumn::make('jenisdokumen')
-                    ->label('Jenis Dokumen')
+                    ->label('Type Document')
                     ->sortable(),
 
                 TextColumn::make('user.name')
-                    ->label('Diunggah Oleh')
+                    ->label('Upload By')
                     ->sortable(),
 
                 TextColumn::make('created_at')
-                    ->label('Tanggal Upload')
+                    ->label('Date Uploaded')
                     ->dateTime()
                     ->sortable(),
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Tambah Dokumen')
+                    ->label('Add Document')
                     ->icon('heroicon-o-plus')
                     ->mutateFormDataUsing(function (array $data): array {
                         // Pastikan user_id dan protocol_id tetap terisi
@@ -175,7 +175,7 @@ class DocumentRelationManager extends RelationManager
                     ->label('Edit')
                     ->icon('heroicon-o-pencil'),
                 DeleteAction::make()
-                    ->label('Hapus')
+                    ->label('Delete')
                     ->icon('heroicon-o-trash'),
             ])
             ->bulkActions([
