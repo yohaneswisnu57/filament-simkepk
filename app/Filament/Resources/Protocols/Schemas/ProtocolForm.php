@@ -2,18 +2,12 @@
 
 namespace App\Filament\Resources\Protocols\Schemas;
 
-use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Prompts\Table;
 
 class ProtocolForm
 {
@@ -21,15 +15,15 @@ class ProtocolForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Protocol')
+                Section::make('Information Protocol')
                     // ->label('Informasi Protocol')
                     ->columns(2)
                     ->schema([
                         TextInput::make('perihal_pengajuan')
-                            ->label('Perihal Pengajuan')
+                            ->label('Concerning')
                             ->required(),
                         Select::make('jenis_protocol')
-                            ->label('Jenis Protocol')
+                            ->label('Type Protocol')
                             ->options([
                                 'Manusia' => 'Manusia',
                                 'Hewan' => 'Hewan',
@@ -37,14 +31,14 @@ class ProtocolForm
                             ->searchable()
                             ->required(),
                         DatePicker::make('tanggal_pengajuan')
-                            ->label('Tanggal Pengajuan')
+                            ->label('Submission Date')
                             ->native(false)
                             ->displayFormat('Y-m-d')
                             ->format('Y/m/d')
                             ->closeOnDateSelection(true)
                             ->required(),
                         Select::make('status_id')
-                            ->label('Status Pengajuan')
+                            ->label('Status')
                             ->default('null')
                             // ->required()
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
@@ -58,7 +52,7 @@ class ProtocolForm
                     ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin'))
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
-                            ->label('Tanggal Mulai Review')
+                            ->label('Date Start Review')
                             ->native(false)
                             ->displayFormat('Y/m/d')
                             ->format('Y/m/d')
@@ -67,7 +61,7 @@ class ProtocolForm
                             ->required()
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                         DatePicker::make('tgl_selesai_review')
-                            ->label('Tanggal Selesai Review')
+                            ->label('Date End Review')
                             ->native(false)
                             ->displayFormat('Y/m/d')
                             ->closeOnDateSelection(true)
@@ -76,7 +70,7 @@ class ProtocolForm
                             ->required()
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                         Select::make('reviewer_kelompok_id')
-                            ->label('Assign to Reviewer Group')
+                            ->label('Assign to Reviewer Groups')
                             ->relationship('assignedReviewerKelompok', 'name') // Ganti 'nama_kelompok' dengan kolom nama di ReviewerKelompok
                             ->searchable()
                             ->preload()
@@ -85,18 +79,18 @@ class ProtocolForm
                             ->visible(fn () => auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])),
                     ]),
 
-                Section::make('File Pendukung')
+                Section::make('Supporting Files')
                     // ->label('File Pendukung')
                     ->columns(1)
                     ->schema([
                         FileUpload::make('uploadpernyataan')
-                            ->label('Upload Pernyataan')
+                            ->label('Upload Statement')
                             ->required()
                             ->preserveFilenames()
                             ->disk('public')
                             ->directory('uploadpernyataan'),
                         FileUpload::make('buktipembayaran')
-                            ->label('Upload Bukti Pembayaran')
+                            ->label('Upload Proof of Payment')
                             ->required()
                             ->preserveFilenames()
                             ->disk('public')
