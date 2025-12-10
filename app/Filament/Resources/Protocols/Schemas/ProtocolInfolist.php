@@ -34,7 +34,8 @@ class ProtocolInfolist
                                 'EXPEDITED'  => 'success',
                                 default      => 'primary',
                             })
-                            ->numeric(),
+                            ->numeric()
+                            ->placeholder('-'),
                     ]),
                 Section::make('Document')
                     // ->label('Informasi Protocol')

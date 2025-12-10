@@ -43,6 +43,16 @@ class ProtocolForm
                             // ->required()
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
+                        Select::make('user_id')
+                            ->relationship('User', 'name')
+                            ->label('Created By')
+                            ->default(auth()->id()) // Default user yang login saat create
+                            ->disabled() // Supaya tidak bisa diubah manual (opsional)
+                            // KUNCI PERBAIKANNYA DISINI:
+                            // Hanya kirim data ke database saat proses 'create'.
+                            // Saat 'edit', field ini akan diabaikan oleh query update.
+                            ->dehydrated(fn ($operation) => $operation === 'create')
+                            ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole(['admin', 'super_admin'])),
                             // ->default(fn () => 1), // Set default status_id to 1 (e.g., 'PENDING')
                     ]),
 
@@ -88,7 +98,14 @@ class ProtocolForm
                             ->required()
                             ->preserveFilenames()
                             ->disk('public')
-                            ->directory('uploadpernyataan'),
+                            ->directory('uploadpernyataan')
+                            ->acceptedFileTypes([
+                                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                            ]) // Opsional: Batasi hanya PDF/Docx
+                            ->maxSize(3072) // <--- Batasan 3MB (3072 KB)
+                            ->validationMessages([
+                                'max' => 'Ukuran file terlalu besar. Maksimal hanya 3MB.',
+                            ]),
                         FileUpload::make('buktipembayaran')
                             ->label('Upload Proof of Payment')
                             ->required()

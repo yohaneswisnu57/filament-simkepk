@@ -62,13 +62,26 @@ class DocumentResource extends Resource
                             $query->where('user_id', $userId);
                         })->with('protocol')->get()->pluck('protocol.perihal_pengajuan', 'protocol.id')->unique());
                     }),
+                // FileUpload::make('path')
+                //     ->label('Upload Document')
+                //     ->disk('public')
+                //     ->directory('dokumen_pendukung')
+                //     ->preserveFilenames()
+                //     ->required(),
+                //     // ->maxSize(10240) // Maksimum ukuran file 10MB
                 FileUpload::make('path')
-                    ->label('Upload Document')
-                    ->disk('public')
-                    ->directory('dokumen_pendukung')
-                    ->preserveFilenames()
-                    ->required(),
-                    // ->maxSize(10240) // Maksimum ukuran file 10MB
+                            ->label('Upload Document')
+                            ->required()
+                            ->preserveFilenames()
+                            ->disk('public')
+                            ->directory('dokumen_pendukung')
+                            ->acceptedFileTypes([
+                                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                            ]) // Opsional: Batasi hanya PDF/Docx
+                            ->maxSize(3072) // <--- Batasan 3MB (3072 KB)
+                            ->validationMessages([
+                                'max' => 'Ukuran file terlalu besar. Maksimal hanya 3MB.',
+                            ]),
 
             ]);
     }

@@ -15,14 +15,12 @@ use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -39,7 +37,7 @@ class ReviewerKelompokResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Kelompok Reviewer';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string | UnitEnum | null $navigationGroup = 'Management Access';
 
     protected static ?string $navigationLabel = 'Reviewer Groups';
 
@@ -51,6 +49,7 @@ class ReviewerKelompokResource extends Resource
                     ->required(),
                 Select::make('users')
                     ->label('Anggota Reviewer')
+                    ->searchable()
                     ->multiple()
                     ->relationship('anggota', 'name')
                     ->preload(),
@@ -59,11 +58,6 @@ class ReviewerKelompokResource extends Resource
                     ->searchable()
                     ->relationship('ketua', 'name')
                     ->preload(),
-                // Select::make('users')
-                //     ->label('Sekertaris Reviewer')
-                //     ->multiple()
-                //     ->relationship('users', 'name')
-                //     ->preload(),
             ]);
     }
 
