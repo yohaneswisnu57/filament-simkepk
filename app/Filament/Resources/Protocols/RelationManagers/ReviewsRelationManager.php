@@ -19,6 +19,9 @@ class ReviewsRelationManager extends RelationManager
     protected static string $relationship = 'reviews';
     protected static ?string $title = 'History Reviews'; // Judul custom
 
+    // Ini berfungsi menangkap sinyal 'refresh-reviews-table' dan melakukan refresh otomatis
+    protected $listeners = ['refresh-reviews-table' => '$refresh'];
+
     public function form(Schema $schema): Schema
     {
         // Form ini digunakan untuk "Create" dan "Edit"

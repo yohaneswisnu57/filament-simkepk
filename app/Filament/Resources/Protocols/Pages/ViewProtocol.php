@@ -40,13 +40,17 @@ class ViewProtocol extends ViewRecord
                         ->minLength(5),
                 ])
 
+
                 // Logika saat tombol "Submit" di modal ditekan
                 ->action(function (array $data) {
+
                     // $this->record adalah data Protocol yang sedang dibuka
                     $this->record->reviews()->create([
                         'comment' => $data['comment'],
                         'user_id' => auth()->id(),
                     ]);
+
+                    $this->record->refresh();
 
                     // Kirim notifikasi sukses
                     Notification::make()
@@ -54,6 +58,10 @@ class ViewProtocol extends ViewRecord
                         ->success()
                         ->send();
                 })
+                // Mengirim sinyal refresh setelah action selesai
+                ->after(function () {
+                    $this->dispatch('refresh-reviews-table');
+                }),
         ];
 
     }
