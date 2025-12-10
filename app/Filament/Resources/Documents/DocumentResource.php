@@ -63,7 +63,7 @@ class DocumentResource extends Resource
                         })->with('protocol')->get()->pluck('protocol.perihal_pengajuan', 'protocol.id')->unique());
                     }),
                 FileUpload::make('path')
-                    ->label('Upload Dokumen')
+                    ->label('Upload Document')
                     ->disk('public')
                     ->directory('dokumen_pendukung')
                     ->preserveFilenames()
@@ -77,12 +77,15 @@ class DocumentResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('namadokumen'),
-                TextEntry::make('jenisdokumen'),
+                TextEntry::make('namadokumen')
+                    ->label('Name Document'),
+                TextEntry::make('jenisdokumen')
+                    ->label('Type Document'),
                 TextEntry::make('user_id')
-                    ->numeric(),
-                TextEntry::make('protocol_id')
-                    ->numeric(),
+                    ->label('User')
+                    ->placeholder('-'),
+                TextEntry::make('protocol.perihal_pengajuan')
+                    ->label('Concerning'),
                 TextEntry::make('created_at')
                     ->dateTime()
                     ->placeholder('-'),
@@ -104,19 +107,23 @@ class DocumentResource extends Resource
             ->recordTitleAttribute('Document')
             ->columns([
                 TextColumn::make('namadokumen')
+                    ->label('Name Document')
                     ->searchable(),
                 TextColumn::make('jenisdokumen')
+                    ->label('Type Document')
                     ->searchable(),
-                TextColumn::make('user.name')
-                    ->numeric()
-                    ->sortable(),
+                // TextColumn::make('user.name')
+                //     ->label('User')
+                //     ->numeric()
+                //     ->sortable(),
                 TextColumn::make('protocol.perihal_pengajuan')
+                    ->label('Concerning')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
