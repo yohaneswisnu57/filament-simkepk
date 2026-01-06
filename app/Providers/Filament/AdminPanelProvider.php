@@ -56,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
                 StatsOverview::class,
                 // FilamentInfoWidget::class,
             ])
+            ->globalSearch(false)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
