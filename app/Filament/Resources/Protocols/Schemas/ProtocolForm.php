@@ -46,12 +46,17 @@ class ProtocolForm
                         Select::make('user_id')
                             ->relationship('User', 'name')
                             ->label('Created By')
-                            ->default(auth()->id()) // Default user yang login saat create
+                            ->default(fn () => auth()->id()) // Default user yang login saat create
                             ->disabled() // Supaya tidak bisa diubah manual (opsional)
                             // KUNCI PERBAIKANNYA DISINI:
                             // Hanya kirim data ke database saat proses 'create'.
                             // Saat 'edit', field ini akan diabaikan oleh query update.
                             ->dehydrated(fn ($operation) => $operation === 'create')
+                            ->formatStateUsing(function ($state, ?string $operation) {
+                                // Jika mode edit dan state kosong (jarang terjadi), kembalikan state asli
+                                // Jika mode create, default() di atas yang akan menangani
+                                return $record?->user_id ?? $state;
+                            })
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole(['admin', 'super_admin'])),
                             // ->default(fn () => 1), // Set default status_id to 1 (e.g., 'PENDING')
                     ]),
