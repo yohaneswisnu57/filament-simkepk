@@ -23,9 +23,8 @@ class ProtocolsTable
                 TextColumn::make('perihal_pengajuan')
                     ->label('Concerning')
                     ->searchable(),
-                // TextColumn::make('User.name')
-                //     ->label('User')
-                //     ->numeric(),
+                TextColumn::make('user.name')
+                    ->label('User'),
                 TextColumn::make('jenis_protocol')
                     ->label('Type Protocol')
                     ->searchable(),

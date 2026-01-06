@@ -44,7 +44,7 @@ class ProtocolForm
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                         Select::make('user_id')
-                            ->relationship('User', 'name')
+                            ->relationship('user', 'name')
                             ->label('Created By')
                             ->default(fn () => auth()->id()) // Default user yang login saat create
                             ->disabled() // Supaya tidak bisa diubah manual (opsional)
@@ -88,7 +88,7 @@ class ProtocolForm
                             ->label('Assign to Reviewer Groups')
                             ->relationship('assignedReviewerKelompok', 'name') // Ganti 'nama_kelompok' dengan kolom nama di ReviewerKelompok
                             ->searchable()
-                            ->preload()
+                            // ->preload()
                             ->nullable()
                             // Hanya 'super_admin' atau role tertentu yang bisa meng-assign
                             ->visible(fn () => auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])),
