@@ -8,6 +8,8 @@ use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ProtocolSubmittedMail;
 
 class ProtocolObserver
 {
@@ -33,6 +35,18 @@ class ProtocolObserver
                     ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
             ])
             ->sendToDatabase($admins);
+
+            if ($admins->isEmpty()) {
+                return;
+            }
+            // 2. Notifikasi Email (Baru)
+            // Kirim ke setiap admin
+            foreach ($admins as $admin) {
+                // Pastikan admin punya email valid
+                if ($admin->email) {
+                    Mail::to($admin->email)->send(new ProtocolSubmittedMail($protocol));
+                }
+            }
         // }
     }
 

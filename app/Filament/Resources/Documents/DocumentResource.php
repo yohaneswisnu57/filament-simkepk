@@ -42,14 +42,14 @@ class DocumentResource extends Resource
         return $schema
             ->components([
                 TextInput::make('namadokumen')
-                    ->label('Nama Dokumen')
+                    ->label('Name Document')
                     ->required(),
                 Select::make('jenisdokumen')
                     ->options([
                         'docx' => 'Docx',
                         'pdf' => 'PDF',
                     ])
-                    ->label('Jenis Dokumen')
+                    ->label('Document Type')
                     ->required(),
                 Select::make('protocol_id')
                     // ->searchable()
@@ -91,9 +91,9 @@ class DocumentResource extends Resource
         return $schema
             ->components([
                 TextEntry::make('namadokumen')
-                    ->label('Name Document'),
+                    ->label('Document Name'),
                 TextEntry::make('jenisdokumen')
-                    ->label('Type Document'),
+                    ->label('Document Type'),
                 TextEntry::make('user_id')
                     ->label('User')
                     ->placeholder('-'),
@@ -120,10 +120,10 @@ class DocumentResource extends Resource
             ->recordTitleAttribute('Document')
             ->columns([
                 TextColumn::make('namadokumen')
-                    ->label('Name Document')
+                    ->label('Document Name')
                     ->searchable(),
                 TextColumn::make('jenisdokumen')
-                    ->label('Type Document')
+                    ->label('Document Type')
                     ->searchable(),
                 // TextColumn::make('user.name')
                 //     ->label('User')

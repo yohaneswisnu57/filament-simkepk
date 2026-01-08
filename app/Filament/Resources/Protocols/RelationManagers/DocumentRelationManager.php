@@ -168,7 +168,7 @@ class DocumentRelationManager extends RelationManager
                         $data['user_id'] = $data['user_id'] ?? Auth::id();
                         return $data;
                     })
-                    ->successNotificationTitle('Dokumen berhasil ditambahkan!'),
+                    ->successNotificationTitle('Success add document'),
             ])
             ->actions([
                 EditAction::make()
