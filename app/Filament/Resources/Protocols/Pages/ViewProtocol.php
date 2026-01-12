@@ -5,9 +5,12 @@ namespace App\Filament\Resources\Protocols\Pages;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReviewSubmittedMail;
 
 class ViewProtocol extends ViewRecord
 {
@@ -34,10 +37,10 @@ class ViewProtocol extends ViewRecord
 
                 // Ini akan memunculkan form modal
                 ->form([
-                    Textarea::make('comment')
+                    RichEditor::make('comment')
                         ->label('Komentar Review')
                         ->required()
-                        ->minLength(5),
+                        ->minLength(3),
                 ])
 
 
@@ -49,6 +52,24 @@ class ViewProtocol extends ViewRecord
                         'comment' => $data['comment'],
                         'user_id' => auth()->id(),
                     ]);
+
+                    // 👇 2. LOGIKA EMAIL NOTIFIKASI DISINI
+                    // =====================================
+
+                    // Ambil data peneliti (User pemilik protokol)
+                    $reviewerEmail = $this->record->user;
+
+                    // Cek apakah peneliti punya email valid
+                    if ($reviewerEmail && $reviewerEmail->email) {
+
+                        // Kirim Email
+                        // Parameter 2: Nama Reviewer.
+                        // Gunakan 'Anggota Penelaah' agar anonim (Blind Review),
+                        // atau gunakan auth()->user()->name jika ingin transparan.
+                        Mail::to($reviewerEmail->email)
+                            ->send(new ReviewSubmittedMail($this->record, auth()->user()->name));
+                    }
+                    // =====================================
 
                     $this->record->refresh();
 
