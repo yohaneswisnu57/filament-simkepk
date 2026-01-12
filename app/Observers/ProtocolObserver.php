@@ -23,7 +23,7 @@ class ProtocolObserver
         // 1. SUBMIT PROTOKOL (Peneliti -> Admin)
         // ==========================================
 
-        $admins = User::role(['admin','super_admin'])->get();
+        $admins = User::role(['admin','super_admin'])->get()->unique('id');
 
         Notification::make()
             ->title('Pengajuan Protokol Baru')
