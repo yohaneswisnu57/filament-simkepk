@@ -16,15 +16,17 @@ return new class extends Migration
         Schema::create('protocols', function (Blueprint $table) {
             $table->id();
             $table->string('perihal_pengajuan');
-            $table->string('jenis_protocol');
+            $table->string('jenis_protocol')->nullable();
             $table->timestamp('tanggal_pengajuan');
-            $table->smallInteger('status_id');
-            $table->string('uploadpernyataan');
-            $table->string('buktipembayaran');
+            $table->smallInteger('status_id')->nullable();
+            $table->string('uploadpernyataan')->nullable();
+            $table->string('buktipembayaran')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->date('tgl_mulai_review');
-            $table->date('tgl_selesai_review');
+            $table->date('tgl_mulai_review')->nullable();
+            $table->date('tgl_selesai_review')->nullable();
+            $table->unsignedBigInteger('reviewer_kelompok_id')->nullable();
+            $table->foreign('reviewer_kelompok_id')->references('id')->on('reviewer_kelompoks');
             $table->timestamps();
             $table->softDeletes();
         });

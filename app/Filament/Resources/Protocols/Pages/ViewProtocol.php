@@ -75,7 +75,7 @@ class ViewProtocol extends ViewRecord
 
                     // Kirim notifikasi sukses
                     Notification::make()
-                        ->title('Review berhasil disimpan')
+                        ->title('Review berhasil disimpan & Notifikasi dikirim')
                         ->success()
                         ->send();
                 })

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
@@ -73,6 +74,14 @@ class User extends Authenticatable
         return ReviewerKelompok::where('id', $kelompokId)
             ->where('ketua_user_id', $this->id)
             ->exists();
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Pastikan reviewer juga return true
+        return $this->hasRole(['admin', 'super_admin', 'reviewer', 'user', 'sekertaris']);
+
+        // ATAU jika ingin meloloskan semua user yang punya verified email:
+        // return $this->hasVerifiedEmail();
     }
 
 }

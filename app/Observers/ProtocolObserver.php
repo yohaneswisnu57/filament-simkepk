@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Mail\ReviewAssignmentMail;
 use App\Models\Protocol;
 use App\Models\User;
 use Filament\Actions\Action;
@@ -66,7 +67,7 @@ class ProtocolObserver
 
             // 2. Ambil Nama Kelompok (Optional, untuk pesan notifikasi lebih jelas)
             // Pastikan Anda punya relasi 'reviewerKelompok' di model Protocol
-            $groupName = $protocol->reviewerKelompok->nama_kelompok ?? 'Kelompok Terpilih';
+            $groupName = $protocol->reviewerKelompok->name ?? 'Kelompok Terpilih';
 
             // 3. Cari SEMUA User yang menjadi anggota kelompok tersebut
             // Kita filter User berdasarkan reviewer_kelompok_id yang sama
@@ -86,6 +87,24 @@ class ProtocolObserver
                     ])
                     ->sendToDatabase($reviewers);
             }
+
+            // TAMBAHKAN KODE INI DI DALAM IF ($protocol->wasChanged('reviewer_kelompok_id'))
+            if ($protocol->wasChanged('reviewer_kelompok_id') && !empty($protocol->reviewer_kelompok_id)) {
+
+                // 1. Ambil Reviewer
+                $groupId = $protocol->reviewer_kelompok_id;
+                $reviewers = User::where('reviewer_kelompok_id', $groupId)->get();
+
+                // 2. Kirim Email ke Reviewer (INI YANG MEMBUAT TEST PASS)
+                foreach ($reviewers as $reviewer) {
+                    if ($reviewer->email) {
+                        Mail::to($reviewer->email)
+                            ->send(new ReviewAssignmentMail($protocol));
+                    }
+                }
+            }
+
+
         }
 
         if ($protocol->wasChanged('status_id') && $protocol->statusReview->id == 2) {

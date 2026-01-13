@@ -13,6 +13,8 @@ class ReviewerKelompok extends Model
 
     protected $guarded = [];
 
+    // protected $fillable = ['nama_kelompok', 'is_active', 'ketua_user_id', 'created_by'];
+
     public function users()
     {
         return $this->hasMany(User::class, 'reviewer_kelompok_id');

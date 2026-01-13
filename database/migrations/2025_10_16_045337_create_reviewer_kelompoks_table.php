@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('reviewer_kelompoks', function (Blueprint $table) {
             $table->id();
-            $table->string('kelompok_reviewer');
+            $table->string('nama_kelompok');
             $table->boolean('is_active')->default(true);
             $table->string('created_by')->nullable();
             $table->softDeletes();

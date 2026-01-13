@@ -45,7 +45,7 @@ class ReviewerKelompokResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('nama_kelompok')
                     ->required(),
                 Select::make('users')
                     ->label('Anggota Reviewer')
@@ -65,7 +65,7 @@ class ReviewerKelompokResource extends Resource
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
+                TextEntry::make('nama_kelompok'),
                 IconEntry::make('is_active')
                     ->boolean(),
                 TextEntry::make('created_by')
@@ -94,7 +94,7 @@ class ReviewerKelompokResource extends Resource
         return $table
             ->recordTitleAttribute('Kelompok Reviewer')
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('nama_kelompok')
                     ->searchable(),
                 ToggleColumn::make('is_active')
                     ->onIcon('heroicon-o-check')

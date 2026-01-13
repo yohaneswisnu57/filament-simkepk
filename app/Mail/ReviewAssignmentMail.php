@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Protocol;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,16 +10,19 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ReviewAssignmentMail extends Mailable
+class ReviewAssignmentMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public $protocol;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Protocol $protocol)
     {
         //
+        $this->protocol = $protocol;
     }
 
     /**
@@ -27,7 +31,7 @@ class ReviewAssignmentMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Review Assignment Mail',
+            subject: 'Tugas Reviewer Protokol Baru',
         );
     }
 
@@ -37,7 +41,7 @@ class ReviewAssignmentMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.protocol_assignment_reviewer',
         );
     }
 

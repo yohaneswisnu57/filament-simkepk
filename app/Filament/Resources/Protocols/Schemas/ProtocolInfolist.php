@@ -86,7 +86,7 @@ class ProtocolInfolist
                                 ->label('Date End Review')
                                 ->placeholder('-')
                                 ->date(),
-                            TextEntry::make('assignedReviewerKelompok.name')
+                            TextEntry::make('assignedReviewerKelompok.nama_kelompok')
                                 ->label('Reviewer Groups')
                                 ->placeholder('-')
                                 ->listWithLineBreaks(),
