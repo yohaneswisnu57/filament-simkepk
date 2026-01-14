@@ -33,20 +33,20 @@ class UserProtocolStatusStats extends StatsOverviewWidget
         $fullboard = Protocol::where('user_id', $userId)->where('status_id', 3)->count();
 
         return [
-            Stat::make('Draft New Submission', $draft)
-                ->description('Belum dikirim')
-                ->color('gray'),
+            Stat::make('New Submission', $draft)
+                ->description('New Protocol')
+                ->color('blue'),
 
             Stat::make('On Proses', $onProses)
                 ->description('Menunggu review')
                 ->color('warning'),
 
             Stat::make('EXEMPTED', $exempted)
-                ->description('Cek catatan reviewer')
+                ->description('PASSED PRINT CERTIFICATE')
                 ->color('success'),
 
             Stat::make('EXPEDITED', $expedited)
-                ->description('Sertifikat terbit')
+                ->description('USER REVISION')
                 ->color('success'),
 
             Stat::make('FULLBOARD', $fullboard)
