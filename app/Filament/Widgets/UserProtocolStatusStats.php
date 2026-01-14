@@ -34,23 +34,23 @@ class UserProtocolStatusStats extends StatsOverviewWidget
 
         return [
             Stat::make('New Submission', $draft)
-                ->description('New Protocol')
+                // ->description('New Protocol')
                 ->color('blue'),
 
             Stat::make('On Proses', $onProses)
-                ->description('Menunggu review')
+                // ->description('Menunggu review')
                 ->color('warning'),
 
             Stat::make('EXEMPTED', $exempted)
-                ->description('PASSED PRINT CERTIFICATE')
+                // ->description('PASSED PRINT CERTIFICATE')
                 ->color('success'),
 
             Stat::make('EXPEDITED', $expedited)
-                ->description('USER REVISION')
+                // ->description('USER REVISION')
                 ->color('success'),
 
             Stat::make('FULLBOARD', $fullboard)
-                ->description('Sertifikat terbit')
+                // ->description('Sertifikat terbit')
                 ->color('success'),
         ];
     }
