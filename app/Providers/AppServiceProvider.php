@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             // ->panels(['admin', 'reviewer', 'user'])
 
             // 2. Ubah tampilan menjadi Dropdown sederhana (defaultnya Modal)
-            ->slideOver()
+
 
             // 3. Pasang Ikon untuk masing-masing Panel (Gunakan ID Panel)
             ->icons([
