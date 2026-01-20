@@ -68,20 +68,33 @@ class User extends Authenticatable
     }
 
 
-    public function isKetuaDariKelompok(int $kelompokId): bool
+    public function isKetuaDariKelompok(int $kelompokId)
     {
         // Cek apakah user ini terdaftar sebagai ketua di kelompok tersebut
-        return ReviewerKelompok::where('id', $kelompokId)
+        return ReviewerKelompok::where('id', 'like', $kelompokId)
             ->where('ketua_user_id', $this->id)
             ->exists();
     }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        // Pastikan reviewer juga return true
+
+        // if ($panel->getId() === 'admin') {
+        //     return $this->hasRole('super_admin');
+        // }
+
+        // if ($panel->getId() === 'reviewer') {
+        //     // User dengan role user biasa TIDAK akan bisa masuk sini
+        //     return $this->hasRole(['reviewer', 'super_admin']);
+        // }
+
+        // return true; // Panel 'user' terbuka untuk semua yang login
+            // Pastikan reviewer juga return true
         return $this->hasRole(['admin', 'super_admin', 'reviewer', 'user', 'sekertaris']);
 
         // ATAU jika ingin meloloskan semua user yang punya verified email:
         // return $this->hasVerifiedEmail();
     }
+
 
 }
