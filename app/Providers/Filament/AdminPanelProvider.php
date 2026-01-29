@@ -38,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Light)
-            ->brandName('SIKEPK')
+            ->brandName('SIMKEPK')
             ->colors([
                 'primary' => Color::Green,
             ])
