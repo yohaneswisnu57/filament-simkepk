@@ -133,11 +133,6 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
 
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-slate-200 shadow-sm mb-8 animate-fade-in-up">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span class="text-xs font-semibold text-slate-600 uppercase tracking-wide">Sistem Online v2.0</span>
-            </div>
-
             <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
                 Etik Penelitian <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-medical-600">
@@ -153,7 +148,7 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
 
                 <!-- Tombol Upload / Admin -->
-                <button onclick="{{ redirect('/admin') }}" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+                <button onclick="{{ redirect('admin') }}" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
                     <span class="mr-2 text-lg">Masuk / Upload Protokol</span>
                     <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     <div class="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:animate-shimmer"></div>
@@ -168,24 +163,38 @@
 
             <!-- Stats / Trust Indicators -->
             <div class="mt-16 pt-8 border-t border-slate-200/60 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-                <div>
-                    <p class="text-3xl font-bold text-slate-900">2.5k+</p>
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
+                        <i class="ph-duotone ph-file-text text-2xl"></i>
+                    </div>
+                    
                     <p class="text-sm text-slate-500 font-medium">Protokol Masuk</p>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-slate-900">1.8k+</p>
+
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="w-12 h-12 bg-medical-50 text-medical-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
+                        <i class="ph-duotone ph-certificate text-2xl"></i>
+                    </div>
+                    
                     <p class="text-sm text-slate-500 font-medium">Sertifikat Terbit</p>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-slate-900">24 Jam</p>
+
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
+                        <i class="ph-duotone ph-clock-counter-clockwise text-2xl"></i>
+                    </div>
+                    
                     <p class="text-sm text-slate-500 font-medium">Layanan Sistem</p>
                 </div>
-                <div>
-                    <p class="text-3xl font-bold text-slate-900">100%</p>
+
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
+                        <i class="ph-duotone ph-leaf text-2xl"></i>
+                    </div>
+                    
                     <p class="text-sm text-slate-500 font-medium">Paperless</p>
                 </div>
             </div>
-        </div>
     </section>
 
     <!-- Features / Alur Section -->
@@ -237,7 +246,7 @@
                 <span class="font-bold text-white text-lg">SIM KEPK</span>
             </div>
             <div class="text-sm text-slate-400">
-                &copy; 2024 Komite Etik Penelitian Kesehatan. All rights reserved.
+                &copy; 2026 Komite Etik Penelitian Kesehatan. All rights reserved.
             </div>
             <div class="flex gap-6">
                 <a href="#" class="hover:text-white transition">Privacy</a>
