@@ -60,11 +60,47 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-primary-100 selection:text-primary-900">
 
-    <!-- Navbar -->
+    <input type="checkbox" id="menu-toggle" class="peer hidden" />
+
+    <!-- Mobile Navigation -->
+    <label for="menu-toggle" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden peer-checked:block md:hidden transition-all"></label>
+
+    <div class="fixed inset-x-0 top-0 z-[60] bg-white shadow-2xl transform -translate-y-full peer-checked:translate-y-0 transition-transform duration-300 ease-in-out md:hidden rounded-b-3xl">
+        <div class="flex flex-col p-6">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white">
+                        <i class="ph-bold ph-first-aid text-xl"></i>
+                    </div>
+                    <span class="font-bold text-slate-900">Menu Navigasi</span>
+                </div>
+                <label for="menu-toggle" class="w-10 h-10 flex items-center justify-center bg-slate-100 rounded-full text-slate-600 cursor-pointer">
+                    <i class="ph ph-x text-2xl"></i>
+                </label>
+            </div>
+            
+            <nav class="flex flex-col gap-4">
+                <a href="#alur" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
+                    Alur Pengajuan <i class="ph ph-caret-right"></i>
+                </a>
+                <a href="#panduan" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
+                    Panduan <i class="ph ph-caret-right"></i>
+                </a>
+                <a href="#faq" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
+                    FAQ <i class="ph ph-caret-right"></i>
+                </a>
+                
+                <a href="http://simkepk.ukwms.ac.id/admin" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
+                    Login Peneliti
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    
     <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
-                <!-- Logo Area -->
                 <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
                         <i class="ph-bold ph-first-aid text-2xl"></i>
@@ -75,22 +111,16 @@
                     </div>
                 </div>
 
-                <!-- Desktop Menu -->
                 <div class="hidden md:flex items-center gap-8">
                     <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Alur Pengajuan</a>
-                    <a href="#panduan" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Panduan</a>
-                    <a href="#faq" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">FAQ</a>
-
-                    <!-- Login Button (Small) -->
                     <a href="http://simkepk.ukwms.ac.id/admin" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors">
                         Login Peneliti
                     </a>
                 </div>
 
-                <!-- Mobile Menu Button -->
-                <button class="md:hidden text-slate-600 hover:text-primary-600">
-                    <i class="ph ph-list text-2xl"></i>
-                </button>
+                <label for="menu-toggle" class="md:hidden flex w-12 h-12 items-center justify-center text-slate-600 hover:text-primary-600 cursor-pointer transition-colors">
+                    <i class="ph ph-list text-4xl"></i>
+                </label>
             </div>
         </div>
     </nav>
