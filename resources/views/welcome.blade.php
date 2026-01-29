@@ -83,12 +83,7 @@
                 <a href="#alur" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
                     Alur Pengajuan <i class="ph ph-caret-right"></i>
                 </a>
-                <a href="#panduan" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
-                    Panduan <i class="ph ph-caret-right"></i>
-                </a>
-                <a href="#faq" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
-                    FAQ <i class="ph ph-caret-right"></i>
-                </a>
+                
                 
                 <a href="http://simkepk.ukwms.ac.id/admin" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
                     Login Peneliti
