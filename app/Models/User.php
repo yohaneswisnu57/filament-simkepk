@@ -76,24 +76,38 @@ class User extends Authenticatable
             ->exists();
     }
 
+    // public function canAccessPanel(Panel $panel): bool
+    // {
+
+    //     if ($panel->getId() === 'admin') {
+    //         return $this->hasRole('super_admin');
+    //     }
+
+    //     if ($panel->getId() === 'reviewer') {
+    //         // User dengan role user biasa TIDAK akan bisa masuk sini
+    //         return $this->hasRole(['reviewer', 'super_admin']);
+    //     }
+
+    //     // return true; // Panel 'user' terbuka untuk semua yang login
+    //         // Pastikan reviewer juga return true
+    //     return $this->hasRole(['admin', 'super_admin', 'reviewer', 'user', 'sekertaris']);
+
+    //     // ATAU jika ingin meloloskan semua user yang punya verified email:
+    //     // return $this->hasVerifiedEmail();
+    // }
+
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('super_admin');
+        }
 
-        // if ($panel->getId() === 'admin') {
-        //     return $this->hasRole('super_admin');
-        // }
+        if ($panel->getId() === 'reviewer') {
+            // User dengan role user biasa TIDAK akan bisa masuk sini
+            return $this->hasRole(['reviewer', 'super_admin']);
+        }
 
-        // if ($panel->getId() === 'reviewer') {
-        //     // User dengan role user biasa TIDAK akan bisa masuk sini
-        //     return $this->hasRole(['reviewer', 'super_admin']);
-        // }
-
-        // return true; // Panel 'user' terbuka untuk semua yang login
-            // Pastikan reviewer juga return true
-        return $this->hasRole(['admin', 'super_admin', 'reviewer', 'user', 'sekertaris']);
-
-        // ATAU jika ingin meloloskan semua user yang punya verified email:
-        // return $this->hasVerifiedEmail();
+        return true; // Panel 'user' terbuka untuk semua yang login
     }
 
 

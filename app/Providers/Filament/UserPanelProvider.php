@@ -39,6 +39,9 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\Filament\User\Resources')
             ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\Filament\User\Pages')
+            ->resources([
+                ProtocolResource::class, // Masukkan Resource Admin di sini
+            ])
             ->pages([
                 Dashboard::class,
             ])
