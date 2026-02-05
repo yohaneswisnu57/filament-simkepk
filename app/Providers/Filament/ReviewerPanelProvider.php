@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Resources\Protocols\ProtocolResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -39,6 +40,9 @@ class ReviewerPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Reviewer/Resources'), for: 'App\Filament\Reviewer\Resources')
             ->discoverPages(in: app_path('Filament/Reviewer/Pages'), for: 'App\Filament\Reviewer\Pages')
+            ->resources([
+                ProtocolResource::class, // Masukkan Resource Admin di sini
+            ])
             ->pages([
                 Dashboard::class,
             ])

@@ -28,9 +28,11 @@ class AppServiceProvider extends ServiceProvider
             $panelSwitch
                 // 1. Tentukan Panel apa saja yang muncul (opsional, jika ingin membatasi)
                 ->panels(['admin', 'user', 'reviewer'])
+                ->modalHeading('Available Panels')
+                ->simple()
 
                 // 2. Ubah tampilan menjadi Dropdown sederhana (defaultnya Modal)
-                ->simple()
+                // ->displayAsDropdown()
 
                 // 3. Pasang Ikon untuk masing-masing Panel (Gunakan ID Panel)
                 ->icons([
@@ -45,11 +47,11 @@ class AppServiceProvider extends ServiceProvider
                     'reviewer' => 'Reviewer',
                     'user' => 'Peneliti',
                 ])
-                // ->canSwitchPanels(fn (): bool => auth()->user()?->can(['admin', 'reviewer', 'super_admin', 'sekertaris']))
+                // ->canSwitchPanels(fn (): bool => auth()->user()?->hasRole(['admin', 'reviewer', 'super_admin', 'sekertaris']))
 
                 // 5. Logika Siapa yang boleh melihat menu switch ini
 
-                ->visible(fn (): bool => auth()->user()?->hasRole(['super_admin', 'admin', 'reviewer', 'sekertaris']))
+                // ->visible(fn (): bool => auth()->user()?->hasAnyRole(['admin', 'reviewer', 'user']))
 
                 // 6. Posisi menu switch (opsional)
                 ->renderHook('panels::global-search.after');

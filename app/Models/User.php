@@ -3,16 +3,18 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+// use Filament\Models\Contracts\Panel\FilamentUser;
 
-class User extends Authenticatable
+class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser
 {
-    use HasDatabaseNotifications, HasFactory, HasRoles, Notifiable;
+    use HasDatabaseNotifications, HasFactory, HasRoles, Notifiable, HasPanelShield;
 
     /**
      * The attributes that are mass assignable.
@@ -95,13 +97,7 @@ class User extends Authenticatable
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            // dd([
-            //     'Panel ID' => $panel->getId(),
-            //     'Role User Ini' => $this->getRoleNames()->toArray(),
-            //     'Apakah Punya Role Admin?' => $this->hasRole(['sekertaris']),
-            // ]);
-
-            return $this->hasRole(['super_admin', 'admin', 'sekertaris']);
+            return $this->hasRole(['admin', 'sekertaris']);
         }
 
         if ($panel->getId() === 'user') {
