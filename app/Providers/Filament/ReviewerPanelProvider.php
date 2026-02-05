@@ -2,8 +2,6 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\Protocols\ProtocolResource;
-use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -13,6 +11,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -20,35 +19,32 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
-class UserPanelProvider extends PanelProvider
+class ReviewerPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('user')
-            ->path('user')
+            ->id('reviewer')
+            ->path('reviewer')
             ->spa()
             ->login()
             ->registration()
             ->profile()
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
-            ->defaultThemeMode(ThemeMode::Light)
-            ->brandName('Peneliti SIMKEPK')
+            ->brandName('Reviewer SIMKEPK')
             ->colors([
-                'primary' => Color::Lime,
+                'primary' => Color::Amber,
             ])
-            ->discoverResources(in: app_path('Filament/User/Resources'), for: 'App\Filament\User\Resources')
-            ->discoverPages(in: app_path('Filament/User/Pages'), for: 'App\Filament\User\Pages')
-            ->resources([
-                ProtocolResource::class, // Masukkan Resource Admin di sini
-            ])
+            ->discoverResources(in: app_path('Filament/Reviewer/Resources'), for: 'App\Filament\Reviewer\Resources')
+            ->discoverPages(in: app_path('Filament/Reviewer/Pages'), for: 'App\Filament\Reviewer\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\Filament\User\Widgets')
+            ->discoverWidgets(in: app_path('Filament/Reviewer/Widgets'), for: 'App\Filament\Reviewer\Widgets')
             ->widgets([
                 AccountWidget::class,
+                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

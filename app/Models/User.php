@@ -95,12 +95,16 @@ class User extends Authenticatable
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->hasRole('super_admin');
+            return $this->hasRole('super_admin', 'admin', 'sekertaris');
+        }
+
+        if ($panel->getId() === 'user') {
+            return $this->hasRole('user');
         }
 
         if ($panel->getId() === 'reviewer') {
             // User dengan role user biasa TIDAK akan bisa masuk sini
-            return $this->hasRole(['reviewer', 'super_admin']);
+            return $this->hasRole(['reviewer']);
         }
 
         return true; // Panel 'user' terbuka untuk semua yang login

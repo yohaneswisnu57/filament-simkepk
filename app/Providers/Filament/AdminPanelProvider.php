@@ -2,8 +2,10 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
+use App\Filament\Resources\Protocols\Widgets\StatsOverview;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Enums\ThemeMode;
+use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -18,9 +20,6 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use App\Filament\Resources\Protocols\Widgets\StatsOverview;
-use Filament\Enums\ThemeMode;
-
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -38,16 +37,16 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Light)
-            ->brandName('SIMKEPK')
+            ->brandName('Admin SIMKEPK')
             ->colors([
                 'primary' => Color::Green,
             ])
-            ->discoverResources( app_path('Filament/Resources'),  'App\Filament\Resources')
+            ->discoverResources(app_path('Filament/Resources'), 'App\Filament\Resources')
             ->discoverPages(app_path('Filament/Pages'), 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
             ])
-            ->discoverWidgets( app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
+            ->discoverWidgets(app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
                 StatsOverview::class,

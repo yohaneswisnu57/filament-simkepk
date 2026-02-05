@@ -25,32 +25,32 @@ class AppServiceProvider extends ServiceProvider
         //
         // Protocol::observe(ProtocolObserver::class);
         PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
-        $panelSwitch
-            // 1. Tentukan Panel apa saja yang muncul (opsional, jika ingin membatasi)
-            ->panels(['admin', 'user'])
+            $panelSwitch
+                // 1. Tentukan Panel apa saja yang muncul (opsional, jika ingin membatasi)
+                ->panels(['admin', 'user', 'reviewer'])
 
-            // 2. Ubah tampilan menjadi Dropdown sederhana (defaultnya Modal)
-            ->simple()
+                // 2. Ubah tampilan menjadi Dropdown sederhana (defaultnya Modal)
+                ->simple()
 
-            // 3. Pasang Ikon untuk masing-masing Panel (Gunakan ID Panel)
-            ->icons([
-                'admin'    => 'heroicon-o-user',
-                'reviewer' => 'heroicon-o-clipboard-document-check',
-                'user'     => 'heroicon-o-user',
-            ])
+                // 3. Pasang Ikon untuk masing-masing Panel (Gunakan ID Panel)
+                ->icons([
+                    'admin' => 'heroicon-o-user',
+                    'reviewer' => 'heroicon-o-user',
+                    'user' => 'heroicon-o-user',
+                ])
 
-            // 4. Atur Label (jika nama panel ID tidak rapi)
-            ->labels([
-                'admin'    => 'Admin KEPK',
-                'reviewer' => 'Reviewer',
-                'user'     => 'Peneliti',
-            ])
+                // 4. Atur Label (jika nama panel ID tidak rapi)
+                ->labels([
+                    'admin' => 'Admin KEPK',
+                    'reviewer' => 'Reviewer',
+                    'user' => 'Peneliti',
+                ])
 
-            // 5. Logika Siapa yang boleh melihat menu switch ini
-            ->visible(fn (): bool => auth()->user()?->hasRole(['super_admin', 'reviewer']))
+                // 5. Logika Siapa yang boleh melihat menu switch ini
+                ->visible(fn (): bool => auth()->user()?->hasRole(['super_admin', 'admin', 'reviewer', 'sekertaris']))
 
-            // 6. Posisi menu switch (opsional)
-            ->renderHook('panels::global-search.after');
-    });
+                // 6. Posisi menu switch (opsional)
+                ->renderHook('panels::global-search.after');
+        });
     }
 }
