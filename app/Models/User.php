@@ -9,13 +9,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-use App\Models\ReviewerKelompok;
-
 
 class User extends Authenticatable
 {
-
-    use HasFactory, Notifiable, HasRoles, HasDatabaseNotifications;
+    use HasDatabaseNotifications, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -67,7 +64,6 @@ class User extends Authenticatable
         return $this->hasMany(Review::class, 'user_id');
     }
 
-
     public function isKetuaDariKelompok(int $kelompokId)
     {
         // Cek apakah user ini terdaftar sebagai ketua di kelompok tersebut
@@ -109,6 +105,4 @@ class User extends Authenticatable
 
         return true; // Panel 'user' terbuka untuk semua yang login
     }
-
-
 }

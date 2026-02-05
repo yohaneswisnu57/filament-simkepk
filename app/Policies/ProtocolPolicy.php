@@ -24,7 +24,7 @@ class ProtocolPolicy
         // return $authUser->can('View:Protocol');
 
         // 1. Admin & Super Admin selalu boleh
-        if ($authUser->hasRole(['admin', 'super_admin', 'sekertaris'])) {
+        if ($authUser->hasRole(['admin', 'super_admin', 'sekertaris', 'reviewer', 'user'])) {
             return true;
         }
 
