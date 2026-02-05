@@ -95,11 +95,17 @@ class User extends Authenticatable
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->hasRole('super_admin', 'admin', 'sekertaris');
+            // dd([
+            //     'Panel ID' => $panel->getId(),
+            //     'Role User Ini' => $this->getRoleNames()->toArray(),
+            //     'Apakah Punya Role Admin?' => $this->hasRole(['sekertaris']),
+            // ]);
+
+            return $this->hasRole(['super_admin', 'admin', 'sekertaris']);
         }
 
         if ($panel->getId() === 'user') {
-            return $this->hasRole('user');
+            return $this->hasRole(['user']);
         }
 
         if ($panel->getId() === 'reviewer') {
@@ -107,6 +113,8 @@ class User extends Authenticatable
             return $this->hasRole(['reviewer']);
         }
 
-        return true; // Panel 'user' terbuka untuk semua yang login
+        // 4. PENTING: Ubah ini menjadi FALSE
+        // Ini memastikan jika user tidak punya role yang cocok di atas, dia TIDAK BISA masuk.
+        return false;
     }
 }

@@ -45,8 +45,10 @@ class AppServiceProvider extends ServiceProvider
                     'reviewer' => 'Reviewer',
                     'user' => 'Peneliti',
                 ])
+                // ->canSwitchPanels(fn (): bool => auth()->user()?->can(['admin', 'reviewer', 'super_admin', 'sekertaris']))
 
                 // 5. Logika Siapa yang boleh melihat menu switch ini
+
                 ->visible(fn (): bool => auth()->user()?->hasRole(['super_admin', 'admin', 'reviewer', 'sekertaris']))
 
                 // 6. Posisi menu switch (opsional)
