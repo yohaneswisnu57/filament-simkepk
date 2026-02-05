@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
-use App\Models\Protocol;
-use App\Observers\ProtocolObserver;
-use BezhanSalleh\PanelSwitch\PanelSwitch;
+// use App\Models\Protocol;
+// use App\Observers\ProtocolObserver;
+// use Filament\Auth\Http\Responses\LoginResponse;
+// use BezhanSalleh\PanelSwitch\PanelSwitch;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
+use Filament\Auth\Http\Responses\LoginResponse;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Responses\LoginResponse as CustomLoginResponse;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +18,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+
+        // Bind interface LoginResponse ke class custom buatan kita
+        $this->app->singleton(
+            LoginResponseContract::class, // Interface Bawaan
+            LoginResponse::class
+        );
     }
 
     /**
@@ -22,39 +31,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        // Protocol::observe(ProtocolObserver::class);
-        PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
-            $panelSwitch
-                // 1. Tentukan Panel apa saja yang muncul (opsional, jika ingin membatasi)
-                ->panels(['admin', 'user', 'reviewer'])
-                ->modalHeading('Available Panels')
-                ->simple()
 
-                // 2. Ubah tampilan menjadi Dropdown sederhana (defaultnya Modal)
-                // ->displayAsDropdown()
-
-                // 3. Pasang Ikon untuk masing-masing Panel (Gunakan ID Panel)
-                ->icons([
-                    'admin' => 'heroicon-o-user',
-                    'reviewer' => 'heroicon-o-user',
-                    'user' => 'heroicon-o-user',
-                ])
-
-                // 4. Atur Label (jika nama panel ID tidak rapi)
-                ->labels([
-                    'admin' => 'Admin KEPK',
-                    'reviewer' => 'Reviewer',
-                    'user' => 'Peneliti',
-                ])
-                // ->canSwitchPanels(fn (): bool => auth()->user()?->hasRole(['admin', 'reviewer', 'super_admin', 'sekertaris']))
-
-                // 5. Logika Siapa yang boleh melihat menu switch ini
-
-                // ->visible(fn (): bool => auth()->user()?->hasAnyRole(['admin', 'reviewer', 'user']))
-
-                // 6. Posisi menu switch (opsional)
-                ->renderHook('panels::user-menu.before');
-        });
     }
 }
