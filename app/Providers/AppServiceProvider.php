@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
                 // ->visible(fn (): bool => auth()->user()?->hasAnyRole(['admin', 'reviewer', 'user']))
 
                 // 6. Posisi menu switch (opsional)
-                ->renderHook('panels::global-search.after');
+                ->renderHook('panels::user-menu.before');
         });
     }
 }
