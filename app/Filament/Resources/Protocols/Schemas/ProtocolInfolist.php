@@ -24,7 +24,8 @@ class ProtocolInfolist
                         TextEntry::make('perihal_pengajuan')->label('Concerning'),
                         TextEntry::make('jenis_protocol')->label('Type Protocol'),
                         TextEntry::make('tanggal_pengajuan')->label('Submission Date')
-                            ->dateTime(),
+                            ->dateTime('D d M Y'),
+                        TextEntry::make('contact_person')->label('Contact Person'),
                         TextEntry::make('StatusReview.status_name')
                             ->label('Status')
                             ->badge()
@@ -81,11 +82,11 @@ class ProtocolInfolist
                             TextEntry::make('tgl_mulai_review')
                                 ->label('Date Start Review')
                                 ->placeholder('-')
-                                ->date(),
+                                ->date('D d M Y'),
                             TextEntry::make('tgl_selesai_review')
                                 ->label('Date End Review')
                                 ->placeholder('-')
-                                ->date(),
+                                ->date('D d M Y'),
                             TextEntry::make('assignedReviewerKelompok.nama_kelompok')
                                 ->label('Reviewer Groups')
                                 ->placeholder('-')

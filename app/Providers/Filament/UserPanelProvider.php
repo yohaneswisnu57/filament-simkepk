@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
@@ -30,7 +31,7 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->spa()
             ->login()
-            ->registration()
+            ->registration(Register::class)
             ->profile()
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')

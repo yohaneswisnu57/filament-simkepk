@@ -78,21 +78,21 @@
                     <i class="ph ph-x text-2xl"></i>
                 </label>
             </div>
-            
+
             <nav class="flex flex-col gap-4">
                 <a href="#alur" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
                     Alur Pengajuan <i class="ph ph-caret-right"></i>
                 </a>
-                
-                
-                <a href="http://simkepk.ukwms.ac.id/admin" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
+
+
+                <a href="http://simkepk.ukwms.ac.id/user" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
                     Login Peneliti
                 </a>
             </nav>
         </div>
     </div>
 
-    
+
     <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
@@ -108,7 +108,7 @@
 
                 <div class="hidden md:flex items-center gap-8">
                     <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Alur Pengajuan</a>
-                    <a href="http://simkepk.ukwms.ac.id/admin" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors">
+                    <a href="http://simkepk.ukwms.ac.id/user" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors">
                         Login Peneliti
                     </a>
                 </div>
@@ -162,7 +162,7 @@
                     <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
                         <i class="ph-duotone ph-file-text text-2xl"></i>
                     </div>
-                    
+
                     <p class="text-sm text-slate-500 font-medium">Protokol Masuk</p>
                 </div>
 
@@ -170,7 +170,7 @@
                     <div class="w-12 h-12 bg-medical-50 text-medical-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
                         <i class="ph-duotone ph-certificate text-2xl"></i>
                     </div>
-                    
+
                     <p class="text-sm text-slate-500 font-medium">Sertifikat Terbit</p>
                 </div>
 
@@ -178,7 +178,7 @@
                     <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
                         <i class="ph-duotone ph-clock-counter-clockwise text-2xl"></i>
                     </div>
-                    
+
                     <p class="text-sm text-slate-500 font-medium">Layanan Sistem</p>
                 </div>
 
@@ -186,7 +186,7 @@
                     <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4 transition-transform hover:scale-110">
                         <i class="ph-duotone ph-leaf text-2xl"></i>
                     </div>
-                    
+
                     <p class="text-sm text-slate-500 font-medium">Paperless</p>
                 </div>
             </div>

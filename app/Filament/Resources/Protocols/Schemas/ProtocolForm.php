@@ -32,6 +32,8 @@ class ProtocolForm
                             ->required(),
                         TextInput::make('contact_person')
                             ->numeric()
+                            ->minLength(10)
+                            ->maxLength(15)
                             ->label('Contact Person')
                             ->nullable(),
                         DatePicker::make('tanggal_pengajuan')
