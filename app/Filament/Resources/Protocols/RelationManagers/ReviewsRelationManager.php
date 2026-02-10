@@ -43,9 +43,6 @@ class ReviewsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('comment')
             ->columns([
-                TextColumn::make('user.name') // Tampilkan nama Reviewer
-                    ->label('Reviewer')
-                    ->searchable(),
                 TextColumn::make('comment')
                     ->wrap() // Agar teks panjang bisa turun
                     ->markdown(), // Bisa pakai markdown

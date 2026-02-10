@@ -86,9 +86,7 @@ class ProtocolForm
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                         Select::make('reviewer_kelompok_id')
                             ->label('Assign to Reviewer Groups')
-                            ->relationship('assignedReviewerKelompok', 'name') // Ganti 'nama_kelompok' dengan kolom nama di ReviewerKelompok
-                            ->searchable()
-                            // ->preload()
+                            ->relationship('assignedReviewerKelompok', 'nama_kelompok') // Ganti 'nama_kelompok' dengan kolom nama di ReviewerKelompok
                             ->nullable()
                             // Hanya 'super_admin' atau role tertentu yang bisa meng-assign
                             ->visible(fn () => auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])),
