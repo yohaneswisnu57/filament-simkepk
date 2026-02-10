@@ -30,6 +30,10 @@ class ProtocolForm
                             ])
                             ->searchable()
                             ->required(),
+                        TextInput::make('contact_person')
+                            ->numeric()
+                            ->label('Contact Person')
+                            ->nullable(),
                         DatePicker::make('tanggal_pengajuan')
                             ->label('Submission Date')
                             ->native(false)
