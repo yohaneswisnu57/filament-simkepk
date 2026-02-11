@@ -11,11 +11,11 @@ use App\Filament\Resources\Protocols\Schemas\ProtocolInfolist;
 use App\Filament\Resources\Protocols\Tables\ProtocolsTable;
 use App\Models\Protocol;
 use BackedEnum;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProtocolResource extends Resource
 {
@@ -44,7 +44,7 @@ class ProtocolResource extends Resource
     {
         return [
             RelationManagers\DocumentRelationManager::class,
-            RelationManagers\ReviewsRelationManager::class,
+            // RelationManagers\ReviewsRelationManager::class,
         ];
     }
 
@@ -107,7 +107,6 @@ class ProtocolResource extends Resource
 
         return $query;
     }
-
 
     public static function getPages(): array
     {
