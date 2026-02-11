@@ -23,7 +23,7 @@ class ProtocolForm
                             ->label('Concerning')
                             ->required(),
                         Select::make('jenis_protocol')
-                            ->label('Type Protocol')
+                            ->label('Subject Protocol')
                             ->options([
                                 'Manusia' => 'Manusia',
                                 'Hewan' => 'Hewan',
@@ -31,23 +31,28 @@ class ProtocolForm
                             ->searchable()
                             ->required(),
                         TextInput::make('contact_person')
-                            ->numeric()
+                            ->tel()
                             ->minLength(10)
                             ->maxLength(15)
                             ->label('Contact Person')
+                            ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
+                            ->validationMessages([
+                                'telRegex' => 'The contact person must be a valid phone number.',
+                            ])
                             ->nullable(),
                         DatePicker::make('tanggal_pengajuan')
                             ->label('Submission Date')
                             ->native(false)
-                            ->displayFormat('Y-m-d')
-                            ->format('Y/m/d')
+                            ->displayFormat('D d/m/Y')
                             ->closeOnDateSelection(true)
-                            ->required(),
+                            ->default(now())
+                            ->readOnly(),
                         Select::make('status_id')
                             ->label('Status')
                             ->default('null')
                             // ->required()
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
+                            // ->afterStateUpdated(fn ($set, $state) => $set('status_id', $state))
                             ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
                         Select::make('user_id')
                             ->relationship('user', 'name')
@@ -109,14 +114,25 @@ class ProtocolForm
                             ->disk('public')
                             ->directory('uploadpernyataan')
                             ->acceptedFileTypes([
-                                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                                'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
                             ]) // Opsional: Batasi hanya PDF/Docx
-                            ->maxSize(3072) // <--- Batasan 3MB (3072 KB)
+                            ->maxSize(2048) // <--- Batasan 3MB (3072 KB)
+                            ->helperText('Maximum file size: 3MB.')
                             ->validationMessages([
-                                'max' => 'Ukuran file terlalu besar. Maksimal hanya 3MB.',
+                                'acceptedFileTypes' => 'The file must be a type of: PDF, DOCX.',
+                                'max' => 'The file size must not exceed 2MB.',
                             ]),
                         FileUpload::make('buktipembayaran')
                             ->label('Upload Proof of Payment')
+                            ->acceptedFileTypes([
+                                'application/jpg', 'application/jpeg', 'application/png'
+                            ])
+                            ->helperText('Accepted file types: JPG, JPEG, PNG. Maximum file size: 2MB.')
+                            ->validationMessages([
+                                'acceptedFileTypes' => 'The file must be a type of: JPG, JPEG, PNG.',
+                                'max' => 'The file size must not exceed 2MB.',
+                            ])
+                            ->maxSize(2048)
                             ->required()
                             ->preserveFilenames()
                             ->disk('public')
