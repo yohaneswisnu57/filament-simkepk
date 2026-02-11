@@ -11,6 +11,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
 
 class ProtocolInfolist
 {
@@ -38,6 +39,7 @@ class ProtocolInfolist
                             ->numeric()
                             ->placeholder('-'),
                     ]),
+
                 Section::make('Document')
                     // ->label('Informasi Protocol')
                     ->schema([
@@ -76,6 +78,7 @@ class ProtocolInfolist
                             TextEntry::make('user.name')->label('Created By')
                                 ->numeric(),
                     ]),
+
                 Section::make('Review Timeline')
                     // ->label('Informasi Protocol')
                     ->schema([
@@ -103,6 +106,18 @@ class ProtocolInfolist
                             ->label('Updated At')
                             ->dateTime(),
                     ]),
+                Section::make('Review & Comments')
+                    ->columnSpanFull()
+                        ->schema([
+                            // Komponen komentar dari Commentions
+                            CommentsEntry::make('comments')
+                                ->label('Review & Comments')
+                                ->hideSubscribers(true)
+                                ->unsubscribeColor('danger')
+
+
+                        ])->visible(fn (Model $record): bool => $record instanceof Protocol),
+
             ]);
     }
 }

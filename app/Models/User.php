@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
+use Kirschbaum\Commentions\Contracts\Commenter;
 use Spatie\Permission\Traits\HasRoles;
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
-class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser
+class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter
 {
     use HasDatabaseNotifications, HasFactory, HasRoles, Notifiable, HasPanelShield;
 
