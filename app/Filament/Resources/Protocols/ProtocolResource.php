@@ -101,7 +101,28 @@ class ProtocolResource extends Resource
             // B. JIKA dia adalah Reviewer DAN punya Kelompok ID
             // Maka dia juga bisa melihat protokol yang di-assign ke kelompoknya
             if ($user->hasRole('reviewer') && $user->reviewer_kelompok_id) {
-                $q->orWhere('reviewer_kelompok_id', $user->reviewer_kelompok_id);
+                // $q->orWhere('reviewer_kelompok_id', $user->reviewer_kelompok_id);
+                // Kita tambahkan pengecekan apakah protokol tersebut assigned ke dia secara spesifik? 
+                // Jika ingin tetap memperbolehkan melihat semua assignan grup, uncomment baris di atas.
+                // TAPI, jika ingin Strict (hanya pivot), gunakan yang bawah.
+                
+                // Namun, requirement biasanya: Reviewer melihat assigned group UNLESS di override/specific assignment.
+                // Jika kita ingin Fast Review HANYA dilihat oleh Ketua/Sekertaris, maka logika "orWhere(reviewer_kelompok_id)"
+                // HARUS dikecualikan untuk status Fast Review.
+                // Tapi user minta "menambahkan fitur assign reviewer pada protocol", jadi sebaiknya:
+                // User melihat jika:
+                // 1. Milik sendiri
+                // 2. Assigned via Pivot Table (protocol_reviewers)
+                // 3. Assigned via Group (reviewer_kelompok_id) -> TAPI ini yang bikin "bocor"
+                
+                // Solusi Hybrid:
+                // Tampilkan jika assigned di pivot table
+                $q->orWhereHas('reviewers', function ($q2) use ($user) {
+                    $q2->where('users.id', $user->id);
+                });
+
+                // Tampilkan jika assigned via group
+                 $q->orWhere('reviewer_kelompok_id', $user->reviewer_kelompok_id);
             }
         });
 

@@ -11,11 +11,12 @@ use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Spatie\Permission\Traits\HasRoles;
+
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
 class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter
 {
-    use HasDatabaseNotifications, HasFactory, HasRoles, Notifiable, HasPanelShield;
+    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -60,6 +61,12 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
     {
         return $this->belongsTo(ReviewerKelompok::class, 'reviewer_kelompok_id', 'id');
 
+    }
+
+    public function assignedProtocols()
+    {
+        return $this->belongsToMany(Protocol::class, 'protocol_reviewers')
+            ->withTimestamps();
     }
 
     public function reviews()
