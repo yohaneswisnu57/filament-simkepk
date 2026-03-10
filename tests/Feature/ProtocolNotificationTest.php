@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-
 use App\Filament\Resources\Protocols\Pages\ViewProtocol;
 use App\Mail\ProtocolSubmittedMail;
 use App\Mail\ReviewAssignmentMail;
@@ -14,16 +13,15 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-use PHPUnit\Framework\Attributes\Test;
 
 class ProtocolNotificationTest extends TestCase
 {
     /**
      * A basic feature test example.
      */
-
     use RefreshDatabase;
 
     protected function setUp(): void
@@ -66,7 +64,7 @@ class ProtocolNotificationTest extends TestCase
             'jenis_protocol' => 'Manusia',
             'tanggal_pengajuan' => Carbon::now(),
             'uploadpernyataan' => 'uploadpernyataan/3..docx',
-            'buktipembayaran' => 'buktipembayaran/Screenshot 2025-08-11 145740.png'
+            'buktipembayaran' => 'buktipembayaran/Screenshot 2025-08-11 145740.png',
 
             // isi field lain sesuai kebutuhan database Anda (nullable/required)
         ]);
@@ -92,13 +90,13 @@ class ProtocolNotificationTest extends TestCase
         // Buat Reviewer dalam Kelompok ID 1
         $kelompok = ReviewerKelompok::create([
             'nama_kelompok' => 'Kelompok Test',
-            'is_active' => 1 // Sesuaikan dengan kolom di DB Anda
+            'is_active' => 1, // Sesuaikan dengan kolom di DB Anda
         ]);
 
         // Baru buat User dengan ID kelompok yang valid
         $reviewer = User::factory()->create([
             'reviewer_kelompok_id' => $kelompok->id,
-            'email' => 'rev@test.com'
+            'email' => 'rev@test.com',
         ]);
         $reviewer->assignRole('reviewer');
 
@@ -106,7 +104,7 @@ class ProtocolNotificationTest extends TestCase
 
         // Assign protokol ke kelompok yang sama
         $protocol->update([
-            'reviewer_kelompok_id' => $kelompok->id
+            'reviewer_kelompok_id' => $kelompok->id,
         ]);
 
         // 1. Cek Email Reviewer
@@ -147,32 +145,38 @@ class ProtocolNotificationTest extends TestCase
             'reviewer_kelompok_id' => $kelompok->id, // ID Kelompok harus sama dengan reviewer
         ]);
 
-        // B. Act: Livewire Test
+        // B. Act: Livewire Test — gunakan 'submitVerdict' (action baru)
+        // Reviewer harus ada di protocol_reviewers dengan feedback_status='pending'
+        $protocol->reviewers()->attach($reviewer->id, [
+            'role_in_review' => 'Ketua',
+            'feedback_status' => 'pending',
+        ]);
+
         Livewire::actingAs($reviewer)
             ->test(ViewProtocol::class, ['record' => $protocol->getKey()])
-            ->assertSuccessful() // Pastikan status 200 OK (Tidak 403)
-            ->mountAction('addReview')
+            ->assertSuccessful()
+            ->mountAction('submitVerdict')
             ->setActionData([
-                'comment' => '<p>Protokol ini bagus.</p>', // Input form
+                'comment' => 'Protokol ini bagus.',
+                'verdict' => 'Exempted',
             ])
             ->callMountedAction()
-            ->assertNotified('Review berhasil disimpan & Notifikasi dikirim');
+            ->assertNotified('Verdict berhasil disubmit');
 
         // C. Assert
-
-        // 1. Cek Database
-        // PERBAIKAN: Cocokkan comment dengan yang diinput di atas ('Protokol ini bagus.')
         $this->assertDatabaseHas('reviews', [
             'protocol_id' => $protocol->id,
             'user_id' => $reviewer->id,
-            'comment' => '<p>Protokol ini bagus.</p>',
+            'comment' => 'Protokol ini bagus.',
+            'verdict' => 'Exempted',
         ]);
 
-        // 2. Cek Email terkirim ke Peneliti
-        // Disini baru benar menggunakan ReviewSubmittedMail
-        Mail::assertQueued(ReviewSubmittedMail::class, function ($mail) use ($peneliti) {
-            return $mail->hasTo($peneliti->email);
-        });
+        $this->assertDatabaseHas('protocol_reviewers', [
+            'protocol_id' => $protocol->id,
+            'user_id' => $reviewer->id,
+            'feedback_status' => 'submitted',
+        ]);
+
         // // A. Setup
         // Mail::fake();
 
@@ -186,8 +190,6 @@ class ProtocolNotificationTest extends TestCase
         //     'is_active' => 1,
         //     // isi kolom lain jika ada yang mandatory (wajib diisi)
         // ]);
-
-
 
         // $protocol = Protocol::factory()->create([
         //     'user_id' => $peneliti->id

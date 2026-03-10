@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Models\Protocol;
+use App\Models\StatusReview;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
-use Filament\Support\Contracts\HasLabel;
-use App\Models\Protocol;
 
 class ListProtocols extends ListRecords
 {
@@ -21,81 +21,61 @@ class ListProtocols extends ListRecords
         ];
     }
 
-
     public function getTabs(): array
     {
         $user = auth()->user();
-
-        // 1. Tentukan apakah user adalah Admin (untuk efisiensi)
         $isAdmin = $user->hasRole(['super_admin', 'admin']);
 
-        // 2. Tentukan ID Status Anda
         $statusColumn = 'status_id';
-        $prosesId = '';
-        $exemptedId = 1;
-        $expeditedId = 3;
-        $fullboardId = 2;
+        $exemptedId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%exempted%'])->value('id') ?? 1;
+        $expeditedId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%expedited%'])->value('id') ?? 3;
+        $fullboardId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%full board%'])->value('id') ?? 2;
+        $fastReviewId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%fast review%'])->value('id');
 
-
-        // 3. Buat "Closure" (fungsi) untuk Scoping Non-Admin
-        // Ini adalah LOGIKA YANG SAMA PERSIS seperti di getEloquentQuery
-        $userScope = function (Builder $query) use ($user) {
-            // Dapatkan ID kelompok reviewer dari user yang login
+        $userScope = function (Builder $query) use ($user): void {
             $userReviewerKelompokId = $user->reviewer_kelompok_id;
 
-            $query->where(function (Builder $q) use ($user, $userReviewerKelompokId) {
-                // Pengguna bisa melihat protokol yang diajukan olehnya
+            $query->where(function (Builder $q) use ($user, $userReviewerKelompokId): void {
                 $q->where('user_id', $user->id);
 
-                // JIKA pengguna adalah bagian dari kelompok reviewer...
                 if ($userReviewerKelompokId) {
-                    // ...dia JUGA bisa melihat protokol yang di-assign ke kelompoknya
                     $q->orWhere('reviewer_kelompok_id', $userReviewerKelompokId);
                 }
             });
-
-            return $query; // Kembalikan query untuk di-chain
         };
 
-
-        // --- SEKARANG, KITA BUAT TABS ---
-
-        // 4. Jika user BUKAN Admin, tampilkan Tab yang sudah di-scope
-        if (!$isAdmin) {
-            return [
+        if (! $isAdmin) {
+            $tabs = [
                 'all' => Tab::make('Semua')
-                    // Badge: Panggil scope non-admin
-                    ->badge(Protocol::query()->where($userScope)->count()), // <--- PERBAIKAN
-                    // Query: TIDAK PERLU, karena 'all' = base query dari getEloquentQuery
+                    ->badge(Protocol::query()->where($userScope)->count()),
 
-                'proses' => Tab::make('Proses Pengajuan')
-                    // Badge: Panggil scope non-admin + filter status
-                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $prosesId)->count()) // <--- PERBAIKAN
-                    // Query: HANYA filter status (base-nya sudah di-scope oleh getEloquentQuery)
-                    ->query(fn (Builder $query) => $query->where($statusColumn, $prosesId)),
+                'fastReview' => Tab::make('Fast Review')
+                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $fastReviewId)->count())
+                    ->query(fn (Builder $query) => $query->where($statusColumn, $fastReviewId)),
 
                 'exempted' => Tab::make('Exempted')
-                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $exemptedId)->count()) // <--- PERBAIKAN
+                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $exemptedId)->count())
                     ->query(fn (Builder $query) => $query->where($statusColumn, $exemptedId)),
 
                 'expedited' => Tab::make('Expedited')
-                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $expeditedId)->count()) // <--- PERBAIKAN
+                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $expeditedId)->count())
                     ->query(fn (Builder $query) => $query->where($statusColumn, $expeditedId)),
 
                 'fullboard' => Tab::make('Full Board')
-                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $fullboardId)->count()) // <--- PERBAIKAN
+                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $fullboardId)->count())
                     ->query(fn (Builder $query) => $query->where($statusColumn, $fullboardId)),
             ];
+
+            return $tabs;
         }
 
-        // 5. (Default) Jika user ADALAH Admin, tampilkan semua data
         return [
             'all' => Tab::make('Semua')
                 ->badge(Protocol::count()),
 
-            'proses' => Tab::make('Proses Pengajuan')
-                ->badge(Protocol::where($statusColumn, $prosesId)->count())
-                ->query(fn (Builder $query) => $query->where($statusColumn, $prosesId)),
+            'fastReview' => Tab::make('Fast Review')
+                ->badge(Protocol::where($statusColumn, $fastReviewId)->count())
+                ->query(fn (Builder $query) => $query->where($statusColumn, $fastReviewId)),
 
             'exempted' => Tab::make('Exempted')
                 ->badge(Protocol::where($statusColumn, $exemptedId)->count())
@@ -110,5 +90,4 @@ class ListProtocols extends ListRecords
                 ->query(fn (Builder $query) => $query->where($statusColumn, $fullboardId)),
         ];
     }
-
 }

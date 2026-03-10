@@ -21,19 +21,10 @@ class EditProtocol extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // ❌ DIHAPUS: $data['user_id'] = auth()->user()->id;
-        // Alasan: user_id adalah "Created By" dan tidak boleh berubah saat edit
-        // Sudah di-handle di ProtocolForm dengan ->dehydrated(fn ($operation) => $operation === 'create')
-
         $user = auth()->user();
         $assignedKelompokId = $this->record->reviewer_kelompok_id;
 
-        // LOGIKA: Jika User adalah KETUA dari kelompok yang sedang ditugaskan
         if ($assignedKelompokId && $user->isKetuaDariKelompok($assignedKelompokId)) {
-            // Paksa status menjadi DONE (misal ID 1 adalah code untuk 'Selesai/Approved')
-            // $data['status_id'] = 1; // Hati-hati menimpa status manual. Uncomment jika logic bisnis mengharuskan.
-
-            // Opsional: Simpan tanggal selesai otomatis
             $data['tgl_selesai_review'] = now();
         }
 
@@ -43,28 +34,35 @@ class EditProtocol extends EditRecord
     protected function afterSave(): void
     {
         $protocol = $this->record;
-        $data = $this->data; // Akses data form yang disubmit via ->data
+        $data = $this->data;
 
-        // Logic Manual Assignment untuk Fast Review (UPDATE)
-        // Kita gunakan sync pada user tertentu saja atau detach specific roles?
-        // Agar aman, kita cek: Jika ada input, kita update pivot-nya.
+        $ketuaId = $data['fast_review_ketua_id'] ?? null;
+        $sekertarisId = $data['fast_review_secretary_id'] ?? null;
 
-        if (isset($data['fast_review_ketua_id']) && $data['fast_review_ketua_id']) {
-            // 1. Hapus Ketua lama jika ada
-            $protocol->reviewers()->wherePivot('role_in_review', 'Ketua')->detach();
-
-            // 2. Assign Ketua baru
-            $protocol->reviewers()->attach($data['fast_review_ketua_id'], ['role_in_review' => 'Ketua']);
+        // Jika tidak ada perubahan reviewer Fast Review, skip
+        if (! $ketuaId && ! $sekertarisId) {
+            return;
         }
 
-        if (isset($data['fast_review_secretary_id']) && $data['fast_review_secretary_id']) {
-            // 1. Hapus Sekertaris lama
-            $protocol->reviewers()->wherePivot('role_in_review', 'Sekertaris')->detach();
+        // 1. Hapus reviewer Fast Review lama (Ketua & Sekertaris dari pivot)
+        $protocol->reviewers()->wherePivotIn('role_in_review', ['Ketua', 'Sekertaris'])->detach();
 
-            // 2. Assign Sekertaris baru (skip jika sama dg ketua baru)
-            if ($data['fast_review_secretary_id'] != ($data['fast_review_ketua_id'] ?? null)) {
-                $protocol->reviewers()->attach($data['fast_review_secretary_id'], ['role_in_review' => 'Sekertaris']);
-            }
+        // 2. Attach reviewer baru dengan feedback_status = 'pending'
+        if ($ketuaId) {
+            $protocol->reviewers()->attach($ketuaId, [
+                'role_in_review' => 'Ketua',
+                'feedback_status' => 'pending',
+            ]);
         }
+
+        if ($sekertarisId && $sekertarisId != $ketuaId) {
+            $protocol->reviewers()->attach($sekertarisId, [
+                'role_in_review' => 'Sekertaris',
+                'feedback_status' => 'pending',
+            ]);
+        }
+
+        // 3. Set fast_review_decision = 'Pending' karena reviewer baru di-assign
+        $protocol->update(['fast_review_decision' => 'Pending']);
     }
 }

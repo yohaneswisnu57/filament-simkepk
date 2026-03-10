@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class ReviewsRelationManager extends RelationManager
 {
     protected static string $relationship = 'reviews';
+
     protected static ?string $title = 'History Reviews'; // Judul custom
 
     // Ini berfungsi menangkap sinyal 'refresh-reviews-table' dan melakukan refresh otomatis
@@ -34,7 +35,8 @@ class ReviewsRelationManager extends RelationManager
             ]);
     }
 
-    public static function getBadge(Model $ownerRecord, string $pageClass): string{
+    public static function getBadge(Model $ownerRecord, string $pageClass): string
+    {
         return $ownerRecord->reviews()->count();
     }
 
@@ -43,12 +45,26 @@ class ReviewsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('comment')
             ->columns([
+                TextColumn::make('user.name')
+                    ->label('Reviewer')
+                    ->sortable(),
+                TextColumn::make('verdict')
+                    ->label('Verdict')
+                    ->badge()
+                    ->placeholder('-')
+                    ->color(fn (?string $state): string => match ($state) {
+                        'Exempted' => 'success',
+                        'Full Board' => 'danger',
+                        default => 'gray',
+                    }),
                 TextColumn::make('comment')
-                    ->wrap() // Agar teks panjang bisa turun
-                    ->markdown(), // Bisa pakai markdown
-                TextColumn::make('created_at')
-                    ->label('Tanggal')
-                    ->since(),
+                    ->label('Catatan')
+                    ->wrap()
+                    ->limit(100),
+                TextColumn::make('submitted_at')
+                    ->label('Submitted')
+                    ->since()
+                    ->placeholder('-'),
             ])
             ->filters([
                 //
@@ -59,6 +75,7 @@ class ReviewsRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         // Tambahkan 'user_id' secara otomatis saat membuat
                         $data['user_id'] = auth()->id();
+
                         return $data;
                     }),
             ])
@@ -133,6 +150,5 @@ class ReviewsRelationManager extends RelationManager
     //             ]),
     //         ]);
     // }
-
 
 }

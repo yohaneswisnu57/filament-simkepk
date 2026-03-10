@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
-use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateProtocol extends CreateRecord
@@ -20,18 +19,29 @@ class CreateProtocol extends CreateRecord
     protected function afterCreate(): void
     {
         $protocol = $this->record;
-        $data = $this->data; // Akses data form yang di-submit
+        $data = $this->data;
 
-        // Logic Manual Assignment untuk Fast Review
-        if (isset($data['fast_review_ketua_id']) && $data['fast_review_ketua_id']) {
-            $protocol->reviewers()->attach($data['fast_review_ketua_id'], ['role_in_review' => 'Ketua']);
+        $ketuaId = $data['fast_review_ketua_id'] ?? null;
+        $sekertarisId = $data['fast_review_secretary_id'] ?? null;
+
+        if (! $ketuaId && ! $sekertarisId) {
+            return;
         }
 
-        if (isset($data['fast_review_secretary_id']) && $data['fast_review_secretary_id']) {
-            // Cek duplikasi jika user sama dengan ketua (jarang terjadi tapi mungkin)
-            if ($data['fast_review_secretary_id'] != ($data['fast_review_ketua_id'] ?? null)) {
-                $protocol->reviewers()->attach($data['fast_review_secretary_id'], ['role_in_review' => 'Sekertaris']);
-            }
+        if ($ketuaId) {
+            $protocol->reviewers()->attach($ketuaId, [
+                'role_in_review' => 'Ketua',
+                'feedback_status' => 'pending',
+            ]);
         }
+
+        if ($sekertarisId && $sekertarisId != $ketuaId) {
+            $protocol->reviewers()->attach($sekertarisId, [
+                'role_in_review' => 'Sekertaris',
+                'feedback_status' => 'pending',
+            ]);
+        }
+
+        $protocol->update(['fast_review_decision' => 'Pending']);
     }
 }

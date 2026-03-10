@@ -3,13 +3,16 @@
 namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
-use App\Mail\ReviewSubmittedMail;
+use App\Models\Review;
+use App\Models\StatusReview;
+use App\Services\FastReviewDecisionService;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
-use Illuminate\Support\Facades\Mail;
+use Filament\Support\Icons\Heroicon;
 
 class ViewProtocol extends ViewRecord
 {
@@ -17,71 +20,107 @@ class ViewProtocol extends ViewRecord
 
     protected function getHeaderActions(): array
     {
-        // return [
-        //     EditAction::make(),
-        // ];
-
-        // 👇 3. Tambahkan seluruh metode ini
         return [
-            EditAction::make(), // Tombol Edit (jika ada)
+            EditAction::make()
+                ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])),
 
-            // Tombol untuk menambah review
-            // Action::make('addReview')
-            //     ->label('Beri Review/Komentar')
-            //     ->icon('heroicon-o-chat-bubble-bottom-center-text')
-            //     ->color('info')
+            // ──────────────────────────────────────────────────
+            // ACTION 1: Submit Verdict (untuk reviewer)
+            // Muncul hanya jika user adalah reviewer yang di-assign
+            // DAN belum submit (feedback_status = 'pending')
+            // ──────────────────────────────────────────────────
+            Action::make('submitVerdict')
+                ->label('Submit Verdict')
+                ->icon(Heroicon::ClipboardDocumentCheck)
+                ->color('warning')
+                ->modalHeading('Submit Fast Review Verdict')
+                ->modalDescription('Berikan keputusan Anda untuk protokol ini. Keputusan tidak dapat diubah setelah disubmit.')
+                ->visible(function (): bool {
+                    return $this->record->reviewers()
+                        ->where('users.id', auth()->id())
+                        ->wherePivot('feedback_status', 'pending')
+                        ->exists();
+                })
+                ->form([
+                    Textarea::make('comment')
+                        ->label('Catatan / Komentar')
+                        ->placeholder('Tuliskan catatan telaah Anda...')
+                        ->required()
+                        ->rows(5),
 
-            //     // Hanya tampilkan jika user adalah 'reviewer' (sesuaikan nama role)
-            //     ->visible(fn () => auth()->user()->hasRole(['reviewer', 'admin', 'super_admin', 'sekertaris']))
+                    Select::make('verdict')
+                        ->label('Keputusan')
+                        ->options([
+                            'Exempted' => '✅ Exempted (Lolos)',
+                            'Full Board' => '⚠️ Full Board (Perlu Telaah Lanjut)',
+                        ])
+                        ->required()
+                        ->native(false),
+                ])
+                ->action(function (array $data): void {
+                    $protocol = $this->record;
 
-            //     // Ini akan memunculkan form modal
-            //     ->form([
-            //         RichEditor::make('comment')
-            //             ->label('Komentar Review')
-            //             ->required()
-            //             ->minLength(3),
-            //     ])
+                    // 1. Simpan review dengan verdict
+                    Review::create([
+                        'protocol_id' => $protocol->id,
+                        'user_id' => auth()->id(),
+                        'comment' => $data['comment'],
+                        'verdict' => $data['verdict'],
+                        'submitted_at' => now(),
+                    ]);
 
-            //     // Logika saat tombol "Submit" di modal ditekan
-            //     ->action(function (array $data) {
+                    // 2. Update pivot feedback_status → 'submitted'
+                    $protocol->reviewers()->updateExistingPivot(auth()->id(), [
+                        'feedback_status' => 'submitted',
+                    ]);
 
-            //         // $this->record adalah data Protocol yang sedang dibuka
-            //         $this->record->reviews()->create([
-            //             'comment' => $data['comment'],
-            //             'user_id' => auth()->id(),
-            //         ]);
+                    // 3. Jalankan Decision Engine
+                    app(FastReviewDecisionService::class)->evaluate($protocol->fresh());
 
-            //         // 👇 2. LOGIKA EMAIL NOTIFIKASI DISINI
-            //         // =====================================
+                    Notification::make()
+                        ->title('Verdict berhasil disubmit')
+                        ->success()
+                        ->send();
 
-            //         // Ambil data peneliti (User pemilik protokol)
-            //         $reviewerEmail = $this->record->user;
+                    $this->refreshFormData(['fast_review_decision']);
+                }),
 
-            //         // Cek apakah peneliti punya email valid
-            //         if ($reviewerEmail && $reviewerEmail->email) {
+            // ──────────────────────────────────────────────────
+            // ACTION 2: Terbitkan Certificate (untuk admin)
+            // Muncul hanya saat fast_review_decision = 'Exempted'
+            // ──────────────────────────────────────────────────
+            Action::make('terbitkanCertificate')
+                ->label('Terbitkan Certificate')
+                ->icon(Heroicon::DocumentCheck)
+                ->color('success')
+                ->requiresConfirmation()
+                ->modalHeading('Terbitkan Certificate Exempted')
+                ->modalDescription('Semua reviewer telah menyetujui Exempted. Konfirmasi untuk menerbitkan certificate.')
+                ->visible(fn (): bool => $this->record->fast_review_decision === 'Exempted'
+                    && auth()->user()->hasRole(['admin', 'super_admin'])
+                )
+                ->action(function (): void {
+                    $exemptedStatus = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%exempted%'])->first();
 
-            //             // Kirim Email
-            //             // Parameter 2: Nama Reviewer.
-            //             // Gunakan 'Anggota Penelaah' agar anonim (Blind Review),
-            //             // atau gunakan auth()->user()->name jika ingin transparan.
-            //             Mail::to($reviewerEmail->email)
-            //                 ->send(new ReviewSubmittedMail($this->record, auth()->user()->name));
-            //         }
-            //         // =====================================
+                    $this->record->update([
+                        'status_id' => $exemptedStatus?->id ?? $this->record->status_id,
+                    ]);
 
-            //         $this->record->refresh();
+                    Notification::make()
+                        ->title('Certificate berhasil diterbitkan')
+                        ->body("Protokol \"{$this->record->perihal_pengajuan}\" telah berstatus Exempted.")
+                        ->success()
+                        ->send();
 
-            //         // Kirim notifikasi sukses
-            //         Notification::make()
-            //             ->title('Review berhasil disimpan & Notifikasi dikirim')
-            //             ->success()
-            //             ->send();
-            //     })
-            //     // Mengirim sinyal refresh setelah action selesai
-            //     ->after(function () {
-            //         $this->dispatch('refresh-reviews-table');
-            //     }),
+                    // Notifikasi ke peneliti
+                    Notification::make()
+                        ->title('🎉 Certificate Diterbitkan!')
+                        ->body('Selamat! Protokol Anda telah dinyatakan Exempted dan certificate telah diterbitkan.')
+                        ->success()
+                        ->sendToDatabase($this->record->User);
+
+                    $this->refreshFormData(['status_id']);
+                }),
         ];
-
     }
 }

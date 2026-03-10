@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Protocols\Schemas;
 
+use App\Models\Protocol;
+use App\Models\StatusReview;
+use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -15,240 +18,216 @@ class ProtocolForm
     {
         return $schema
             ->components([
-                Section::make('Information Protocol')
-                    // ->label('Informasi Protocol')
+
+                // ──────────────────────────────────────────────────
+                // SECTION 1: Informasi Dasar Protokol
+                // ──────────────────────────────────────────────────
+                Section::make('Informasi Protokol')
                     ->columns(2)
                     ->schema([
                         TextInput::make('perihal_pengajuan')
-                            ->label('Concerning')
-                            ->required(),
+                            ->label('Perihal Pengajuan')
+                            ->required()
+                            ->columnSpanFull(),
+
                         Select::make('jenis_protocol')
-                            ->label('Subject Protocol')
+                            ->label('Jenis Protokol')
                             ->options([
                                 'Manusia' => 'Manusia',
                                 'Hewan' => 'Hewan',
                             ])
                             ->searchable()
                             ->required(),
+
                         TextInput::make('contact_person')
+                            ->label('Contact Person')
                             ->tel()
                             ->minLength(10)
                             ->maxLength(15)
-                            ->label('Contact Person')
                             ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                             ->validationMessages([
-                                'telRegex' => 'The contact person must be a valid phone number.',
+                                'telRegex' => 'Contact person harus berupa nomor telepon yang valid.',
                             ])
                             ->nullable(),
+
                         DatePicker::make('tanggal_pengajuan')
-                            ->label('Submission Date')
+                            ->label('Tanggal Pengajuan')
                             ->native(false)
                             ->displayFormat('D d/m/Y')
                             ->closeOnDateSelection(true)
                             ->default(now())
                             ->readOnly(),
+
+                        // Status — hanya admin yang bisa ubah
                         Select::make('status_id')
                             ->label('Status')
-                            ->default('null')
-                            // ->required()
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
-                            ->live() // Make it reactive
-                            ->afterStateUpdated(function ($state, $set) {
-                                // Reset fields if status changes
-                                if ($state != 2) {
-                                    // Assuming 2 is Fast Review. Ideally fetch dynamically or use constant.
-                                    // But for now let's rely on blade or text check logic if possible,
-                                    // but in backend ID is safest if we know it.
-                                }
-                            })
-                            ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
+                            ->live()
+                            ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin'])),
+
+                        // Created By — display only
                         Select::make('user_id')
+                            ->label('Dibuat Oleh')
                             ->relationship('user', 'name')
-                            ->label('Created By')
-                            ->default(fn () => auth()->id()) // Default user yang login saat create
-                            ->disabled() // Supaya tidak bisa diubah manual (opsional)
-                            // KUNCI PERBAIKANNYA DISINI:
-                            // Hanya kirim data ke database saat proses 'create'.
-                            // Saat 'edit', field ini akan diabaikan oleh query update.
-                            ->dehydrated(fn ($operation) => $operation === 'create')
-                            ->formatStateUsing(function ($state, ?string $operation) {
-                                // Jika mode edit dan state kosong (jarang terjadi), kembalikan state asli
-                                // Jika mode create, default() di atas yang akan menangani
-                                return $record?->user_id ?? $state;
-                            })
-                            ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole(['admin', 'super_admin'])),
-                        // ->default(fn () => 1), // Set default status_id to 1 (e.g., 'PENDING')
+                            ->default(fn (): int => auth()->id())
+                            ->disabled()
+                            ->dehydrated(fn (string $operation): bool => $operation === 'create')
+                            ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin'])),
                     ]),
 
-                Section::make('Review Timeline')
-                    // ->label('Review Timeline')
+                // ──────────────────────────────────────────────────
+                // SECTION 2: Review Timeline & Assignment
+                // Hanya tampil untuk admin dan sekertaris
+                // ──────────────────────────────────────────────────
+                Section::make('Review Timeline & Assignment')
                     ->columns(2)
-                    ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin'))
+                    ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris']))
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
-                            ->label('Date Start Review')
+                            ->label('Tanggal Mulai Review')
                             ->native(false)
-                            ->displayFormat('Y/m/d')
-                            ->format('Y/m/d')
+                            ->displayFormat('d/m/Y')
+                            ->format('Y-m-d')
                             ->closeOnDateSelection(true)
-                            ->before('tgl_selesai_review')
-                            // ->required() // Conditional required handled below or strictly required
-                            ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
-                        DatePicker::make('tgl_selesai_review')
-                            ->label('Date End Review')
-                            ->native(false)
-                            ->displayFormat('Y/m/d')
-                            ->closeOnDateSelection(true)
-                            ->afterOrEqual('tgl_mulai_review')
-                            ->format('Y/m/d')
-                            // ->required()
-                            ->visible(fn () => auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('admin')),
+                            ->before('tgl_selesai_review'),
 
-                        // Regular Review Assignment
+                        DatePicker::make('tgl_selesai_review')
+                            ->label('Tanggal Selesai Review')
+                            ->native(false)
+                            ->displayFormat('d/m/Y')
+                            ->format('Y-m-d')
+                            ->closeOnDateSelection(true)
+                            ->afterOrEqual('tgl_mulai_review'),
+
+                        // Assign ke Kelompok Reviewer (Regular Review)
+                        // Disembunyikan saat status = Fast Review
                         Select::make('reviewer_kelompok_id')
-                            ->label('Assign to Reviewer Group')
+                            ->label('Assign ke Kelompok Reviewer')
                             ->relationship('assignedReviewerKelompok', 'nama_kelompok')
                             ->nullable()
-                            // Sembunyikan jika status adalah 'Fast Review'
-                            // Kita asumsikan kita cek Text dari selected relationship jika live?
-                            // Susah cek text relation di client side filamant tanpa query.
-                            // Kita gunakan query sederhana.
-                            ->visible(function ($get) {
-                                if (! auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])) {
-                                    return false;
-                                }
-
-                                // Cek status ID. Jika ID merujuk ke 'Fast Review', return false.
-                                // Kita ambil nama status dari ID
+                            ->searchable()
+                            ->preload()
+                            ->columnSpanFull()
+                            ->visible(function ($get): bool {
                                 $statusId = $get('status_id');
                                 if (! $statusId) {
                                     return true;
                                 }
-                                $status = \App\Models\StatusReview::find($statusId);
-                                if ($status && str_contains(strtolower($status->status_name), 'fast review')) {
-                                    return false;
-                                }
+                                $status = StatusReview::find($statusId);
 
-                                return true;
+                                return ! ($status && str_contains(strtolower($status->status_name), 'fast review'));
                             }),
-
-                        // FAST REVIEW: Select Ketua
-                        Select::make('fast_review_ketua_id')
-                            ->label('Assign Ketua (Fast Review)')
-                            // Removed 'ketua' role as it might not exist in Spatie roles table yet causing 500 error.
-                            // Assuming any 'reviewer' can be assigned as Ketua for fast review, OR just use 'reviewer'.
-                            ->options(\App\Models\User::role('reviewer')->pluck('name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->required(function ($get) {
-                                $statusId = $get('status_id');
-                                if (! $statusId) {
-                                    return false;
-                                }
-                                $status = \App\Models\StatusReview::find($statusId);
-
-                                return $status && str_contains(strtolower($status->status_name), 'fast review');
-                            })
-                            ->visible(function ($get) {
-                                if (! auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])) {
-                                    return false;
-                                }
-                                $statusId = $get('status_id');
-                                if (! $statusId) {
-                                    return false;
-                                }
-                                $status = \App\Models\StatusReview::find($statusId);
-
-                                return $status && str_contains(strtolower($status->status_name), 'fast review');
-                            })
-                            // Load existing data if editing
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Protocol $record) {
-                                if (! $record) {
-                                    return;
-                                }
-                                // Ambil ketua dari pivot
-                                $ketua = $record->reviewers()->wherePivot('role_in_review', 'Ketua')->first();
-                                if ($ketua) {
-                                    $component->state($ketua->id);
-                                }
-                            })
-                            ->dehydrated(false), // Jangan simpan ke kolom 'fast_review_ketua_id' di tabel protocols (karena tidak ada)
-
-                        // FAST REVIEW: Select Sekertaris
-                        Select::make('fast_review_secretary_id')
-                            ->label('Assign Sekertaris (Fast Review)')
-                            ->options(\App\Models\User::role('sekertaris')->pluck('name', 'id'))
-                            ->searchable()
-                            ->preload()
-                            ->required(function ($get) {
-                                $statusId = $get('status_id');
-                                if (! $statusId) {
-                                    return false;
-                                }
-                                $status = \App\Models\StatusReview::find($statusId);
-
-                                return $status && str_contains(strtolower($status->status_name), 'fast review');
-                            })
-                            ->visible(function ($get) {
-                                if (! auth()->user()->hasRole(['super_admin', 'admin', 'sekertaris'])) {
-                                    return false;
-                                }
-                                $statusId = $get('status_id');
-                                if (! $statusId) {
-                                    return false;
-                                }
-                                $status = \App\Models\StatusReview::find($statusId);
-
-                                return $status && str_contains(strtolower($status->status_name), 'fast review');
-                            })
-                            // Load existing data if editing
-                            ->afterStateHydrated(function (Select $component, ?\App\Models\Protocol $record) {
-                                if (! $record) {
-                                    return;
-                                }
-                                // Ambil sekertaris dari pivot
-                                $sekertaris = $record->reviewers()->wherePivot('role_in_review', 'Sekertaris')->first();
-                                if ($sekertaris) {
-                                    $component->state($sekertaris->id);
-                                }
-                            })
-                            ->dehydrated(false),  // Jangan simpan ke kolom ini di tabel protocols
                     ]),
 
-                Section::make('Supporting Files')
-                    // ->label('File Pendukung')
+                // ──────────────────────────────────────────────────
+                // SECTION 3: Fast Review Assignment
+                // Hanya tampil saat status = Fast Review (untuk admin/sekertaris)
+                // ──────────────────────────────────────────────────
+                Section::make('Fast Review — Pilih Reviewer')
+                    ->columns(2)
+                    ->description('Pilih 2 reviewer untuk Fast Review. Kombinasi: Ketua + Sekertaris, atau Sekertaris + Sekertaris.')
+                    ->visible(function ($get): bool {
+                        if (! auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])) {
+                            return false;
+                        }
+                        $statusId = $get('status_id');
+                        if (! $statusId) {
+                            return false;
+                        }
+                        $status = StatusReview::find($statusId);
+
+                        return $status && str_contains(strtolower($status->status_name), 'fast review');
+                    })
+                    ->schema([
+                        // Reviewer 1 — pilih dari role 'reviewer' (Ketua)
+                        Select::make('fast_review_ketua_id')
+                            ->label('Reviewer 1 (Ketua)')
+                            ->options(User::role('reviewer')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required(function ($get): bool {
+                                $statusId = $get('status_id');
+                                if (! $statusId) {
+                                    return false;
+                                }
+                                $status = StatusReview::find($statusId);
+
+                                return $status && str_contains(strtolower($status->status_name), 'fast review');
+                            })
+                            ->afterStateHydrated(function (Select $component, ?Protocol $record): void {
+                                if (! $record) {
+                                    return;
+                                }
+                                $ketua = $record->reviewers()->wherePivot('role_in_review', 'Ketua')->first();
+                                $component->state($ketua?->id);
+                            })
+                            ->dehydrated(false),
+
+                        // Reviewer 2 — pilih dari role 'sekertaris'
+                        Select::make('fast_review_secretary_id')
+                            ->label('Reviewer 2 (Sekertaris)')
+                            ->options(User::role('sekertaris')->pluck('name', 'id'))
+                            ->searchable()
+                            ->preload()
+                            ->required(function ($get): bool {
+                                $statusId = $get('status_id');
+                                if (! $statusId) {
+                                    return false;
+                                }
+                                $status = StatusReview::find($statusId);
+
+                                return $status && str_contains(strtolower($status->status_name), 'fast review');
+                            })
+                            ->afterStateHydrated(function (Select $component, ?Protocol $record): void {
+                                if (! $record) {
+                                    return;
+                                }
+                                $sekertaris = $record->reviewers()->wherePivot('role_in_review', 'Sekertaris')->first();
+                                $component->state($sekertaris?->id);
+                            })
+                            ->dehydrated(false),
+                    ]),
+
+                // ──────────────────────────────────────────────────
+                // SECTION 4: File Pendukung
+                // ──────────────────────────────────────────────────
+                Section::make('File Pendukung')
                     ->columns(1)
                     ->schema([
                         FileUpload::make('uploadpernyataan')
-                            ->label('Upload Statement')
-                            ->required()
-                            ->preserveFilenames()
+                            ->label('Upload Pernyataan')
                             ->disk('public')
                             ->directory('uploadpernyataan')
+                            ->preserveFilenames()
+                            ->required()
                             ->acceptedFileTypes([
-                                'application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                            ]) // Opsional: Batasi hanya PDF/Docx
-                            ->maxSize(2048) // <--- Batasan 3MB (3072 KB)
-                            ->helperText('Maximum file size: 3MB.')
-                            ->validationMessages([
-                                'acceptedFileTypes' => 'The file must be a type of: PDF, DOCX.',
-                                'max' => 'The file size must not exceed 2MB.',
-                            ]),
-                        FileUpload::make('buktipembayaran')
-                            ->label('Upload Proof of Payment')
-                            ->acceptedFileTypes([
-                                'application/jpg', 'application/jpeg', 'application/png',
-                            ])
-                            ->helperText('Accepted file types: JPG, JPEG, PNG. Maximum file size: 2MB.')
-                            ->validationMessages([
-                                'acceptedFileTypes' => 'The file must be a type of: JPG, JPEG, PNG.',
-                                'max' => 'The file size must not exceed 2MB.',
+                                'application/pdf',
+                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                             ])
                             ->maxSize(2048)
-                            ->required()
-                            ->preserveFilenames()
+                            ->helperText('Format: PDF / DOCX. Ukuran maksimal: 2MB.')
+                            ->validationMessages([
+                                'acceptedFileTypes' => 'File harus berformat PDF atau DOCX.',
+                                'max' => 'Ukuran file tidak boleh melebihi 2MB.',
+                            ]),
+
+                        FileUpload::make('buktipembayaran')
+                            ->label('Bukti Pembayaran')
                             ->disk('public')
-                            ->directory('buktipembayaran'),
+                            ->directory('buktipembayaran')
+                            ->preserveFilenames()
+                            ->required()
+                            ->acceptedFileTypes([
+                                'image/jpg',
+                                'image/jpeg',
+                                'image/png',
+                            ])
+                            ->maxSize(2048)
+                            ->helperText('Format: JPG / PNG. Ukuran maksimal: 2MB.')
+                            ->validationMessages([
+                                'acceptedFileTypes' => 'File harus berformat JPG atau PNG.',
+                                'max' => 'Ukuran file tidak boleh melebihi 2MB.',
+                            ]),
                     ]),
 
             ]);

@@ -6,6 +6,8 @@ use App\Observers\ProtocolObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kirschbaum\Commentions\Comment;
@@ -46,11 +48,31 @@ class Protocol extends Model implements Commentable
         return $this->belongsTo(ReviewerKelompok::class, 'reviewer_kelompok_id');
     }
 
-    public function reviewers()
+    public function reviewers(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'protocol_reviewers')
             ->withTimestamps()
-            ->withPivot('role_in_review');
+            ->withPivot(['role_in_review', 'feedback_status']);
+    }
+
+    /** Hanya reviews yang memiliki verdict (Fast Review) */
+    public function fastReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)->whereNotNull('verdict');
+    }
+
+    /** True jika semua reviewer yang di-assign sudah submit */
+    public function allReviewersSubmitted(): bool
+    {
+        return $this->reviewers()
+            ->wherePivot('feedback_status', 'pending')
+            ->doesntExist();
+    }
+
+    /** True jika siap cetak certificate */
+    public function isReadyForCertificate(): bool
+    {
+        return $this->fast_review_decision === 'Exempted';
     }
 
     public function comments(): MorphMany
