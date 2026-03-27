@@ -10,6 +10,7 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
@@ -120,6 +121,42 @@ class ViewProtocol extends ViewRecord
                         ->sendToDatabase($this->record->User);
 
                     $this->refreshFormData(['status_id']);
+                }),
+
+            // ──────────────────────────────────────────────────
+            // ACTION 3: Cetak Sertifikat (untuk pemilik protokol & admin)
+            // Muncul hanya saat status = Exempted
+            // User diminta input nama lengkap sebelum mencetak
+            // ──────────────────────────────────────────────────
+            Action::make('cetakCertificate')
+                ->label('Cetak Sertifikat')
+                ->icon(Heroicon::Printer)
+                ->color('info')
+                ->modalHeading('Cetak Sertifikat')
+                ->modalDescription('Masukkan nama lengkap Anda untuk memastikan nama tercetak dengan benar di sertifikat.')
+                ->visible(fn (): bool => str_contains(
+                    strtolower($this->record->statusReview?->status_name ?? ''),
+                    'exempted'
+                ) && (
+                    auth()->id() === $this->record->user_id
+                    || auth()->user()->hasRole(['admin', 'super_admin'])
+                ))
+                ->schema([
+                    TextInput::make('nama_lengkap')
+                        ->label('Nama Lengkap')
+                        ->placeholder('Masukkan nama lengkap sesuai dokumen resmi')
+                        ->default(fn () => auth()->user()->name)
+                        ->required()
+                        ->maxLength(255),
+                ])
+                ->action(function (array $data): void {
+                    $url = route('certificates.protocol', [
+                        'protocol' => $this->record->id,
+                        'nama' => $data['nama_lengkap'],
+                    ]);
+
+                    // Dispatch browser event — ditangkap Alpine.js listener di AdminPanelProvider
+                    $this->dispatch('open-url', url: $url);
                 }),
         ];
     }

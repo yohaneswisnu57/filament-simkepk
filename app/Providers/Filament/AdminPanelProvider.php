@@ -76,11 +76,17 @@ class AdminPanelProvider extends PanelProvider
 
     public function boot(): void
     {
-        //
         // Hook untuk menaruh komponen di Global Search (biasanya di tengah/kanan header)
         FilamentView::registerRenderHook(
             PanelsRenderHook::USER_MENU_BEFORE,
             fn (): string => Blade::render('@livewire(\'role-switcher\')')
+        );
+
+        // Hook untuk listener Alpine.js: membuka URL di tab baru
+        // Dipanggil oleh action cetakCertificate di ViewProtocol via $this->dispatch('open-url', url: ...)
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn (): string => '<div x-data x-on:open-url.window="window.open($event.detail.url, \'_blank\')"></div>'
         );
     }
 }
