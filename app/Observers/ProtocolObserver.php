@@ -44,7 +44,7 @@ class ProtocolObserver
         foreach ($admins as $admin) {
             // Pastikan admin punya email valid
             if ($admin->email) {
-                Mail::to($admin->email)->send(new ProtocolSubmittedMail($protocol));
+                Mail::to($admin->email)->queue(new ProtocolSubmittedMail($protocol));
             }
         }
         // }
@@ -94,7 +94,7 @@ class ProtocolObserver
             foreach ($reviewers as $reviewer) {
                 if ($reviewer->email) {
                     Mail::to($reviewer->email)
-                        ->send(new ReviewAssignmentMail($protocol));
+                        ->queue(new ReviewAssignmentMail($protocol));
                 }
             }
         }
@@ -103,14 +103,14 @@ class ProtocolObserver
         // SKENARIO: FAST REVIEW ASSIGNMENT
         // ==========================================
         if ($protocol->isDirty('status_id') && $protocol->reviewer_kelompok_id) {
-            
-            $status = $protocol->statusReview; 
-            
+
+            $status = $protocol->statusReview;
+
             // NON-AKTIFKAN LOGIC OTOMATIS untuk 'Fast Review' jika menggunakan input manual dari Form.
             // if ($status && str_contains(strtolower($status->status_name), 'fast review')) {
             //     $this->assignFastReviewers($protocol);
             // }
-            
+
             // TAPI: Jika update terjadi DI LUAR form edit (misal via API atau action button di list),
             // kita mungkin masih butuh fallback ini?
             // Untuk amannya, kita matikan dulu agar tidak menimpa pilihan manual admin.
