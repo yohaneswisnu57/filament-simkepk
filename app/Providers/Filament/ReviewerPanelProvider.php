@@ -33,8 +33,10 @@ class ReviewerPanelProvider extends PanelProvider
             ->registration()
             ->profile()
             ->databaseNotifications()
-            ->databaseNotificationsPolling('30s')
-            ->brandName('Reviewer SIMKEPK')
+            ->databaseNotificationsPolling('15s')
+            ->brandName('Reviewer')
+            ->globalSearch(false)
+
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -49,7 +51,7 @@ class ReviewerPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Reviewer/Widgets'), for: 'App\Filament\Reviewer\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

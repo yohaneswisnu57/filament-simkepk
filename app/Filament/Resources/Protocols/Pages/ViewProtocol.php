@@ -26,16 +26,14 @@ class ViewProtocol extends ViewRecord
                 ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])),
 
             // ──────────────────────────────────────────────────
-            // ACTION 1: Submit Verdict (untuk reviewer)
-            // Muncul hanya jika user adalah reviewer yang di-assign
-            // DAN belum submit (feedback_status = 'pending')
+            // ACTION 1: Submit Verdict (for reviewer)
             // ──────────────────────────────────────────────────
             Action::make('submitVerdict')
                 ->label('Submit Verdict')
                 ->icon(Heroicon::ClipboardDocumentCheck)
                 ->color('warning')
                 ->modalHeading('Submit Fast Review Verdict')
-                ->modalDescription('Berikan keputusan Anda untuk protokol ini. Keputusan tidak dapat diubah setelah disubmit.')
+                ->modalDescription('Provide your decision for this protocol. Decisions cannot be changed after submission.')
                 ->visible(function (): bool {
                     return $this->record->reviewers()
                         ->where('users.id', auth()->id())
@@ -44,16 +42,16 @@ class ViewProtocol extends ViewRecord
                 })
                 ->form([
                     Textarea::make('comment')
-                        ->label('Catatan / Komentar')
-                        ->placeholder('Tuliskan catatan telaah Anda...')
+                        ->label('Notes / Comments')
+                        ->placeholder('Write your review notes...')
                         ->required()
                         ->rows(5),
 
                     Select::make('verdict')
-                        ->label('Keputusan')
+                        ->label('Decision')
                         ->options([
-                            'Exempted' => '✅ Exempted (Lolos)',
-                            'Full Board' => '⚠️ Full Board (Perlu Telaah Lanjut)',
+                            'Exempted' => '✅ Exempted (Pass)',
+                            'Full Board' => '⚠️ Full Board (Further Review Needed)',
                         ])
                         ->required()
                         ->native(false),
@@ -61,7 +59,7 @@ class ViewProtocol extends ViewRecord
                 ->action(function (array $data): void {
                     $protocol = $this->record;
 
-                    // 1. Simpan review dengan verdict
+                    // 1. Save review with verdict
                     Review::create([
                         'protocol_id' => $protocol->id,
                         'user_id' => auth()->id(),
@@ -75,11 +73,11 @@ class ViewProtocol extends ViewRecord
                         'feedback_status' => 'submitted',
                     ]);
 
-                    // 3. Jalankan Decision Engine
+                    // 3. Run Decision Engine
                     app(FastReviewDecisionService::class)->evaluate($protocol->fresh());
 
                     Notification::make()
-                        ->title('Verdict berhasil disubmit')
+                        ->title('Verdict submitted successfully')
                         ->success()
                         ->send();
 
@@ -87,16 +85,15 @@ class ViewProtocol extends ViewRecord
                 }),
 
             // ──────────────────────────────────────────────────
-            // ACTION 2: Terbitkan Certificate (untuk admin)
-            // Muncul hanya saat fast_review_decision = 'Exempted'
+            // ACTION 2: Issue Certificate (for admin)
             // ──────────────────────────────────────────────────
             Action::make('terbitkanCertificate')
-                ->label('Terbitkan Certificate')
+                ->label('Issue Certificate')
                 ->icon(Heroicon::DocumentCheck)
                 ->color('success')
                 ->requiresConfirmation()
-                ->modalHeading('Terbitkan Certificate Exempted')
-                ->modalDescription('Semua reviewer telah menyetujui Exempted. Konfirmasi untuk menerbitkan certificate.')
+                ->modalHeading('Issue Exempted Certificate')
+                ->modalDescription('All reviewers have agreed on Exempted. Confirm to issue the certificate.')
                 ->visible(fn (): bool => $this->record->fast_review_decision === 'Exempted'
                     && auth()->user()->hasRole(['admin', 'super_admin'])
                 )
@@ -108,15 +105,15 @@ class ViewProtocol extends ViewRecord
                     ]);
 
                     Notification::make()
-                        ->title('Certificate berhasil diterbitkan')
-                        ->body("Protokol \"{$this->record->perihal_pengajuan}\" telah berstatus Exempted.")
+                        ->title('Certificate issued successfully')
+                        ->body("Protocol \"{$this->record->perihal_pengajuan}\" status updated to Exempted.")
                         ->success()
                         ->send();
 
-                    // Notifikasi ke peneliti
+                    // Notify researcher
                     Notification::make()
-                        ->title('🎉 Certificate Diterbitkan!')
-                        ->body('Selamat! Protokol Anda telah dinyatakan Exempted dan certificate telah diterbitkan.')
+                        ->title('🎉 Certificate Issued!')
+                        ->body('Congratulations! Your protocol has been declared Exempted and the certificate has been issued.')
                         ->success()
                         ->sendToDatabase($this->record->User);
 
@@ -124,16 +121,14 @@ class ViewProtocol extends ViewRecord
                 }),
 
             // ──────────────────────────────────────────────────
-            // ACTION 3: Cetak Sertifikat (untuk pemilik protokol & admin)
-            // Muncul hanya saat status = Exempted
-            // User diminta input nama lengkap sebelum mencetak
+            // ACTION 3: Print Certificate (for owner & admin)
             // ──────────────────────────────────────────────────
             Action::make('cetakCertificate')
-                ->label('Cetak Sertifikat')
+                ->label('Print Certificate')
                 ->icon(Heroicon::Printer)
                 ->color('info')
-                ->modalHeading('Cetak Sertifikat')
-                ->modalDescription('Masukkan nama lengkap Anda untuk memastikan nama tercetak dengan benar di sertifikat.')
+                ->modalHeading('Print Certificate')
+                ->modalDescription('Please enter your full name to ensure it is printed correctly on the certificate.')
                 ->visible(fn (): bool => str_contains(
                     strtolower($this->record->statusReview?->status_name ?? ''),
                     'exempted'
@@ -143,8 +138,8 @@ class ViewProtocol extends ViewRecord
                 ))
                 ->schema([
                     TextInput::make('nama_lengkap')
-                        ->label('Nama Lengkap')
-                        ->placeholder('Masukkan nama lengkap sesuai dokumen resmi')
+                        ->label('Full Name')
+                        ->placeholder('Enter full name as per official documents')
                         ->default(fn () => auth()->user()->name)
                         ->required()
                         ->maxLength(255),
@@ -155,7 +150,7 @@ class ViewProtocol extends ViewRecord
                         'nama' => $data['nama_lengkap'],
                     ]);
 
-                    // Dispatch browser event — ditangkap Alpine.js listener di AdminPanelProvider
+                    // Dispatch browser event
                     $this->dispatch('open-url', url: $url);
                 }),
         ];

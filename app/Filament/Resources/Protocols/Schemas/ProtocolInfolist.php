@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Protocols\Schemas;
 
 use App\Models\Protocol;
-use Filament\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Icon;
@@ -22,18 +21,18 @@ class ProtocolInfolist
             ->components([
 
                 // ──────────────────────────────────────────────────
-                // SECTION 1: Informasi Protokol
+                // SECTION 1: Protocol Information
                 // ──────────────────────────────────────────────────
-                Section::make('Informasi Protokol')
+                Section::make('Protocol Information')
                     ->icon(Heroicon::DocumentText)
                     ->columns(2)
                     ->schema([
                         TextEntry::make('perihal_pengajuan')
-                            ->label('Perihal Pengajuan')
+                            ->label('Research Title')
                             ->columnSpanFull(),
 
                         TextEntry::make('jenis_protocol')
-                            ->label('Jenis Protokol')
+                            ->label('Protocol Type')
                             ->placeholder('-'),
 
                         TextEntry::make('contact_person')
@@ -41,11 +40,11 @@ class ProtocolInfolist
                             ->placeholder('-'),
 
                         TextEntry::make('tanggal_pengajuan')
-                            ->label('Tanggal Pengajuan')
+                            ->label('Submission Date')
                             ->dateTime('D, d M Y'),
 
                         TextEntry::make('user.name')
-                            ->label('Diajukan Oleh'),
+                            ->label('Submitted By'),
 
                         TextEntry::make('StatusReview.status_name')
                             ->label('Status')
@@ -61,19 +60,19 @@ class ProtocolInfolist
                     ]),
 
                 // ──────────────────────────────────────────────────
-                // SECTION 2: Dokumen Pendukung
+                // SECTION 2: Supporting Documents
                 // ──────────────────────────────────────────────────
-                Section::make('Dokumen Pendukung')
+                Section::make('Supporting Documents')
                     ->icon(Heroicon::PaperClip)
                     ->columns(2)
                     ->schema([
                         TextEntry::make('uploadpernyataan')
-                            ->label('Surat Pernyataan')
+                            ->label('Statement Letter')
                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                             ->action(
-                                Action::make('downloadPernyataan')
-                                    ->label('Unduh File')
+                                \Filament\Actions\Action::make('downloadPernyataan')
+                                    ->label('Download File')
                                     ->icon(Heroicon::ArrowDownTray)
                                     ->color('info')
                                     ->action(fn (Protocol $record) => Storage::disk('public')->download($record->uploadpernyataan))
@@ -81,12 +80,12 @@ class ProtocolInfolist
                             ),
 
                         TextEntry::make('buktipembayaran')
-                            ->label('Bukti Pembayaran')
+                            ->label('Proof of Payment')
                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                             ->action(
-                                Action::make('downloadBukti')
-                                    ->label('Unduh File')
+                                \Filament\Actions\Action::make('downloadBukti')
+                                    ->label('Download File')
                                     ->icon(Heroicon::ArrowDownTray)
                                     ->color('info')
                                     ->action(fn (Protocol $record) => Storage::disk('public')->download($record->buktipembayaran))
@@ -95,30 +94,29 @@ class ProtocolInfolist
                     ]),
 
                 // ──────────────────────────────────────────────────
-                // SECTION 3: Timeline Review
+                // SECTION 3: Review Timeline
                 // ──────────────────────────────────────────────────
-                Section::make('Timeline Review')
+                Section::make('Review Timeline')
                     ->icon(Heroicon::CalendarDays)
                     ->columns(3)
                     ->schema([
                         TextEntry::make('tgl_mulai_review')
-                            ->label('Tanggal Mulai')
+                            ->label('Start Date')
                             ->date('D, d M Y')
                             ->placeholder('-'),
 
                         TextEntry::make('tgl_selesai_review')
-                            ->label('Tanggal Selesai')
+                            ->label('End Date')
                             ->date('D, d M Y')
                             ->placeholder('-'),
 
                         TextEntry::make('assignedReviewerKelompok.nama_kelompok')
-                            ->label('Kelompok Reviewer')
+                            ->label('Reviewer Group')
                             ->placeholder('-'),
                     ]),
 
                 // ──────────────────────────────────────────────────
                 // SECTION 4: Fast Review Status
-                // Hanya tampil saat status Fast Review (untuk admin/sekertaris)
                 // ──────────────────────────────────────────────────
                 Section::make('Fast Review Status')
                     ->icon(Heroicon::ClipboardDocumentList)
@@ -128,14 +126,14 @@ class ProtocolInfolist
                     )
                     ->schema([
                         RepeatableEntry::make('reviewers')
-                            ->label('Reviewer yang Ditugaskan')
+                            ->label('Assigned Reviewers')
                             ->columns(3)
                             ->schema([
                                 TextEntry::make('name')
-                                    ->label('Nama'),
+                                    ->label('Name'),
 
                                 TextEntry::make('pivot.role_in_review')
-                                    ->label('Peran')
+                                    ->label('Role')
                                     ->badge()
                                     ->color(fn (?string $state): string => match ($state) {
                                         'Ketua' => 'info',
@@ -144,11 +142,11 @@ class ProtocolInfolist
                                     }),
 
                                 TextEntry::make('pivot.feedback_status')
-                                    ->label('Status Submit')
+                                    ->label('Submission Status')
                                     ->badge()
                                     ->formatStateUsing(fn (?string $state): string => match ($state) {
-                                        'submitted' => '✓ Sudah Submit',
-                                        default => '● Menunggu',
+                                        'submitted' => '✓ Submitted',
+                                        default => '● Waiting',
                                     })
                                     ->color(fn (?string $state): string => match ($state) {
                                         'submitted' => 'success',
@@ -157,9 +155,9 @@ class ProtocolInfolist
                             ]),
 
                         TextEntry::make('fast_review_decision')
-                            ->label('Keputusan Akhir')
+                            ->label('Final Decision')
                             ->badge()
-                            ->placeholder('Menunggu semua reviewer submit...')
+                            ->placeholder('Waiting for all reviewers to submit...')
                             ->color(fn (?string $state): string => match ($state) {
                                 'Exempted' => 'success',
                                 'Full Board' => 'danger',
@@ -169,9 +167,9 @@ class ProtocolInfolist
                     ]),
 
                 // ──────────────────────────────────────────────────
-                // SECTION 5: Catatan & Komentar
+                // SECTION 5: Notes & Comments
                 // ──────────────────────────────────────────────────
-                Section::make('Catatan & Komentar')
+                Section::make('Notes & Comments')
                     ->icon(Heroicon::ChatBubbleLeftRight)
                     ->columnSpanFull()
                     ->schema([

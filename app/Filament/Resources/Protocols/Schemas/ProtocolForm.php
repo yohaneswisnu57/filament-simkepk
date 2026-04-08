@@ -20,21 +20,21 @@ class ProtocolForm
             ->components([
 
                 // ──────────────────────────────────────────────────
-                // SECTION 1: Informasi Dasar Protokol
+                // SECTION 1: Basic Protocol Information
                 // ──────────────────────────────────────────────────
-                Section::make('Informasi Protokol')
+                Section::make('Protocol Information')
                     ->columns(2)
                     ->schema([
                         TextInput::make('perihal_pengajuan')
-                            ->label('Perihal Pengajuan')
+                            ->label('Research Title')
                             ->required()
                             ->columnSpanFull(),
 
                         Select::make('jenis_protocol')
-                            ->label('Jenis Protokol')
+                            ->label('Protocol Type')
                             ->options([
-                                'Manusia' => 'Manusia',
-                                'Hewan' => 'Hewan',
+                                'Manusia' => 'Human',
+                                'Hewan' => 'Animal',
                             ])
                             ->searchable()
                             ->required(),
@@ -46,19 +46,19 @@ class ProtocolForm
                             ->maxLength(15)
                             ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                             ->validationMessages([
-                                'telRegex' => 'Contact person harus berupa nomor telepon yang valid.',
+                                'telRegex' => 'Contact person must be a valid phone number.',
                             ])
                             ->nullable(),
 
                         DatePicker::make('tanggal_pengajuan')
-                            ->label('Tanggal Pengajuan')
+                            ->label('Submission Date')
                             ->native(false)
                             ->displayFormat('D d/m/Y')
                             ->closeOnDateSelection(true)
                             ->default(now())
                             ->readOnly(),
 
-                        // Status — hanya admin yang bisa ubah
+                        // Status — only admin can change
                         Select::make('status_id')
                             ->label('Status')
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
@@ -67,7 +67,7 @@ class ProtocolForm
 
                         // Created By — display only
                         Select::make('user_id')
-                            ->label('Dibuat Oleh')
+                            ->label('Submitted By')
                             ->relationship('user', 'name')
                             ->default(fn (): int => auth()->id())
                             ->disabled()
@@ -77,14 +77,13 @@ class ProtocolForm
 
                 // ──────────────────────────────────────────────────
                 // SECTION 2: Review Timeline & Assignment
-                // Hanya tampil untuk admin dan sekertaris
                 // ──────────────────────────────────────────────────
                 Section::make('Review Timeline & Assignment')
                     ->columns(2)
                     ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris']))
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
-                            ->label('Tanggal Mulai Review')
+                            ->label('Start Date')
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->format('Y-m-d')
@@ -92,17 +91,16 @@ class ProtocolForm
                             ->before('tgl_selesai_review'),
 
                         DatePicker::make('tgl_selesai_review')
-                            ->label('Tanggal Selesai Review')
+                            ->label('End Date')
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->format('Y-m-d')
                             ->closeOnDateSelection(true)
                             ->afterOrEqual('tgl_mulai_review'),
 
-                        // Assign ke Kelompok Reviewer (Regular Review)
-                        // Disembunyikan saat status = Fast Review
+                        // Assign to Reviewer Group
                         Select::make('reviewer_kelompok_id')
-                            ->label('Assign ke Kelompok Reviewer')
+                            ->label('Assign to Reviewer Group')
                             ->relationship('assignedReviewerKelompok', 'nama_kelompok')
                             ->nullable()
                             ->searchable()
@@ -121,11 +119,10 @@ class ProtocolForm
 
                 // ──────────────────────────────────────────────────
                 // SECTION 3: Fast Review Assignment
-                // Hanya tampil saat status = Fast Review (untuk admin/sekertaris)
                 // ──────────────────────────────────────────────────
-                Section::make('Fast Review — Pilih Reviewer')
+                Section::make('Fast Review — Select Reviewer')
                     ->columns(2)
-                    ->description('Pilih 2 reviewer untuk Fast Review. Kombinasi: Ketua + Sekertaris, atau Sekertaris + Sekertaris.')
+                    ->description('Select 2 reviewers for Fast Review. Combination: Chairperson + Secretary, or Secretary + Secretary.')
                     ->visible(function ($get): bool {
                         if (! auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])) {
                             return false;
@@ -139,9 +136,9 @@ class ProtocolForm
                         return $status && str_contains(strtolower($status->status_name), 'fast review');
                     })
                     ->schema([
-                        // Reviewer 1 — pilih dari role 'reviewer' (Ketua)
+                        // Reviewer 1 (Chairperson)
                         Select::make('fast_review_ketua_id')
-                            ->label('Reviewer 1 (Ketua)')
+                            ->label('Reviewer 1 (Chairperson)')
                             ->options(User::role('reviewer')->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
@@ -163,9 +160,9 @@ class ProtocolForm
                             })
                             ->dehydrated(false),
 
-                        // Reviewer 2 — pilih dari role 'sekertaris'
+                        // Reviewer 2 (Secretary)
                         Select::make('fast_review_secretary_id')
-                            ->label('Reviewer 2 (Sekertaris)')
+                            ->label('Reviewer 2 (Secretary)')
                             ->options(User::role('sekertaris')->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
@@ -189,13 +186,13 @@ class ProtocolForm
                     ]),
 
                 // ──────────────────────────────────────────────────
-                // SECTION 4: File Pendukung
+                // SECTION 4: Supporting Documents
                 // ──────────────────────────────────────────────────
-                Section::make('File Pendukung')
+                Section::make('Supporting Documents')
                     ->columns(1)
                     ->schema([
                         FileUpload::make('uploadpernyataan')
-                            ->label('Upload Pernyataan')
+                            ->label('Statement Letter')
                             ->disk('public')
                             ->directory('uploadpernyataan')
                             ->preserveFilenames()
@@ -205,14 +202,14 @@ class ProtocolForm
                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                             ])
                             ->maxSize(2048)
-                            ->helperText('Format: PDF / DOCX. Ukuran maksimal: 2MB.')
+                            ->helperText('Format: PDF / DOCX. Maximum size: 2MB.')
                             ->validationMessages([
-                                'acceptedFileTypes' => 'File harus berformat PDF atau DOCX.',
-                                'max' => 'Ukuran file tidak boleh melebihi 2MB.',
+                                'acceptedFileTypes' => 'The file must be in PDF or DOCX format.',
+                                'max' => 'File size cannot exceed 2MB.',
                             ]),
 
                         FileUpload::make('buktipembayaran')
-                            ->label('Bukti Pembayaran')
+                            ->label('Proof of Payment')
                             ->disk('public')
                             ->directory('buktipembayaran')
                             ->preserveFilenames()
@@ -223,10 +220,10 @@ class ProtocolForm
                                 'image/png',
                             ])
                             ->maxSize(2048)
-                            ->helperText('Format: JPG / PNG. Ukuran maksimal: 2MB.')
+                            ->helperText('Format: JPG / PNG. Maximum size: 2MB.')
                             ->validationMessages([
-                                'acceptedFileTypes' => 'File harus berformat JPG atau PNG.',
-                                'max' => 'Ukuran file tidak boleh melebihi 2MB.',
+                                'acceptedFileTypes' => 'The file must be in JPG or PNG format.',
+                                'max' => 'File size cannot exceed 2MB.',
                             ]),
                     ]),
 

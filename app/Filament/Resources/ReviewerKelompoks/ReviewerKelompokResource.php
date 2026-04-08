@@ -14,10 +14,10 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Forms\Components\Select;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -37,7 +37,7 @@ class ReviewerKelompokResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'Kelompok Reviewer';
 
-    protected static string | UnitEnum | null $navigationGroup = 'Management Access';
+    protected static string|UnitEnum|null $navigationGroup = 'Management Access';
 
     protected static ?string $navigationLabel = 'Reviewer Groups';
 
@@ -48,13 +48,13 @@ class ReviewerKelompokResource extends Resource
                 TextInput::make('nama_kelompok')
                     ->required(),
                 Select::make('users')
-                    ->label('Anggota Reviewer')
+                    ->label('Reviewer Members')
                     ->searchable()
                     ->multiple()
                     ->relationship('anggota', 'name')
                     ->preload(),
                 Select::make('ketua_user_id')
-                    ->label('Ketua Reviewer')
+                    ->label('Reviewer Leader')
                     ->searchable()
                     ->relationship('ketua', 'name')
                     ->preload(),
@@ -80,10 +80,10 @@ class ReviewerKelompokResource extends Resource
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('ketua.name')
-                    ->label('Ketua Reviewer')
+                    ->label('Reviewer Leader')
                     ->placeholder('-'),
                 TextEntry::make('anggota.name')
-                    ->label('Anggota Reviewer')
+                    ->label('Reviewer Members')
                     ->placeholder('-')
                     ->listWithLineBreaks(),
             ]);

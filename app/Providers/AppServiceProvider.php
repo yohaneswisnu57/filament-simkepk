@@ -5,11 +5,10 @@ namespace App\Providers;
 // use App\Models\Protocol;
 // use App\Observers\ProtocolObserver;
 // use Filament\Auth\Http\Responses\LoginResponse;
-// use BezhanSalleh\PanelSwitch\PanelSwitch;
+use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
-use Filament\Auth\Http\Responses\LoginResponse;
-use Illuminate\Support\ServiceProvider;
 use App\Http\Responses\LoginResponse as CustomLoginResponse;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
 
         // Bind interface LoginResponse ke class custom buatan kita
         $this->app->singleton(
-            LoginResponseContract::class, // Interface Bawaan
-            LoginResponse::class
+            LoginResponseContract::class,
+            CustomLoginResponse::class
         );
     }
 
@@ -31,6 +30,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        PanelSwitch::configureUsing(function (PanelSwitch $panelSwitch) {
+            $panelSwitch->visible(fn () => false);
+        });
     }
 }

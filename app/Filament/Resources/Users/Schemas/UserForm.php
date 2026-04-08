@@ -17,7 +17,7 @@ class UserForm
                 Section::make()
                     ->schema([
                         TextInput::make('name')
-                            ->label('Nama')
+                            ->label('Name')
                             ->required(),
                         TextInput::make('email')
                             ->label('Email address')
@@ -28,7 +28,7 @@ class UserForm
                             ->password()
                             ->revealable()
                             ->helperText(fn (string $operation): string => $operation === 'edit'
-                                ? 'Kosongkan jika tidak ingin mengubah password.'
+                                ? 'Leave empty if you do not want to change the password.'
                                 : ''
                             )
                             // Hash password hanya jika field diisi

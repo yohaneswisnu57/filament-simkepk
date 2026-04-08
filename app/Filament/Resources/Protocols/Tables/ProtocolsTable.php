@@ -19,19 +19,19 @@ class ProtocolsTable
         return $table
             ->columns([
                 TextColumn::make('perihal_pengajuan')
-                    ->label('Perihal Pengajuan')
+                    ->label('Research Title')
                     ->searchable()
                     ->wrap()
                     ->limit(60),
 
                 TextColumn::make('user.name')
-                    ->label('Peneliti')
+                    ->label('Researcher')
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('jenis_protocol')
-                    ->label('Jenis')
+                    ->label('Type')
                     ->badge()
                     ->color(fn (?string $state): string => match ($state) {
                         'Manusia' => 'info',
@@ -40,7 +40,7 @@ class ProtocolsTable
                     }),
 
                 TextColumn::make('tanggal_pengajuan')
-                    ->label('Tgl Pengajuan')
+                    ->label('Submission Date')
                     ->date('d M Y')
                     ->sortable(),
 
@@ -57,7 +57,7 @@ class ProtocolsTable
                     ->sortable(),
 
                 TextColumn::make('fast_review_decision')
-                    ->label('Fast Review')
+                    ->label('Decision')
                     ->badge()
                     ->placeholder('-')
                     ->color(fn (?string $state): string => match ($state) {
@@ -69,35 +69,36 @@ class ProtocolsTable
                     ->toggleable(isToggledHiddenByDefault: false),
 
                 TextColumn::make('tgl_mulai_review')
-                    ->label('Mulai Review')
+                    ->label('Start Review')
                     ->date('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('tgl_selesai_review')
-                    ->label('Selesai Review')
+                    ->label('End Review')
                     ->date('d M Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Dibuat')
+                    ->label('Created At')
                     ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Filter::make('tanggal_pengajuan')
-                    ->label('Filter Tanggal Pengajuan')
+                    ->label('Filter by Submission Date')
                     ->form([
                         DatePicker::make('tanggal_pengajuan')
-                            ->label('Tanggal Pengajuan')
+                            ->label('Submission Date')
                             ->native(false),
                     ])
                     ->query(fn ($query, $data) => $query->when(
                         $data['tanggal_pengajuan'],
                         fn ($q, $date) => $q->whereDate('tanggal_pengajuan', $date)
                     )),
+
             ])
             ->recordActions([
                 ViewAction::make(),

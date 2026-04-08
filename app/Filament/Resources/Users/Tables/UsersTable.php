@@ -25,7 +25,7 @@ class UsersTable
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
                     ->searchable(),
                 TextColumn::make('reviewerKelompok.name')
-                    ->label('Reviewer Kelompok')
+                    ->label('Reviewer Group')
                     ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
