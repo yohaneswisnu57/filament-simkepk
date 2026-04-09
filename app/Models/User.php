@@ -66,6 +66,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
     public function assignedProtocols()
     {
         return $this->belongsToMany(Protocol::class, 'protocol_reviewers')
+            ->withPivot(['role_in_review', 'feedback_status'])
             ->withTimestamps();
     }
 

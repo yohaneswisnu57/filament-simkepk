@@ -122,7 +122,7 @@ class ProtocolInfolist
                     ->icon(Heroicon::ClipboardDocumentList)
                     ->columns(1)
                     ->visible(fn (Protocol $record): bool => str_contains(strtolower($record->statusReview?->status_name ?? ''), 'fast review')
-                        && auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])
+                        && auth()->user()->hasRole(['admin', 'super_admin'])
                     )
                     ->schema([
                         RepeatableEntry::make('reviewers')

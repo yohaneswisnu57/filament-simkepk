@@ -3,18 +3,19 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Protocol;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Auth;
 
-class IncomingProtocolsWidget extends BaseWidget
+class AdminUnassignedProtocolsWidget extends BaseWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 3;
 
-    protected static ?string $heading = 'All Incoming Protocols';
+    protected static ?string $heading = 'Protocols Needing Assignment';
 
     public static function canView(): bool
     {
@@ -25,7 +26,10 @@ class IncomingProtocolsWidget extends BaseWidget
     {
         return $table
             ->query(
-                Protocol::query()->latest('created_at')
+                Protocol::query()
+                    ->whereNull('reviewer_kelompok_id')
+                    ->where('status_id', 7) // Submission
+                    ->latest('created_at')
             )
             ->columns([
                 TextColumn::make('perihal_pengajuan')
@@ -53,24 +57,16 @@ class IncomingProtocolsWidget extends BaseWidget
                     ->date('d M Y')
                     ->sortable(),
 
-                TextColumn::make('reviewers.name')
-                    ->label('Assigned Reviewers')
-                    ->badge()
-                    ->default('None assigned')
-                    ->color(fn ($state, Protocol $record): string => $record->reviewers->isEmpty() ? 'warning' : 'success')
-                    ->searchable(),
-
                 TextColumn::make('statusReview.status_name')
-                    ->label('Status')
+                    ->label('Current Status')
                     ->badge()
-                    ->color(fn (?string $state): string => match (strtoupper($state ?? '')) {
-                        'FULL BOARD' => 'danger',
-                        'EXEMPTED' => 'success',
-                        'EXPEDITED' => 'info',
-                        'FAST REVIEW' => 'warning',
-                        default => 'gray',
-                    })
-                    ->sortable(),
+                    ->color('danger'),
+            ])
+            ->actions([
+                EditAction::make()
+                    ->label('Assign Reviewers')
+                    ->icon('heroicon-m-user-plus')
+                    ->url(fn (Protocol $record): string => \App\Filament\Resources\Protocols\ProtocolResource::getUrl('edit', ['record' => $record])),
             ]);
     }
 }

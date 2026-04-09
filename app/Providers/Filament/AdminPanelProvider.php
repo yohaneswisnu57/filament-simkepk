@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Protocols\Widgets\StatsOverview;
+use App\Filament\Widgets\AdminMonthlyProtocolChart;
+use App\Filament\Widgets\AdminUnassignedProtocolsWidget;
+use App\Filament\Widgets\IncomingProtocolsWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -50,9 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
                 StatsOverview::class,
-                // FilamentInfoWidget::class,
+                AdminMonthlyProtocolChart::class,
+                AdminUnassignedProtocolsWidget::class,
+                IncomingProtocolsWidget::class,
             ])
             ->globalSearch(false)
             ->middleware([

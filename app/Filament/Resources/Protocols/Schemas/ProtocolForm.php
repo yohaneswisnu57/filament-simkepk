@@ -80,7 +80,7 @@ class ProtocolForm
                 // ──────────────────────────────────────────────────
                 Section::make('Review Timeline & Assignment')
                     ->columns(2)
-                    ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris']))
+                    ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin']))
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
                             ->label('Start Date')
@@ -124,7 +124,7 @@ class ProtocolForm
                     ->columns(2)
                     ->description('Select 2 reviewers for Fast Review. Combination: Chairperson + Secretary, or Secretary + Secretary.')
                     ->visible(function ($get): bool {
-                        if (! auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris'])) {
+                        if (! auth()->user()->hasRole(['admin', 'super_admin'])) {
                             return false;
                         }
                         $statusId = $get('status_id');

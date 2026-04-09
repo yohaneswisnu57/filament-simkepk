@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Filament\Widgets\ReviewerAssignedProtocolsWidget;
+use App\Filament\Widgets\ReviewerProtocolStats;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -50,7 +52,9 @@ class ReviewerPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Reviewer/Widgets'), for: 'App\Filament\Reviewer\Widgets')
             ->widgets([
-                AccountWidget::class,
+                // AccountWidget::class,
+                ReviewerProtocolStats::class,
+                ReviewerAssignedProtocolsWidget::class,
                 // FilamentInfoWidget::class,
             ])
             ->middleware([

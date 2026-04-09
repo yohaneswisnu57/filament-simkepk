@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminMonthlyProtocolChart extends ChartWidget
 {
-    // protected static ?string $heading = 'Statistik Protokol Masuk (Per Bulan)';
+    protected ?string $heading = 'Protocol Submission Trends (Per Month)';
+
     protected static ?int $sort = 2;
 
     public static function canView(): bool
@@ -27,13 +28,16 @@ class AdminMonthlyProtocolChart extends ChartWidget
             )
             ->perMonth()
             ->count();
+
         return [
             'datasets' => [
                 [
-                    'label' => 'Jumlah Protokol',
+                    'label' => 'Protocols Submitted',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
-                    'backgroundColor' => '#3b82f6', // Biru
-                    'borderColor' => '#3b82f6',
+                    'backgroundColor' => '#10b981', // Emerald Green
+                    'borderColor' => '#10b981',
+                    'fill' => 'start',
+                    'tension' => 0.4,
                 ],
             ],
             'labels' => $data->map(fn (TrendValue $value) => $value->date),

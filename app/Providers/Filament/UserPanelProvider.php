@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Filament\Widgets\UserProtocolStatusStats;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -36,7 +37,8 @@ class UserPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Light)
-            ->brandName('Peneliti SIMKEPK')
+            ->brandName('Peneliti')
+            ->globalSearch(false)
             ->colors([
                 'primary' => Color::Lime,
             ])
@@ -50,7 +52,8 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\Filament\User\Widgets')
             ->widgets([
-                AccountWidget::class,
+                // AccountWidget::class,
+                UserProtocolStatusStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,

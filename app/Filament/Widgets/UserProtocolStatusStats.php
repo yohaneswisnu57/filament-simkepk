@@ -9,13 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class UserProtocolStatusStats extends StatsOverviewWidget
 {
-    // Atur urutan tampilan (opsional)
     protected static ?int $sort = 1;
 
-    // 👇 LOGIC PENTING: Hanya tampil jika user adalah Peneliti/User biasa
     public static function canView(): bool
     {
-        // Sesuaikan dengan nama role Anda ('user' atau 'peneliti')
+        // Visible to roles: user, peneliti
         return Auth::user()->hasRole(['user', 'peneliti']);
     }
 
@@ -23,35 +21,54 @@ class UserProtocolStatusStats extends StatsOverviewWidget
     {
         $userId = Auth::id();
 
-        // Asumsi: status_id 0=Draft, 1=Diajukan, 2=Revisi, 3=Approved
-        // Sesuaikan query ini dengan logic Enum atau ID status di database Anda
+        // 1. Total Protocols
+        $total = Protocol::where('user_id', $userId)->count();
 
-        $draft = Protocol::where('user_id', $userId)->where('status_id', 0)->count();
-        $onProses = Protocol::where('user_id', $userId)->where('status_id', 1)->count();
-        $exempted = Protocol::where('user_id', $userId)->where('status_id', 2)->count();
+        // 2. Phase 1: Submission / Draft
+        $submission = Protocol::where('user_id', $userId)->where('status_id', 7)->count();
+
+        // 3. Phase 2: Review Stages
+        $onReview = Protocol::where('user_id', $userId)->where('status_id', 4)->count();
+        $fullBoard = Protocol::where('user_id', $userId)->where('status_id', 2)->count();
         $expedited = Protocol::where('user_id', $userId)->where('status_id', 3)->count();
-        $fullboard = Protocol::where('user_id', $userId)->where('status_id', 3)->count();
+
+        // 4. Phase 3: Final / Certificate
+        $exempted = Protocol::where('user_id', $userId)->where('status_id', 1)->count();
 
         return [
-            Stat::make('New Submission', $draft)
-                // ->description('New Protocol')
-                ->color('blue'),
+            Stat::make('Total Applications', $total)
+                ->description('Overall submitted protocols')
+                ->descriptionIcon('heroicon-m-document-text')
+                ->color('gray'),
 
-            Stat::make('On Proses', $onProses)
-                // ->description('Menunggu review')
+            Stat::make('New Submission', $submission)
+                ->description('Awaiting review')
+                ->descriptionIcon('heroicon-m-arrow-path')
+                ->color('info'),
+
+            Stat::make('On Review', $onReview)
+                ->description('Currently being reviewed')
+                ->descriptionIcon('heroicon-m-magnifying-glass')
                 ->color('warning'),
 
-            Stat::make('EXEMPTED', $exempted)
-                // ->description('PASSED PRINT CERTIFICATE')
+            Stat::make('Full Board / Expedited', $fullBoard + $expedited)
+                ->description('Advanced review needed')
+                ->descriptionIcon('heroicon-m-clipboard-document-list')
+                ->color('danger'),
+
+            Stat::make('Exempted', $exempted)
+                ->description('Protocol passed review')
+                ->descriptionIcon('heroicon-m-check-badge')
                 ->color('success'),
 
-            Stat::make('EXPEDITED', $expedited)
-                // ->description('USER REVISION')
-                ->color('success'),
-
-            Stat::make('FULLBOARD', $fullboard)
-                // ->description('Sertifikat terbit')
-                ->color('success'),
+            Stat::make('Ready to Print', $exempted)
+                ->description('Certificates available')
+                ->descriptionIcon('heroicon-m-printer')
+                ->color('success')
+                ->extraAttributes([
+                    'class' => 'cursor-pointer',
+                    'onclick' => "window.location.href='/user/protocols'",
+                ]),
         ];
     }
 }

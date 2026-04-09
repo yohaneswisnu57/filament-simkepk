@@ -2,78 +2,59 @@
 
 namespace App\Filament\Resources\Protocols\Widgets;
 
+use App\Models\Protocol;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Illuminate\Support\Carbon;
-use App\Models\Protocol;
 use Illuminate\Support\Facades\Auth;
 
 class StatsOverview extends StatsOverviewWidget
 {
-    // Properti kolom span dan urutan (opsional)
-    protected int | string | array $columnSpan = 'full';
-    protected static ?int $sort = 0;
+    protected static ?int $sort = 1;
+
+    public static function canView(): bool
+    {
+        return Auth::user()->hasRole(['admin', 'super_admin', 'sekertaris']);
+    }
 
     protected function getStats(): array
     {
-        // --- 1. Perhitungan Data Protokol ---
+        // 1. Pending Assignment (New Submission + No Reviewer Group)
+        $pendingAssignment = Protocol::where('status_id', 7)
+            ->whereNull('reviewer_kelompok_id')
+            ->count();
 
-        // Periode Saat Ini (Protokol Bulan Ini)
-        $currentMonthStart = Carbon::now()->startOfMonth();
-        $protocolCountCurrent = Protocol::where('created_at', '>=', $currentMonthStart)->count();
+        // 2. Active Reviews (Protocols in review stages)
+        // IDs: 2 (Full Board), 3 (Expedited), 4 (On Review), 6 (Fast Review)
+        $activeReviews = Protocol::whereIn('status_id', [2, 3, 4, 6])->count();
 
-        // Periode Sebelumnya (Protokol Bulan Lalu)
-        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth();
-        $lastMonthEnd = Carbon::now()->startOfMonth();
+        // 3. Ready for Certificate (Exempted by Reviewers, but Certificate not yet issued by Admin)
+        $readyForCertificate = Protocol::where('fast_review_decision', 'Exempted')
+            ->where('status_id', '!=', 1)
+            ->count();
 
-        $protocolCountPrevious = Protocol::where('created_at', '>=', $lastMonthStart)
-                                       ->where('created_at', '<', $lastMonthEnd)
-                                       ->count();
-
-        // --- 2. Perhitungan Delta (Perubahan Persentase) ---
-
-        if ($protocolCountPrevious > 0) {
-            $delta = $protocolCountCurrent - $protocolCountPrevious;
-            $percentageChange = round(($delta / $protocolCountPrevious) * 100, 2);
-
-            // Konfigurasi tampilan
-            $descriptionText = abs($percentageChange) . '% ' . ($delta >= 0 ? 'increase' : 'decrease') . ' from last month';
-            $color = $delta >= 0 ? 'success' : 'danger'; // Hijau untuk naik, Merah untuk turun
-            $icon = $delta >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
-
-        } else {
-            // Default jika bulan lalu tidak ada data
-            $descriptionText = 'New data available (No comparison)';
-            $color = 'info';
-            $icon = 'heroicon-o-information-circle';
-        }
-
-        // --- 3. Siapkan Data Tren (Chart) 7 Hari Terakhir ---
-
-        $protocolTrendData = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i)->startOfDay();
-            $count = Protocol::whereDate('created_at', $date)->count();
-            $protocolTrendData[] = $count;
-        }
-
-        // --- 4. Stat Card Protokol ---
+        // 4. Total Exempted (Historical success)
+        $totalExempted = Protocol::where('status_id', 1)->count();
 
         return [
-            Stat::make('Total Protocols', $protocolCountCurrent)
-                ->chart($protocolTrendData)
-                ->description($descriptionText)
-                ->descriptionIcon($icon)
-                ->color($color),
+            Stat::make('Pending Assignment', $pendingAssignment)
+                ->description('New protocols needing reviewers')
+                ->descriptionIcon('heroicon-m-user-plus')
+                ->color('danger'),
 
-            // Anda bisa menambahkan Stat lain di sini jika diperlukan
-            // Stat::make('Total Users', \App\Models\User::count()),
+            Stat::make('Active Reviews', $activeReviews)
+                ->description('Protocols currently being processed')
+                ->descriptionIcon('heroicon-m-arrow-path')
+                ->color('warning'),
+
+            Stat::make('Ready for Certificate', $readyForCertificate)
+                ->description('Awaiting Admin issuance')
+                ->descriptionIcon('heroicon-m-document-check')
+                ->color('info'),
+
+            Stat::make('Total Exempted', $totalExempted)
+                ->description('Overall successful studies')
+                ->descriptionIcon('heroicon-m-check-badge')
+                ->color('success'),
         ];
-    }
-
-    public static function canView():bool
-    {
-        $user = auth()->user();
-        return $user?->hasRole('admin') || $user?->hasRole('super_admin');
     }
 }

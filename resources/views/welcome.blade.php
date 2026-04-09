@@ -36,6 +36,11 @@
                             50: '#f0fdfa',
                             100: '#ccfbf1',
                             600: '#0d9488', // Teal
+                        },
+                        reviewer: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            600: '#d97706', // Amber/Orange
                         }
                     }
                 }
@@ -85,8 +90,11 @@
                 </a>
 
 
-                <a href="http://simkepk.ukwms.ac.id/user" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
+                <a href="{{ url('/user') }}" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
                     Login Peneliti
+                </a>
+                <a href="{{ url('/reviewer') }}" class="mt-2 text-center text-white bg-reviewer-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-reviewer-500/30">
+                    Login Reviewer
                 </a>
             </nav>
         </div>
@@ -106,10 +114,13 @@
                     </div>
                 </div>
 
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors">Alur Pengajuan</a>
-                    <a href="http://simkepk.ukwms.ac.id/user" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors">
+                <div class="hidden md:flex items-center gap-4">
+                    <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Alur Pengajuan</a>
+                    <a href="{{ url('/user') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors border border-primary-200">
                         Login Peneliti
+                    </a>
+                    <a href="{{ url('/reviewer') }}" class="text-sm font-semibold text-reviewer-600 hover:text-reviewer-700 px-4 py-2 rounded-full hover:bg-reviewer-50 transition-colors border border-reviewer-200">
+                        Login Reviewer
                     </a>
                 </div>
 

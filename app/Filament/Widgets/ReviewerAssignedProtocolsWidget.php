@@ -3,29 +3,36 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Protocol;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Support\Facades\Auth;
 
-class IncomingProtocolsWidget extends BaseWidget
+class ReviewerAssignedProtocolsWidget extends BaseWidget
 {
     protected int|string|array $columnSpan = 'full';
 
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
 
-    protected static ?string $heading = 'All Incoming Protocols';
+    protected static ?string $heading = 'New Protocols Assigned';
 
     public static function canView(): bool
     {
-        return Auth::user()->hasRole(['admin', 'super_admin', 'sekertaris']);
+        // Only visible to reviewers
+        return Auth::user()->hasRole('reviewer');
     }
 
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                Protocol::query()->latest('created_at')
+                Protocol::query()
+                    ->whereHas('reviewers', function ($query) {
+                        $query->where('users.id', Auth::id())
+                              ->where('feedback_status', 'pending');
+                    })
+                    ->latest('created_at')
             )
             ->columns([
                 TextColumn::make('perihal_pengajuan')
@@ -53,13 +60,6 @@ class IncomingProtocolsWidget extends BaseWidget
                     ->date('d M Y')
                     ->sortable(),
 
-                TextColumn::make('reviewers.name')
-                    ->label('Assigned Reviewers')
-                    ->badge()
-                    ->default('None assigned')
-                    ->color(fn ($state, Protocol $record): string => $record->reviewers->isEmpty() ? 'warning' : 'success')
-                    ->searchable(),
-
                 TextColumn::make('statusReview.status_name')
                     ->label('Status')
                     ->badge()
@@ -71,6 +71,10 @@ class IncomingProtocolsWidget extends BaseWidget
                         default => 'gray',
                     })
                     ->sortable(),
+            ])
+            ->actions([
+                ViewAction::make()
+                    ->url(fn (Protocol $record): string => \App\Filament\Resources\Protocols\ProtocolResource::getUrl('view', ['record' => $record])),
             ]);
     }
 }
