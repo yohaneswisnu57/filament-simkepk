@@ -70,11 +70,7 @@ class ViewProtocol extends ViewRecord
                     ]);
 
                     // Tambahkan juga ke relasi "comments" agar muncul di kolom Notes & Comments
-                    $protocol->comments()->create([
-                        'author_type' => get_class(auth()->user()),
-                        'author_id' => auth()->id(),
-                        'body' => "**Verdict: {$data['verdict']}**\n\n{$data['comment']}",
-                    ]);
+                    $protocol->comment("**Verdict: {$data['verdict']}**\n\n{$data['comment']}", auth()->user());
 
                     // 2. Update pivot feedback_status → 'submitted'
                     $protocol->reviewers()->updateExistingPivot(auth()->id(), [

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -16,7 +17,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter
 {
-    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable;
+    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +28,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         'name',
         'email',
         'password',
+        'is_active',
     ];
 
     /**
@@ -105,6 +107,10 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
 
     public function canAccessPanel(Panel $panel): bool
     {
+        if (! $this->is_active) {
+            return false;
+        }
+
         if ($panel->getId() === 'admin') {
             return $this->hasRole(['admin', 'sekertaris']);
         }

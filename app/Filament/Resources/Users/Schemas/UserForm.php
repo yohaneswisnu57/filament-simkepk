@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,11 @@ class UserForm
                             ->label('Email address')
                             ->email()
                             ->required(),
+                        Toggle::make('is_active')
+                            ->label('Active User')
+                            ->onColor('success')
+                            ->offColor('danger')
+                            ->default(true),
                         TextInput::make('password')
                             ->label('Password')
                             ->password()
