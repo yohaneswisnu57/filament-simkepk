@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\UserProtocolStatusStats;
@@ -34,6 +35,9 @@ class UserPanelProvider extends PanelProvider
             ->login()
             ->registration(Register::class)
             ->profile()
+            ->multiFactorAuthentication([
+                EmailAuthentication::make(),
+            ], isRequired: true)
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Light)

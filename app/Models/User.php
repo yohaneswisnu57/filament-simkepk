@@ -12,12 +12,25 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
-class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter
+class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter, HasEmailAuthentication
 {
     use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable, SoftDeletes;
+
+    public function hasEmailAuthentication(): bool
+    {
+        return (bool) $this->has_email_authentication;
+    }
+
+    public function toggleEmailAuthentication(bool $condition): void
+    {
+        $this->forceFill([
+            'has_email_authentication' => $condition,
+        ])->save();
+    }
 
     /**
      * The attributes that are mass assignable.

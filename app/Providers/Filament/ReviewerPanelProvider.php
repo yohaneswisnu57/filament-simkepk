@@ -32,7 +32,6 @@ class ReviewerPanelProvider extends PanelProvider
             ->path('reviewer')
             ->spa()
             ->login()
-            ->registration()
             ->profile()
             ->databaseNotifications()
             ->databaseNotificationsPolling('15s')

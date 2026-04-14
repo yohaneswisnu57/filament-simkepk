@@ -22,7 +22,7 @@ class Register extends BaseRegister
             TextInput::make('email')
                 ->email()
                 ->required()
-                ->unique(),
+                ->unique('users', 'email'),
             TextInput::make('institusi')
                 ->label('Institution')
                 ->required()

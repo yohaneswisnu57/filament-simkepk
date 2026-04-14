@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use App\Filament\Resources\Protocols\Widgets\StatsOverview;
 use App\Filament\Widgets\AdminMonthlyProtocolChart;
 use App\Filament\Widgets\AdminUnassignedProtocolsWidget;
@@ -39,6 +40,9 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->emailVerification()
             ->profile()
+            ->multiFactorAuthentication([
+                EmailAuthentication::make(),
+            ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Light)
