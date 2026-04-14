@@ -18,7 +18,7 @@ class IncomingProtocolsWidget extends BaseWidget
 
     public static function canView(): bool
     {
-        return Auth::user()->hasRole(['admin', 'super_admin', 'sekertaris']);
+        return Auth::user()->hasRole(['admin', 'super_admin']);
     }
 
     public function table(Table $table): Table
