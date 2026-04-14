@@ -46,7 +46,7 @@ class ListProtocols extends ListRecords
 
         if (! $isAdmin) {
             $tabs = [
-                'all' => Tab::make('Semua')
+                'all' => Tab::make('All')
                     ->badge(Protocol::query()->where($userScope)->count()),
 
                 'fastReview' => Tab::make('Fast Review')
@@ -70,7 +70,7 @@ class ListProtocols extends ListRecords
         }
 
         return [
-            'all' => Tab::make('Semua')
+            'all' => Tab::make('All')
                 ->badge(Protocol::count()),
 
             'fastReview' => Tab::make('Fast Review')

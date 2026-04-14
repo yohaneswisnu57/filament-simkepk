@@ -54,6 +54,7 @@ class ReviewsRelationManager extends RelationManager
                     ->placeholder('-')
                     ->color(fn (?string $state): string => match ($state) {
                         'Exempted' => 'success',
+                        'Expedited' => 'warning',
                         'Full Board' => 'danger',
                         default => 'gray',
                     }),

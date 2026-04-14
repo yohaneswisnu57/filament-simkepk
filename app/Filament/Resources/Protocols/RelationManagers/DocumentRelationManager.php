@@ -10,15 +10,14 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Form;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Auth;
 
 class DocumentRelationManager extends RelationManager
 {
@@ -98,7 +97,8 @@ class DocumentRelationManager extends RelationManager
     /* relasi manager untuk document */
 
     protected static string $relationship = 'document';
-    protected static ?string $title = 'Document Supplementary';
+
+    protected static ?string $title = 'Document Revision';
 
     public function form(Schema $schema): Schema
     {
@@ -131,10 +131,11 @@ class DocumentRelationManager extends RelationManager
                 // Ambil id protocol dari parent Relation Manager
                 Hidden::make('protocol_id')
                     ->default(fn (RelationManager $livewire) => $livewire->ownerRecord->id),
-        ]);
+            ]);
     }
 
-    public static function getBadge(Model $ownerRecord, string $pageClass): string{
+    public static function getBadge(Model $ownerRecord, string $pageClass): string
+    {
         return $ownerRecord->document()->count();
     }
 
@@ -166,6 +167,7 @@ class DocumentRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         // Pastikan user_id dan protocol_id tetap terisi
                         $data['user_id'] = $data['user_id'] ?? Auth::id();
+
                         return $data;
                     })
                     ->successNotificationTitle('Success add document'),

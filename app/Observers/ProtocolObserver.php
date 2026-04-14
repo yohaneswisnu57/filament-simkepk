@@ -26,12 +26,12 @@ class ProtocolObserver
         $admins = User::role(['admin', 'super_admin'])->get()->unique('id');
 
         Notification::make()
-            ->title('Pengajuan Protokol Baru')
-            ->body("Peneliti {$protocol->User->name} mengajukan protokol baru: \"{$protocol->perihal_pengajuan}\"")
+            ->title('New Protocol Submission')
+            ->body("Researcher {$protocol->User->name} has submitted a new protocol: \"{$protocol->perihal_pengajuan}\"")
             ->info()
             ->actions([
                 Action::make('cek')
-                    ->label('Cek Kelengkapan Pengajuan Protocol')
+                    ->label('Check Protocol Completeness')
                     ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
             ])
             ->sendToDatabase($admins);
@@ -79,12 +79,12 @@ class ProtocolObserver
             // 4. Kirim Notifikasi ke semua anggota kelompok
             if ($reviewers->count() > 0) {
                 Notification::make()
-                    ->title('Tugas Baru untuk Kelompok')
-                    ->body("Admin menugaskan Kelompok \"{$groupName}\" untuk menelaah protokol: \"{$protocol->perihal_pengajuan}\".")
+                    ->title('New Assignment for Group')
+                    ->body("Admin has assigned Group \"{$groupName}\" to review protocol: \"{$protocol->perihal_pengajuan}\".")
                     ->warning()
                     ->actions([
                         Action::make('lihat')
-                            ->label('Lihat Protokol')
+                            ->label('View Protocol')
                             ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
                     ])
                     ->sendToDatabase($reviewers);
@@ -121,19 +121,20 @@ class ProtocolObserver
             $admins = User::role('admin')->get();
 
             Notification::make()
-                ->title('Review Selesai (Final)')
-                ->body("Review protokol \"{$protocol->perihal_pengajuan}\" telah diselesaikan (Final Decision oleh Ketua).")
+                ->title('Review Completed (Final)')
+                ->body("Review for protocol \"{$protocol->perihal_pengajuan}\" has been completed (Final Decision by Chairperson).")
                 ->success()
                 ->actions([
                     Action::make('lihat')
+                        ->label('View Protocol')
                         ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
                 ])
                 ->sendToDatabase($admins);
 
             // Kirim juga ke Peneliti bahwa protokolnya sudah selesai direview
             Notification::make()
-                ->title('Hasil Review Keluar')
-                ->body('Protokol Anda telah selesai direview oleh tim etik.')
+                ->title('Review Result Released')
+                ->body('Your protocol has been fully reviewed by the ethics committee.')
                 ->success()
                 ->sendToDatabase($protocol->User);
         }
@@ -172,12 +173,12 @@ class ProtocolObserver
         $usersToNotify = User::whereIn('id', $userIds)->get();
 
         Notification::make()
-            ->title('Tugas Fast Review')
-            ->body("Anda ditugaskan untuk Fast Review protokol: \"{$protocol->perihal_pengajuan}\"")
+            ->title('Fast Review Assignment')
+            ->body("You have been assigned for Fast Review on protocol: \"{$protocol->perihal_pengajuan}\"")
             ->danger() // Merah untuk mendesak
             ->actions([
                 Action::make('review')
-                    ->label('Review Sekarang')
+                    ->label('Review Now')
                     ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
             ])
             ->sendToDatabase($usersToNotify);

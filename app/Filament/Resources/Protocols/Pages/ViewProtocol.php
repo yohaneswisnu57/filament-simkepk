@@ -51,6 +51,7 @@ class ViewProtocol extends ViewRecord
                         ->label('Decision')
                         ->options([
                             'Exempted' => '✅ Exempted (Pass)',
+                            'Expedited' => '🔄 Expedited (Review Kelompok)',
                             'Full Board' => '⚠️ Full Board (Further Review Needed)',
                         ])
                         ->required()
@@ -66,6 +67,13 @@ class ViewProtocol extends ViewRecord
                         'comment' => $data['comment'],
                         'verdict' => $data['verdict'],
                         'submitted_at' => now(),
+                    ]);
+
+                    // Tambahkan juga ke relasi "comments" agar muncul di kolom Notes & Comments
+                    $protocol->comments()->create([
+                        'author_type' => get_class(auth()->user()),
+                        'author_id' => auth()->id(),
+                        'body' => "**Verdict: {$data['verdict']}**\n\n{$data['comment']}",
                     ]);
 
                     // 2. Update pivot feedback_status → 'submitted'

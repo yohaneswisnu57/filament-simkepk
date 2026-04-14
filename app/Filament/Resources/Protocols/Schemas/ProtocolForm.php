@@ -84,6 +84,7 @@ class ProtocolForm
                     ->schema([
                         DatePicker::make('tgl_mulai_review')
                             ->label('Start Date')
+                            ->required()
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->format('Y-m-d')
@@ -92,6 +93,7 @@ class ProtocolForm
 
                         DatePicker::make('tgl_selesai_review')
                             ->label('End Date')
+                            ->required()
                             ->native(false)
                             ->displayFormat('d/m/Y')
                             ->format('Y-m-d')

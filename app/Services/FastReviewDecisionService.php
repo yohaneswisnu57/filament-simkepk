@@ -48,7 +48,14 @@ class FastReviewDecisionService
             return;
         }
 
-        // 4. Semua "Exempted" → siap certificate
+        // 4. Ada >=1 "Expedited" -> eskalasi ke Expedited (Review Kelompok)
+        if ($verdicts->contains('Expedited')) {
+            $this->escalateToExpedited($protocol);
+
+            return;
+        }
+
+        // 5. Semua "Exempted" → siap certificate
         if ($verdicts->every(fn (string $v): bool => $v === 'Exempted')) {
             $this->markAsExempted($protocol);
         }
@@ -67,22 +74,79 @@ class FastReviewDecisionService
         $admins = User::role(['admin', 'super_admin'])->get();
 
         Notification::make()
-            ->title('⚠️ Fast Review: Eskalasi ke Full Board')
-            ->body("Protokol \"{$protocol->perihal_pengajuan}\" → ada reviewer yang memutuskan Full Board.")
+            ->title('⚠️ Fast Review: Escalated to Full Board')
+            ->body("Protocol \"{$protocol->perihal_pengajuan}\" has been escalated as a reviewer decided on Full Board.")
             ->warning()
             ->actions([
                 Action::make('lihat')
-                    ->label('Lihat Protokol')
+                    ->label('View Protocol')
                     ->url(ProtocolResource::getUrl('view', ['record' => $protocol])),
             ])
             ->sendToDatabase($admins);
 
         // Notifikasi Peneliti
         Notification::make()
-            ->title('Hasil Fast Review: Full Board')
-            ->body('Protokol Anda akan masuk ke jalur Full Board Review.')
+            ->title('Fast Review Result: Full Board')
+            ->body('Your protocol will be escalated to Full Board Review.')
             ->warning()
             ->sendToDatabase($protocol->User);
+    }
+
+    private function escalateToExpedited(Protocol $protocol): void
+    {
+        $expeditedStatus = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%expedited%'])->first();
+
+        $protocol->update([
+            'fast_review_decision' => 'Expedited',
+            'status_id' => $expeditedStatus?->id ?? $protocol->status_id,
+        ]);
+
+        // Notifikasi Admin
+        $admins = User::role(['admin', 'super_admin'])->get();
+
+        Notification::make()
+            ->title('⚠️ Fast Review: Escalated to Expedited (Group Review)')
+            ->body("Protocol \"{$protocol->perihal_pengajuan}\" has been reassigned to Group Review.")
+            ->warning()
+            ->actions([
+                Action::make('lihat')
+                    ->label('View Protocol')
+                    ->url(ProtocolResource::getUrl('view', ['record' => $protocol])),
+            ])
+            ->sendToDatabase($admins);
+
+        // Notifikasi Peneliti
+        Notification::make()
+            ->title('Fast Review Result: Expedited')
+            ->body('Your protocol will proceed to the Group Review (Expedited) track.')
+            ->warning()
+            ->sendToDatabase($protocol->User);
+
+        // Notifikasi ke Reviewer Kelompok (Email + Database)
+        if ($protocol->reviewer_kelompok_id) {
+            $kelompok = $protocol->assignedReviewerKelompok;
+            if ($kelompok && $kelompok->users) {
+                // Notifikasi Database
+                Notification::make()
+                    ->title('📌 New Assignment: Expedited Review')
+                    ->body("Protocol \"{$protocol->perihal_pengajuan}\" has been escalated to your Review Group (Expedited).")
+                    ->info()
+                    ->actions([
+                        Action::make('lihat')
+                            ->label('Review Protocol')
+                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol])),
+                    ])
+                    ->sendToDatabase($kelompok->users);
+
+                // Notifikasi Email
+                foreach ($kelompok->users as $reviewer) {
+                    if ($reviewer->email) {
+                        \Illuminate\Support\Facades\Mail::to($reviewer->email)
+                            ->queue(new \App\Mail\ReviewAssignmentMail($protocol));
+                    }
+                }
+            }
+        }
     }
 
     private function markAsExempted(Protocol $protocol): void
@@ -96,20 +160,20 @@ class FastReviewDecisionService
         $admins = User::role(['admin', 'super_admin'])->get();
 
         Notification::make()
-            ->title('✅ Fast Review: Semua Reviewer Setuju Exempted')
-            ->body("Protokol \"{$protocol->perihal_pengajuan}\" siap diterbitkan certificate-nya.")
+            ->title('✅ Fast Review: All Reviewers Agreed on Exempted')
+            ->body("Protocol \"{$protocol->perihal_pengajuan}\" is ready for certificate issuance.")
             ->success()
             ->actions([
                 Action::make('lihat')
-                    ->label('Lihat & Terbitkan Certificate')
+                    ->label('View & Issue Certificate')
                     ->url(ProtocolResource::getUrl('view', ['record' => $protocol])),
             ])
             ->sendToDatabase($admins);
 
         // Notifikasi Peneliti
         Notification::make()
-            ->title('Fast Review Selesai')
-            ->body('Semua reviewer telah menyelesaikan telaah protokol Anda.')
+            ->title('Fast Review Completed')
+            ->body('All reviewers have completed the review of your protocol.')
             ->success()
             ->sendToDatabase($protocol->User);
     }
