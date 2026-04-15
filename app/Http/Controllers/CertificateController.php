@@ -35,7 +35,13 @@ class CertificateController extends Controller
             throw new AccessDeniedHttpException('Anda tidak memiliki akses ke sertifikat ini.');
         }
 
-        $nama_lengkap = $request->query('nama', $user->name);
+        $isAdmin = $user->hasRole(['admin', 'super_admin']);
+        
+        // Prioritaskan nama dari database jika sudah pernah diinput.
+        // Admin tetap bisa menggunakan query parameter untuk preview/keperluan khusus.
+        $nama_lengkap = $isAdmin 
+            ? $request->query('nama', $protocol->certificate_name ?? $user->name)
+            : ($protocol->certificate_name ?? $user->name);
 
         return view('certificates.protocol', compact('protocol', 'nama_lengkap'));
     }

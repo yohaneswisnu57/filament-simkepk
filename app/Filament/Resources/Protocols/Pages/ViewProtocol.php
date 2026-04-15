@@ -146,14 +146,40 @@ class ViewProtocol extends ViewRecord
                     TextInput::make('nama_lengkap')
                         ->label('Full Name')
                         ->placeholder('Enter full name as per official documents')
-                        ->default(fn () => auth()->user()->name)
+                        ->default(fn () => $this->record->certificate_name ?? auth()->user()->name)
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->disabled(fn () => 
+                            !auth()->user()->hasRole(['admin', 'super_admin']) 
+                            && !$this->record->canResearcherUpdateName()
+                        )
+                        ->helperText(function () {
+                            if (auth()->user()->hasRole(['admin', 'super_admin'])) {
+                                return "Admin can update name anytime. Current changes: {$this->record->certificate_name_changes}";
+                            }
+                            $remaining = 2 - $this->record->certificate_name_changes;
+                            return $remaining > 0 
+                                ? "Remaining name update attempts: {$remaining}" 
+                                : "No more update attempts remaining. Please contact admin if correction is needed.";
+                        }),
                 ])
                 ->action(function (array $data): void {
+                    $record = $this->record;
+                    $isAdmin = auth()->user()->hasRole(['admin', 'super_admin']);
+                    $newName = $data['nama_lengkap'];
+
+                    // Jika nama berubah, kita update database dan increment counter (hanya untuk peneliti)
+                    if ($newName !== $record->certificate_name) {
+                        $updateData = ['certificate_name' => $newName];
+                        if (!$isAdmin) {
+                            $updateData['certificate_name_changes'] = $record->certificate_name_changes + 1;
+                        }
+                        $record->update($updateData);
+                    }
+
                     $url = route('certificates.protocol', [
-                        'protocol' => $this->record->id,
-                        'nama' => $data['nama_lengkap'],
+                        'protocol' => $record->id,
+                        'nama' => $newName,
                     ]);
 
                     // Dispatch browser event

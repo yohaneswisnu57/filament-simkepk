@@ -76,6 +76,12 @@ class Protocol extends Model implements Commentable
             || in_array($this->status_id, [1, 5]);
     }
 
+    /** Peneliti hanya boleh update nama maksimal 2 kali (initial + 1 correction) */
+    public function canResearcherUpdateName(): bool
+    {
+        return $this->certificate_name_changes < 2;
+    }
+
     public function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');

@@ -5,7 +5,6 @@ namespace App\Providers\Filament;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use App\Filament\Resources\Protocols\Widgets\StatsOverview;
 use App\Filament\Widgets\AdminMonthlyProtocolChart;
-use App\Filament\Widgets\AdminUnassignedProtocolsWidget;
 use App\Filament\Widgets\IncomingProtocolsWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
@@ -59,7 +58,6 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 StatsOverview::class,
                 AdminMonthlyProtocolChart::class,
-                AdminUnassignedProtocolsWidget::class,
                 IncomingProtocolsWidget::class,
             ])
             ->globalSearch(false)
