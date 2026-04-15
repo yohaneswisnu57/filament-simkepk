@@ -140,7 +140,7 @@ class ProtocolForm
                     ->schema([
                         // Reviewer 1 (Chairperson)
                         Select::make('fast_review_ketua_id')
-                            ->label('Reviewer 1 (Chairperson)')
+                            ->label('Reviewer 1')
                             ->options(User::role('reviewer')->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
@@ -164,8 +164,8 @@ class ProtocolForm
 
                         // Reviewer 2 (Secretary)
                         Select::make('fast_review_secretary_id')
-                            ->label('Reviewer 2 (Secretary)')
-                            ->options(User::role('sekertaris')->pluck('name', 'id'))
+                            ->label('Reviewer 2')
+                            ->options(User::role('reviewer')->pluck('name', 'id'))
                             ->searchable()
                             ->preload()
                             ->required(function ($get): bool {
