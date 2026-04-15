@@ -142,9 +142,12 @@ class ProtocolsTable
                         $isAdmin = auth()->user()->hasRole(['admin', 'super_admin']);
                         $newName = $data['nama_lengkap'];
 
-                        // Jika nama berubah, kita update database dan increment counter (hanya untuk peneliti)
-                        if ($newName !== $record->certificate_name) {
-                            $updateData = ['certificate_name' => $newName];
+                        // Jika nama berubah atau status belum CERTIFICATE, kita update database
+                        if ($newName !== $record->certificate_name || $record->status_id !== 5) {
+                            $updateData = [
+                                'certificate_name' => $newName,
+                                'status_id' => 5, // Mark as CERTIFICATE automatically
+                            ];
                             if (! $isAdmin) {
                                 $updateData['certificate_name_changes'] = $record->certificate_name_changes + 1;
                             }

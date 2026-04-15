@@ -50,9 +50,25 @@ class ProtocolObserver
         // }
     }
 
-    /**
-     * Handle the Protocol "updated" event.
-     */
+    public function updating(Protocol $protocol): void
+    {
+        // ==========================================
+        // SKENARIO: SYNC STATUS -> DECISION
+        // ==========================================
+        if ($protocol->isDirty('status_id')) {
+            $newDecision = match ((int) $protocol->status_id) {
+                1, 5 => 'Exempted',
+                2 => 'Full Board',
+                3 => 'Expedited',
+                default => null,
+            };
+
+            if ($newDecision) {
+                $protocol->fast_review_decision = $newDecision;
+            }
+        }
+    }
+
     /**
      * Handle the Protocol "updated" event.
      */

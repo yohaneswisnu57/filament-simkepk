@@ -42,6 +42,9 @@ class CreateProtocol extends CreateRecord
             ]);
         }
 
-        $protocol->update(['fast_review_decision' => 'Pending']);
+        // Set 'Pending' hanya jika status adalah Fast Review
+        if ((int) $protocol->status_id === 6) {
+            $protocol->update(['fast_review_decision' => 'Pending']);
+        }
     }
 }

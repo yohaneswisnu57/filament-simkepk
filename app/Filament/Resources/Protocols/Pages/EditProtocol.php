@@ -62,7 +62,10 @@ class EditProtocol extends EditRecord
             ]);
         }
 
-        // 3. Set fast_review_decision = 'Pending' karena reviewer baru di-assign
-        $protocol->update(['fast_review_decision' => 'Pending']);
+        // 3. Set fast_review_decision = 'Pending' HANYA jika status adalah 'Fast Review' (ID 6)
+        // Jika status adalah Exempted, Full Board, dsb, jangan menimpa keputusannya.
+        if ((int) $protocol->status_id === 6) {
+            $protocol->update(['fast_review_decision' => 'Pending']);
+        }
     }
 }
