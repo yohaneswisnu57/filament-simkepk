@@ -193,18 +193,58 @@ class ProtocolInfolist
                                             ->label('Date')
                                             ->dateTime('d M Y, H:i'),
 
-                                        TextEntry::make('properties.attributes')
-                                            ->label('Changes')
-                                            ->placeholder('No specific attribute changes logged')
-                                            ->formatStateUsing(function ($state) {
-                                                if (!is_array($state)) return null;
-                                                $output = "";
-                                                foreach ($state as $key => $value) {
-                                                    $label = ucfirst(str_replace('_', ' ', $key));
-                                                    $output .= "{$label}: {$value}\n";
+                                        TextEntry::make('description')
+                                            ->label('Aktivitas & Perubahan')
+                                            ->placeholder('Dokumen Dibuat')
+                                            ->formatStateUsing(function ($record) {
+                                                $changes = $record->getChangesAttribute();
+                                                $attributes = $changes['attributes'] ?? [];
+                                                $old = $changes['old'] ?? [];
+                                                
+                                                if (empty($attributes)) {
+                                                    return match($record->description) {
+                                                        'created' => '📋 Protokol baru telah didaftarkan.',
+                                                        default => ucfirst($record->description),
+                                                    };
                                                 }
-                                                return $output;
+
+                                                $statusMap = [
+                                                    1 => 'EXEMPTED', 2 => 'FULL BOARD', 3 => 'EXPEDITED',
+                                                    4 => 'ON REVIEW', 5 => 'CERTIFICATE', 6 => 'FAST REVIEW', 
+                                                    7 => 'SUBMISSION',
+                                                ];
+
+                                                $fieldMap = [
+                                                    'status_id' => 'Status Protokol',
+                                                    'fast_review_decision' => 'Keputusan Review',
+                                                    'reviewer_kelompok_id' => 'Kelompok Reviewer',
+                                                    'perihal_pengajuan' => 'Judul Penelitian',
+                                                    'contact_person' => 'Kontak',
+                                                    'certificate_name' => 'Nama di Sertifikat',
+                                                ];
+
+                                                $output = [];
+                                                foreach ($attributes as $key => $value) {
+                                                    if (in_array($key, ['updated_at', 'id', 'certificate_name_changes'])) continue;
+
+                                                    $label = $fieldMap[$key] ?? ucfirst(str_replace('_', ' ', $key));
+                                                    $oldValue = $old[$key] ?? null;
+
+                                                    // Format values
+                                                    if ($key === 'status_id') {
+                                                        $value = $statusMap[$value] ?? $value;
+                                                        $oldValue = $oldValue ? ($statusMap[$oldValue] ?? $oldValue) : 'N/A';
+                                                    }
+
+                                                    if ($oldValue === null || $oldValue === 'n/a') {
+                                                        $output[] = "• **{$label}** disetel ke: **{$value}**";
+                                                    } else {
+                                                        $output[] = "• **{$label}** berubah dari \"{$oldValue}\" menjadi **{$value}**";
+                                                    }
+                                                }
+                                                return count($output) > 0 ? implode("\n", $output) : 'Update data rutin.';
                                             })
+                                            ->markdown()
                                             ->wrap()
                                             ->columnSpanFull(),
                                     ]),

@@ -39,7 +39,16 @@ class EditProtocol extends EditRecord
         $ketuaId = $data['fast_review_ketua_id'] ?? null;
         $sekertarisId = $data['fast_review_secretary_id'] ?? null;
 
-        // Jika tidak ada perubahan reviewer Fast Review, skip
+        // Ambil penilai saat ini dari database untuk perbandingan
+        $currentKetuaId = $protocol->reviewers()->wherePivot('role_in_review', 'Ketua')->first()?->id;
+        $currentSekertarisId = $protocol->reviewers()->wherePivot('role_in_review', 'Sekertaris')->first()?->id;
+
+        // Jika penilai tidak berubah, jangan lakukan apa-apa (jaga integritas keputusan/review yang ada)
+        if ((int) $ketuaId === (int) $currentKetuaId && (int) $sekertarisId === (int) $currentSekertarisId) {
+            return;
+        }
+
+        // Jika tidak ada data penilai di form, skip
         if (! $ketuaId && ! $sekertarisId) {
             return;
         }
@@ -63,7 +72,7 @@ class EditProtocol extends EditRecord
         }
 
         // 3. Set fast_review_decision = 'Pending' HANYA jika status adalah 'Fast Review' (ID 6)
-        // Jika status adalah Exempted, Full Board, dsb, jangan menimpa keputusannya.
+        // Reset ini hanya terjadi karena penilai baru saja di-assign ulang
         if ((int) $protocol->status_id === 6) {
             $protocol->update(['fast_review_decision' => 'Pending']);
         }
