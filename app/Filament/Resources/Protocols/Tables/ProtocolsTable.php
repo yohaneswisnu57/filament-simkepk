@@ -50,6 +50,7 @@ class ProtocolsTable
                     ->color(fn (?string $state): string => match (strtoupper($state ?? '')) {
                         'FULL BOARD' => 'danger',
                         'EXEMPTED' => 'success',
+                        'CERTIFICATE' => 'success',
                         'EXPEDITED' => 'info',
                         'FAST REVIEW' => 'warning',
                         default => 'gray',

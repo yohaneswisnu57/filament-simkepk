@@ -28,12 +28,14 @@ class StatsOverview extends StatsOverviewWidget
         $activeReviews = Protocol::whereIn('status_id', [2, 3, 4, 6])->count();
 
         // 3. Ready for Certificate (Exempted by Reviewers, but Certificate not yet issued by Admin)
+        // Status ID 1 (Exempted) and 5 (Certificate) are final; others are pending.
         $readyForCertificate = Protocol::where('fast_review_decision', 'Exempted')
-            ->where('status_id', '!=', 1)
+            ->whereNotIn('status_id', [1, 5])
             ->count();
 
         // 4. Total Exempted (Historical success)
-        $totalExempted = Protocol::where('status_id', 1)->count();
+        // Includes both 'Exempted' (1) and 'Certificate' (5) statuses.
+        $totalExempted = Protocol::whereIn('status_id', [1, 5])->count();
 
         return [
             Stat::make('Pending Assignment', $pendingAssignment)

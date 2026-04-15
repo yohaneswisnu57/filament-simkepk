@@ -133,13 +133,15 @@ class ViewProtocol extends ViewRecord
                 ->color('info')
                 ->modalHeading('Print Certificate')
                 ->modalDescription('Please enter your full name to ensure it is printed correctly on the certificate.')
-                ->visible(fn (): bool => str_contains(
-                    strtolower($this->record->statusReview?->status_name ?? ''),
-                    'exempted'
-                ) && (
-                    auth()->id() === $this->record->user_id
-                    || auth()->user()->hasRole(['admin', 'super_admin'])
-                ))
+                ->visible(function (): bool {
+                    $statusName = strtolower($this->record->statusReview?->status_name ?? '');
+
+                    return (str_contains($statusName, 'exempted') || str_contains($statusName, 'certificate'))
+                        && (
+                            auth()->id() === $this->record->user_id
+                            || auth()->user()->hasRole(['admin', 'super_admin'])
+                        );
+                })
                 ->schema([
                     TextInput::make('nama_lengkap')
                         ->label('Full Name')

@@ -33,7 +33,7 @@ class UserProtocolStatusStats extends StatsOverviewWidget
         $expedited = Protocol::where('user_id', $userId)->where('status_id', 3)->count();
 
         // 4. Phase 3: Final / Certificate
-        $exempted = Protocol::where('user_id', $userId)->where('status_id', 1)->count();
+        $exempted = Protocol::where('user_id', $userId)->whereIn('status_id', [1, 5])->count();
 
         return [
             Stat::make('Total Applications', $total)

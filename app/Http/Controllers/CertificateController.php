@@ -19,14 +19,12 @@ class CertificateController extends Controller
 
         $user = auth()->user();
 
-        // Pastikan status protokol adalah Exempted
-        $isExempted = str_contains(
-            strtolower($protocol->statusReview?->status_name ?? ''),
-            'exempted'
-        );
+        // Pastikan status protokol adalah Exempted atau Certificate
+        $statusName = strtolower($protocol->statusReview?->status_name ?? '');
+        $isAllowedStatus = str_contains($statusName, 'exempted') || str_contains($statusName, 'certificate');
 
-        if (! $isExempted) {
-            throw new AccessDeniedHttpException('Sertifikat hanya tersedia untuk protokol dengan status Exempted.');
+        if (! $isAllowedStatus) {
+            throw new AccessDeniedHttpException('Sertifikat hanya tersedia untuk protokol dengan status Exempted atau Certificate.');
         }
 
         // Hanya pemilik protokol atau admin/super_admin yang boleh akses
