@@ -6,6 +6,9 @@ use App\Filament\Resources\Protocols\ProtocolResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action;
+use App\Models\User;
 
 class EditProtocol extends EditRecord
 {
@@ -75,6 +78,22 @@ class EditProtocol extends EditRecord
         // Reset ini hanya terjadi karena penilai baru saja di-assign ulang
         if ((int) $protocol->status_id === 6) {
             $protocol->update(['fast_review_decision' => 'Pending']);
+
+            // 4. Kirim Notifikasi khusus ke Penilai Fast Review
+            $assignedIds = array_filter([$ketuaId, $sekertarisId]);
+            if (!empty($assignedIds)) {
+                $reviewersToNotify = User::whereIn('id', $assignedIds)->get();
+                Notification::make()
+                    ->title('Penugasan Fast Review')
+                    ->body("Anda telah ditugaskan sebagai penilai Fast Review untuk protokol: \"{$protocol->perihal_pengajuan}\"")
+                    ->danger()
+                    ->actions([
+                        Action::make('cek')
+                            ->label('Buka Protokol')
+                            ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                    ])
+                    ->sendToDatabase($reviewersToNotify);
+            }
         }
     }
 }

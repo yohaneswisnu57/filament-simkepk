@@ -78,14 +78,18 @@ class ProtocolObserver
         // SKENARIO: ASSIGN KE KELOMPOK REVIEWER
         // ==========================================
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan tidak kosong
-        if ($protocol->wasChanged('reviewer_kelompok_id') && ! empty($protocol->reviewer_kelompok_id)) {
+        // Trigger: Kolom 'reviewer_kelompok_id' berubah dan status BUKAN Fast Review (ID 6)
+        if ($protocol->wasChanged('reviewer_kelompok_id') 
+            && ! empty($protocol->reviewer_kelompok_id)
+            && (int) $protocol->status_id !== 6
+        ) {
 
             // 1. Ambil Kelompok ID yang baru di-assign
             $groupId = $protocol->reviewer_kelompok_id;
 
             // 2. Ambil Nama Kelompok (Optional, untuk pesan notifikasi lebih jelas)
-            // Pastikan Anda punya relasi 'reviewerKelompok' di model Protocol
-            $groupName = $protocol->reviewerKelompok->name ?? 'Kelompok Terpilih';
+            // Pastikan Anda punya relasi 'assignedReviewerKelompok' di model Protocol
+            $groupName = $protocol->assignedReviewerKelompok->nama_kelompok ?? 'Kelompok Terpilih';
 
             // 3. Cari SEMUA User yang menjadi anggota kelompok tersebut
             // Kita filter User berdasarkan reviewer_kelompok_id yang sama

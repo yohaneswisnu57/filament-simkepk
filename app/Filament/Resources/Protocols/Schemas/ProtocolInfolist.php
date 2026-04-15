@@ -7,12 +7,11 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Icon;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
-use Filament\Schemas\Components\Tabs;
 use Spatie\Activitylog\Models\Activity;
 
 class ProtocolInfolist
@@ -64,7 +63,7 @@ class ProtocolInfolist
                                     ->columns(2)
                                     ->schema([
                                         TextEntry::make('uploadpernyataan')
-                                            ->label('Statement Letter')
+                                            ->label('Protocol & Proposal')
                                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                                             ->action(
@@ -184,7 +183,7 @@ class ProtocolInfolist
                                             ->label('Action')
                                             ->weight('bold')
                                             ->formatStateUsing(fn (string $state): string => ucfirst($state)),
-                                        
+
                                         TextEntry::make('causer.name')
                                             ->label('By')
                                             ->placeholder('System'),
@@ -200,9 +199,9 @@ class ProtocolInfolist
                                                 $changes = $record->getChangesAttribute();
                                                 $attributes = $changes['attributes'] ?? [];
                                                 $old = $changes['old'] ?? [];
-                                                
+
                                                 if (empty($attributes)) {
-                                                    return match($record->description) {
+                                                    return match ($record->description) {
                                                         'created' => '📋 Protokol baru telah didaftarkan.',
                                                         default => ucfirst($record->description),
                                                     };
@@ -210,7 +209,7 @@ class ProtocolInfolist
 
                                                 $statusMap = [
                                                     1 => 'EXEMPTED', 2 => 'FULL BOARD', 3 => 'EXPEDITED',
-                                                    4 => 'ON REVIEW', 5 => 'CERTIFICATE', 6 => 'FAST REVIEW', 
+                                                    4 => 'ON REVIEW', 5 => 'CERTIFICATE', 6 => 'FAST REVIEW',
                                                     7 => 'SUBMISSION',
                                                 ];
 
@@ -225,7 +224,9 @@ class ProtocolInfolist
 
                                                 $output = [];
                                                 foreach ($attributes as $key => $value) {
-                                                    if (in_array($key, ['updated_at', 'id', 'certificate_name_changes'])) continue;
+                                                    if (in_array($key, ['updated_at', 'id', 'certificate_name_changes'])) {
+                                                        continue;
+                                                    }
 
                                                     $label = $fieldMap[$key] ?? ucfirst(str_replace('_', ' ', $key));
                                                     $oldValue = $old[$key] ?? null;
@@ -242,6 +243,7 @@ class ProtocolInfolist
                                                         $output[] = "• **{$label}** berubah dari \"{$oldValue}\" menjadi **{$value}**";
                                                     }
                                                 }
+
                                                 return count($output) > 0 ? implode("\n", $output) : 'Update data rutin.';
                                             })
                                             ->markdown()

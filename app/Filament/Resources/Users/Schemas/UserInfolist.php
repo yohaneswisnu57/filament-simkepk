@@ -27,7 +27,7 @@ class UserInfolist
                     ->label('Roles')
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
                     ->placeholder('-'),
-                TextEntry::make('reviewerKelompok.name')
+                TextEntry::make('reviewerKelompok.nama_kelompok')
                     ->label('Kelompok Reviewer')
                     ->placeholder('-'),
             ]);
