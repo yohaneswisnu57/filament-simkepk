@@ -12,6 +12,8 @@ use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Kirschbaum\Commentions\Filament\Infolists\Components\CommentsEntry;
+use Filament\Schemas\Components\Tabs;
+use Spatie\Activitylog\Models\Activity;
 
 class ProtocolInfolist
 {
@@ -19,167 +21,195 @@ class ProtocolInfolist
     {
         return $schema
             ->components([
-
-                // ──────────────────────────────────────────────────
-                // SECTION 1: Protocol Information
-                // ──────────────────────────────────────────────────
-                Section::make('Protocol Information')
-                    ->icon(Heroicon::DocumentText)
-                    ->columns(2)
-                    ->schema([
-                        TextEntry::make('perihal_pengajuan')
-                            ->label('Research Title')
-                            ->columnSpanFull(),
-
-                        TextEntry::make('jenis_protocol')
-                            ->label('Protocol Type')
-                            ->placeholder('-'),
-
-                        TextEntry::make('contact_person')
-                            ->label('Contact Person')
-                            ->placeholder('-'),
-
-                        TextEntry::make('tanggal_pengajuan')
-                            ->label('Submission Date')
-                            ->dateTime('D, d M Y'),
-
-                        TextEntry::make('user.name')
-                            ->label('Submitted By'),
-
-                        TextEntry::make('StatusReview.status_name')
-                            ->label('Status')
-                            ->badge()
-                            ->color(fn (?string $state): string => match (strtoupper($state ?? '')) {
-                                'FULL BOARD' => 'danger',
-                                'EXEMPTED' => 'success',
-                                'EXPEDITED' => 'info',
-                                'FAST REVIEW' => 'warning',
-                                default => 'gray',
-                            })
-                            ->placeholder('-'),
-                    ]),
-
-                // ──────────────────────────────────────────────────
-                // SECTION 2: Supporting Documents
-                // ──────────────────────────────────────────────────
-                Section::make('Supporting Documents')
-                    ->icon(Heroicon::PaperClip)
-                    ->columns(2)
-                    ->schema([
-                        TextEntry::make('uploadpernyataan')
-                            ->label('Statement Letter')
-                            ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
-                            ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
-                            ->action(
-                                \Filament\Actions\Action::make('downloadPernyataan')
-                                    ->label('Download File')
-                                    ->icon(Heroicon::ArrowDownTray)
-                                    ->color('info')
-                                    ->action(fn (Protocol $record) => Storage::disk('public')->download($record->uploadpernyataan))
-                                    ->visible(fn (Protocol $record): bool => ! empty($record->uploadpernyataan))
-                            ),
-
-                        TextEntry::make('buktipembayaran')
-                            ->label('Proof of Payment')
-                            ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
-                            ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
-                            ->action(
-                                \Filament\Actions\Action::make('downloadBukti')
-                                    ->label('Download File')
-                                    ->icon(Heroicon::ArrowDownTray)
-                                    ->color('info')
-                                    ->action(fn (Protocol $record) => Storage::disk('public')->download($record->buktipembayaran))
-                                    ->visible(fn (Protocol $record): bool => ! empty($record->buktipembayaran))
-                            ),
-                    ]),
-
-                // ──────────────────────────────────────────────────
-                // SECTION 3: Review Timeline
-                // ──────────────────────────────────────────────────
-                Section::make('Review Timeline')
-                    ->icon(Heroicon::CalendarDays)
-                    ->columns(3)
-                    ->schema([
-                        TextEntry::make('tgl_mulai_review')
-                            ->label('Start Date')
-                            ->date('D, d M Y')
-                            ->placeholder('-'),
-
-                        TextEntry::make('tgl_selesai_review')
-                            ->label('End Date')
-                            ->date('D, d M Y')
-                            ->placeholder('-'),
-
-                        TextEntry::make('assignedReviewerKelompok.nama_kelompok')
-                            ->label('Reviewer Group')
-                            ->placeholder('-'),
-                    ]),
-
-                // ──────────────────────────────────────────────────
-                // SECTION 4: Fast Review Status
-                // ──────────────────────────────────────────────────
-                Section::make('Fast Review Status')
-                    ->icon(Heroicon::ClipboardDocumentList)
-                    ->columns(1)
-                    ->visible(fn (Protocol $record): bool => str_contains(strtolower($record->statusReview?->status_name ?? ''), 'fast review')
-                        && auth()->user()->hasRole(['admin', 'super_admin'])
-                    )
-                    ->schema([
-                        RepeatableEntry::make('reviewers')
-                            ->label('Assigned Reviewers')
-                            ->columns(3)
+                Tabs::make('Protocol Tabs')
+                    ->columnSpanFull()
+                    ->tabs([
+                        // ──────────────────────────────────────────────────
+                        // TAB 1: Main Info
+                        // ──────────────────────────────────────────────────
+                        Tabs\Tab::make('Main Information')
+                            ->icon(Heroicon::InformationCircle)
                             ->schema([
-                                TextEntry::make('name')
-                                    ->label('Name'),
+                                Section::make('Protocol Information')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextEntry::make('perihal_pengajuan')
+                                            ->label('Research Title')
+                                            ->columnSpanFull(),
+                                        TextEntry::make('jenis_protocol')
+                                            ->label('Protocol Type')
+                                            ->placeholder('-'),
+                                        TextEntry::make('contact_person')
+                                            ->label('Contact Person')
+                                            ->placeholder('-'),
+                                        TextEntry::make('tanggal_pengajuan')
+                                            ->label('Submission Date')
+                                            ->dateTime('D, d M Y'),
+                                        TextEntry::make('user.name')
+                                            ->label('Submitted By'),
+                                        TextEntry::make('StatusReview.status_name')
+                                            ->label('Status')
+                                            ->badge()
+                                            ->color(fn (?string $state): string => match (strtoupper($state ?? '')) {
+                                                'FULL BOARD' => 'danger',
+                                                'EXEMPTED' => 'success',
+                                                'EXPEDITED' => 'info',
+                                                'FAST REVIEW' => 'warning',
+                                                default => 'gray',
+                                            })
+                                            ->placeholder('-'),
+                                    ]),
 
-                                TextEntry::make('pivot.role_in_review')
-                                    ->label('Role')
-                                    ->badge()
-                                    ->color(fn (?string $state): string => match ($state) {
-                                        'Ketua' => 'info',
-                                        'Sekertaris' => 'primary',
-                                        default => 'gray',
-                                    }),
-
-                                TextEntry::make('pivot.feedback_status')
-                                    ->label('Submission Status')
-                                    ->badge()
-                                    ->formatStateUsing(fn (?string $state): string => match ($state) {
-                                        'submitted' => '✓ Submitted',
-                                        default => '● Waiting',
-                                    })
-                                    ->color(fn (?string $state): string => match ($state) {
-                                        'submitted' => 'success',
-                                        default => 'warning',
-                                    }),
+                                Section::make('Supporting Documents')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextEntry::make('uploadpernyataan')
+                                            ->label('Statement Letter')
+                                            ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
+                                            ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
+                                            ->action(
+                                                \Filament\Actions\Action::make('downloadPernyataan')
+                                                    ->label('Download File')
+                                                    ->icon(Heroicon::ArrowDownTray)
+                                                    ->color('info')
+                                                    ->action(fn (Protocol $record) => Storage::disk('public')->download($record->uploadpernyataan))
+                                                    ->visible(fn (Protocol $record): bool => ! empty($record->uploadpernyataan))
+                                            ),
+                                        TextEntry::make('buktipembayaran')
+                                            ->label('Proof of Payment')
+                                            ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
+                                            ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
+                                            ->action(
+                                                \Filament\Actions\Action::make('downloadBukti')
+                                                    ->label('Download File')
+                                                    ->icon(Heroicon::ArrowDownTray)
+                                                    ->color('info')
+                                                    ->action(fn (Protocol $record) => Storage::disk('public')->download($record->buktipembayaran))
+                                                    ->visible(fn (Protocol $record): bool => ! empty($record->buktipembayaran))
+                                            ),
+                                    ]),
                             ]),
 
-                        TextEntry::make('fast_review_decision')
-                            ->label('Final Decision')
-                            ->badge()
-                            ->placeholder('Waiting for all reviewers to submit...')
-                            ->color(fn (?string $state): string => match ($state) {
-                                'Exempted' => 'success',
-                                'Full Board' => 'danger',
-                                'Pending' => 'warning',
-                                default => 'gray',
-                            }),
+                        // ──────────────────────────────────────────────────
+                        // TAB 2: Review & Assignment
+                        // ──────────────────────────────────────────────────
+                        Tabs\Tab::make('Review & Assignment')
+                            ->icon(Heroicon::UserGroup)
+                            ->schema([
+                                Section::make('Review Timeline')
+                                    ->columns(3)
+                                    ->schema([
+                                        TextEntry::make('tgl_mulai_review')
+                                            ->label('Start Date')
+                                            ->date('D, d M Y')
+                                            ->placeholder('-'),
+                                        TextEntry::make('tgl_selesai_review')
+                                            ->label('End Date')
+                                            ->date('D, d M Y')
+                                            ->placeholder('-'),
+                                        TextEntry::make('assignedReviewerKelompok.nama_kelompok')
+                                            ->label('Reviewer Group')
+                                            ->placeholder('-'),
+                                    ]),
+
+                                Section::make('Fast Review Status')
+                                    ->columns(1)
+                                    ->visible(fn (Protocol $record): bool => str_contains(strtolower($record->statusReview?->status_name ?? ''), 'fast review')
+                                        && auth()->user()->hasRole(['admin', 'super_admin'])
+                                    )
+                                    ->schema([
+                                        RepeatableEntry::make('reviewers')
+                                            ->label('Assigned Reviewers')
+                                            ->columns(3)
+                                            ->schema([
+                                                TextEntry::make('name')
+                                                    ->label('Name'),
+                                                TextEntry::make('pivot.role_in_review')
+                                                    ->label('Role')
+                                                    ->badge()
+                                                    ->color(fn (?string $state): string => match ($state) {
+                                                        'Ketua' => 'info',
+                                                        'Sekertaris' => 'primary',
+                                                        default => 'gray',
+                                                    }),
+                                                TextEntry::make('pivot.feedback_status')
+                                                    ->label('Submission Status')
+                                                    ->badge()
+                                                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                                        'submitted' => '✓ Submitted',
+                                                        default => '● Waiting',
+                                                    })
+                                                    ->color(fn (?string $state): string => match ($state) {
+                                                        'submitted' => 'success',
+                                                        default => 'warning',
+                                                    }),
+                                            ]),
+                                        TextEntry::make('fast_review_decision')
+                                            ->label('Final Decision')
+                                            ->badge()
+                                            ->placeholder('Waiting for all reviewers to submit...')
+                                            ->color(fn (?string $state): string => match ($state) {
+                                                'Exempted' => 'success',
+                                                'Full Board' => 'danger',
+                                                'Pending' => 'warning',
+                                                default => 'gray',
+                                            }),
+                                    ]),
+                            ]),
+
+                        // ──────────────────────────────────────────────────
+                        // TAB 3: Comments
+                        // ──────────────────────────────────────────────────
+                        Tabs\Tab::make('Notes & Comments')
+                            ->icon(Heroicon::ChatBubbleLeftRight)
+                            ->schema([
+                                CommentsEntry::make('comments')
+                                    ->label('')
+                                    ->hideSubscribers(true)
+                                    ->unsubscribeColor('danger'),
+                            ]),
+
+                        // ──────────────────────────────────────────────────
+                        // TAB 4: Activity Log (NEW)
+                        // ──────────────────────────────────────────────────
+                        Tabs\Tab::make('History')
+                            ->icon(Heroicon::Clock)
+                            ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin', 'sekertaris']))
+                            ->schema([
+                                RepeatableEntry::make('activities')
+                                    ->label('Changes Timeline')
+                                    ->columns(4)
+                                    ->schema([
+                                        TextEntry::make('description')
+                                            ->label('Action')
+                                            ->weight('bold')
+                                            ->formatStateUsing(fn (string $state): string => ucfirst($state)),
+                                        
+                                        TextEntry::make('causer.name')
+                                            ->label('By')
+                                            ->placeholder('System'),
+
+                                        TextEntry::make('created_at')
+                                            ->label('Date')
+                                            ->dateTime('d M Y, H:i'),
+
+                                        TextEntry::make('properties.attributes')
+                                            ->label('Changes')
+                                            ->placeholder('No specific attribute changes logged')
+                                            ->formatStateUsing(function ($state) {
+                                                if (!is_array($state)) return null;
+                                                $output = "";
+                                                foreach ($state as $key => $value) {
+                                                    $label = ucfirst(str_replace('_', ' ', $key));
+                                                    $output .= "{$label}: {$value}\n";
+                                                }
+                                                return $output;
+                                            })
+                                            ->wrap()
+                                            ->columnSpanFull(),
+                                    ]),
+                            ]),
                     ]),
-
-                // ──────────────────────────────────────────────────
-                // SECTION 5: Notes & Comments
-                // ──────────────────────────────────────────────────
-                Section::make('Notes & Comments')
-                    ->icon(Heroicon::ChatBubbleLeftRight)
-                    ->columnSpanFull()
-                    ->schema([
-                        CommentsEntry::make('comments')
-                            ->label('')
-                            ->hideSubscribers(true)
-                            ->unsubscribeColor('danger'),
-                    ])
-                    ->visible(fn (Model $record): bool => $record instanceof Protocol),
-
             ]);
     }
 }

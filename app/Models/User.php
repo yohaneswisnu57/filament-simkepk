@@ -13,12 +13,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Kirschbaum\Commentions\Contracts\Commenter;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
 class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter, HasEmailAuthentication
 {
-    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable, SoftDeletes;
+    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable, SoftDeletes, LogsActivity;
 
     public function hasEmailAuthentication(): bool
     {
@@ -43,6 +45,15 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         'password',
         'is_active',
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->logOnlyDirty()
+            ->dontLogIfAttributesChangedOnly(['updated_at', 'password', 'remember_token'])
+            ->useLogName('User');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
