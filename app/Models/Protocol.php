@@ -26,6 +26,12 @@ class Protocol extends Model implements Commentable
 
     protected $guarded = [];
 
+    protected function casts(): array
+    {
+        return [
+            'certificate_published_at' => 'datetime',
+        ];
+    }
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

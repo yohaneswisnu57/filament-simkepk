@@ -156,7 +156,6 @@ class ProtocolsTable
 
                         $url = route('certificates.protocol', [
                             'protocol' => $record->id,
-                            'nama' => $newName,
                         ]);
 
                         $livewire->dispatch('open-url', url: $url);

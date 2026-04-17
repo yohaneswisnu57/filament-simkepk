@@ -179,7 +179,6 @@ class ViewProtocol extends ViewRecord
 
                     $url = route('certificates.protocol', [
                         'protocol' => $record->id,
-                        'nama' => $newName,
                     ]);
 
                     // Dispatch browser event

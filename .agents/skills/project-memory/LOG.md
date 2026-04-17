@@ -4,6 +4,20 @@ File ini mencatat keputusan penting dan instruksi khusus agar asisten AI memilik
 
 ---
 
+### 2026-04-17 - Validasi Sertifikat via QR Code
+
+**Konteks Utama**: 
+Menambahkan kode QR pada sertifikat agar jika di-scan mengarah ke halaman yang memvalidasi keaslian dokumen sertifikat tersebut.
+
+- **Prompt**: "Sertifikat ditambahi kode unik dalam bentuk barcode, jika di scan dicek status keluar data validnya."
+- **Solution**:
+    - **Database**: Menambahkan kolom `certificate_uuid` (string unik) & `certificate_published_at` (timestamp) pada tabel `protocols`.
+    - **Logic**: Di `CertificateController@show`, UUID otomatis dibuat secara *quietly* jika `certificate_uuid` belum ada saat user/menekan tombol cetak.
+    - **UI**: Menampilkan elemen `simplesoftwareio/simple-qrcode` di dalam `resources/views/certificates/protocol.blade.php`.
+    - **Public Route**: Endpoint `/verify/{uuid}` memanggil `CertificateValidationController@verify` dan merender tampilan eksternal publik tanpa membutuhkan *login*.
+- **Critical Logic**: URL yang dihasilkan wajib menggunakan format UUID yang tidak dapat di-guess secara acak untuk menjaga kerahasiaan dokumen (Privacy). Jangan menggunakan Protocol ID untuk Public URL.
+
+
 ### 2026-04-15 - Sinkronisasi Status & Notifikasi Cerdas
 
 **Konteks Utama**: 

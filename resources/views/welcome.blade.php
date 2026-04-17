@@ -134,7 +134,7 @@
                     </div>
                     <div>
                         <h1 class="font-bold text-xl text-slate-900 leading-none">SIM KEPK</h1>
-                        <p class="text-[10px] font-medium text-slate-500 tracking-wider uppercase mt-0.5">Komite Etik Penelitian Kesehatan</p>
+                        <p class="text-[10px] font-medium text-slate-500 tracking-wider uppercase mt-0.5">Komite Etik Penelitian</p>
                     </div>
                 </div>
 
@@ -178,7 +178,7 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
 
                 <!-- Tombol Upload / Admin -->
-                <button onclick="{{ redirect('admin') }}" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+                <button onclick="window.location.href='{{ url('admin') }}'" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
                     <span class="mr-2 text-lg">Masuk / Upload Protokol</span>
                     <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     <div class="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:animate-shimmer"></div>
@@ -189,6 +189,21 @@
                     <i class="ph ph-magnifying-glass mr-2 text-lg"></i>
                     Cek Status
                 </button>
+            </div>
+
+            <!-- Download Requirements Area -->
+            <div class="mt-8">
+                <p class="text-sm text-slate-500 font-medium mb-3 uppercase tracking-wider">Unduh Dokumen Persyaratan Pengajuan</p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+                    <a href="{{ route('downloads.requirement', 'Data_Pemohon_KEPK.docx') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Data Pemohon KEPK
+                    </a>
+                    <a href="{{ route('downloads.requirement', 'Informed_Consent_KEPK.docx') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Informed Consent
+                    </a>
+                </div>
             </div>
 
             <!-- Stats / Trust Indicators -->

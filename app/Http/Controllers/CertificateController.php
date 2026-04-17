@@ -37,11 +37,17 @@ class CertificateController extends Controller
 
         $isAdmin = $user->hasRole(['admin', 'super_admin']);
         
-        // Prioritaskan nama dari database jika sudah pernah diinput.
-        // Admin tetap bisa menggunakan query parameter untuk preview/keperluan khusus.
-        $nama_lengkap = $isAdmin 
-            ? $request->query('nama', $protocol->certificate_name ?? $user->name)
-            : ($protocol->certificate_name ?? $user->name);
+        // Mengambil nama langsung dari database. 
+        // Peneliti tidak akan bisa memanipulasi nama lewat URL
+        $nama_lengkap = $protocol->certificate_name ?? $user->name;
+
+        // Generate UUID untuk tracker jika belum ada
+        if (! $protocol->certificate_uuid) {
+            $protocol->updateQuietly([
+                'certificate_uuid' => \Illuminate\Support\Str::uuid()->toString(),
+                'certificate_published_at' => now(),
+            ]);
+        }
 
         return view('certificates.protocol', compact('protocol', 'nama_lengkap'));
     }
