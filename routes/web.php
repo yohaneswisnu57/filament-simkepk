@@ -5,7 +5,10 @@ use App\Http\Controllers\CertificateValidationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    $faqs = \App\Models\Faq::where('is_active', true)->orderBy('sort_order')->get();
+    $abouts = \App\Models\About::where('is_active', true)->orderBy('sort_order')->get();
+    
+    return view('welcome', compact('faqs', 'abouts'));
 });
 
 Route::get('/certificates/protocol/{protocol}', [CertificateController::class, 'show'])

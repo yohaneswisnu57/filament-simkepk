@@ -98,8 +98,8 @@
         <div class="flex flex-col p-6">
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white">
-                        <i class="ph-bold ph-first-aid text-xl"></i>
+                    <div class="flex items-center justify-center">
+                        <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-8 h-8 object-contain">
                     </div>
                     <span class="font-bold text-slate-900">Menu Navigasi</span>
                 </div>
@@ -129,8 +129,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <div class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
-                        <i class="ph-bold ph-first-aid text-2xl"></i>
+                    <div class="flex items-center justify-center">
+                        <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-10 h-10 object-contain">
                     </div>
                     <div>
                         <h1 class="font-bold text-xl text-slate-900 leading-none">SIM KEPK</h1>
@@ -177,17 +177,12 @@
             <!-- Main CTA Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
 
-                <!-- Tombol Upload / Admin -->
-                <button onclick="window.location.href='{{ url('admin') }}'" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
-                    <span class="mr-2 text-lg">Masuk / Upload Protokol</span>
+                <!-- Tombol Cek Status (Scanner) -->
+                <button onclick="openScanner()" class="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-xl bg-primary-600 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-primary-700 hover:scale-105 hover:shadow-xl hover:shadow-primary-600/30 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2">
+                    <i class="ph ph-qr-code mr-2 text-2xl"></i>
+                    <span class="mr-2 text-lg">Scan QR Cek Status</span>
                     <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     <div class="absolute inset-0 -z-10 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:animate-shimmer"></div>
-                </button>
-
-                <!-- Tombol Sekunder -->
-                <button class="inline-flex h-14 items-center justify-center rounded-xl border-2 border-slate-200 bg-white px-8 py-3 font-semibold text-slate-700 transition-colors hover:border-primary-200 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2">
-                    <i class="ph ph-magnifying-glass mr-2 text-lg"></i>
-                    Cek Status
                 </button>
             </div>
 
@@ -242,6 +237,36 @@
             </div>
     </section>
 
+    @if(isset($abouts) && count($abouts) > 0)
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-slate-50 relative border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Tentang Kami</h2>
+                <div class="w-20 h-1.5 bg-primary-600 mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="flex flex-col gap-16">
+                @foreach($abouts as $index => $about)
+                <div class="flex flex-col {{ $index % 2 == 1 ? 'md:flex-row-reverse' : 'md:flex-row' }} gap-10 items-center">
+                    @if($about->image_path)
+                    <div class="w-full md:w-1/2">
+                        <img src="{{ Storage::url($about->image_path) }}" alt="{{ $about->title }}" class="rounded-2xl shadow-lg w-full h-auto object-cover max-h-[400px]">
+                    </div>
+                    @endif
+                    <div class="w-full {{ $about->image_path ? 'md:w-1/2' : '' }}">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">{{ $about->title }}</h3>
+                        <div class="prose prose-slate prose-primary max-w-none text-slate-600 leading-relaxed text-lg">
+                            {!! $about->content !!}
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     <!-- Features / Alur Section -->
     <section id="alur" class="py-20 bg-white relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -282,11 +307,41 @@
     </section>
 
     <!-- Simple Footer -->
+    @if(isset($faqs) && count($faqs) > 0)
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-white relative border-t border-slate-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Pertanyaan Umum (FAQ)</h2>
+                <p class="text-lg text-slate-500">Temukan jawaban atas pertanyaan seputar SIM KEPK</p>
+                <div class="w-20 h-1.5 bg-primary-600 mx-auto rounded-full mt-4"></div>
+            </div>
+            
+            <div class="flex flex-col gap-4">
+                @foreach($faqs as $faq)
+                <details class="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all hover:border-primary-300">
+                    <summary class="flex justify-between items-center font-bold cursor-pointer text-slate-800 p-6 hover:bg-slate-100 transition-colors text-lg list-none" style="list-style: none;">
+                        <span>{{ $faq->question }}</span>
+                        <span class="transition-transform duration-300 group-open:rotate-180 bg-white rounded-full p-2 border border-slate-200 shadow-sm text-primary-600">
+                            <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"/></svg>
+                        </span>
+                    </summary>
+                    <div class="bg-white px-6 pb-6 pt-2 text-slate-600 prose prose-slate max-w-none leading-relaxed border-t border-slate-100">
+                        {!! $faq->answer !!}
+                    </div>
+                </details>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
+    <!-- Simple Footer -->
     <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 bg-primary-600 rounded flex items-center justify-center text-white">
-                    <i class="ph-bold ph-first-aid text-lg"></i>
+                <div class="flex items-center justify-center">
+                    <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-8 h-8 object-contain">
                 </div>
                 <span class="font-bold text-white text-lg">SIM KEPK</span>
             </div>
@@ -301,7 +356,8 @@
         </div>
     </footer>
 
-    <!-- Script for subtle interaction -->
+    <!-- Script for subtle interaction & QR -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <script>
         // Simple animation for the shimmer effect on button hover
         const style = document.createElement('style');
@@ -316,6 +372,59 @@
             }
         `;
         document.head.appendChild(style);
+
+        // QR Scanner Logic
+        let html5QrcodeScanner;
+        
+        function openScanner() {
+            document.getElementById('qr-modal').classList.remove('hidden');
+            document.getElementById('qr-modal').classList.add('flex');
+            
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader", { fps: 10, qrbox: {width: 250, height: 250} }
+            );
+            
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        }
+
+        function closeScanner() {
+            if(html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+            document.getElementById('qr-modal').classList.add('hidden');
+            document.getElementById('qr-modal').classList.remove('flex');
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Stop scanner & redirect
+            closeScanner();
+            // Assuming the QR code is the full URL to /verify/uuid
+            if (decodedText.startsWith('http')) {
+                window.location.href = decodedText;
+            } else {
+                alert("QR Code tidak valid atau bukan referensi SIMKEPK: " + decodedText);
+            }
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning
+        }
     </script>
+
+    <!-- QR Modal -->
+    <div id="qr-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between p-5 border-b border-slate-100">
+                <h3 class="font-bold text-lg text-slate-800">Scan QR Sertifikat</h3>
+                <button onclick="closeScanner()" class="text-slate-400 hover:text-red-500 transition-colors">
+                    <i class="ph ph-x text-2xl"></i>
+                </button>
+            </div>
+            <div class="p-4 bg-slate-50">
+                <div id="reader" width="600px"></div>
+                <p class="text-center text-sm text-slate-500 mt-4">Arahkan kamera ke QR Code yang tertera pada sertifikat untuk memverifikasi keasliannya.</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -11,35 +11,15 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 class ProtocolPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
-        // return $authUser->can('ViewAny:Protocol');
-
-        return $authUser->hasRole(['admin', 'super_admin', 'sekertaris', 'reviewer', 'user']);
+        return $authUser->can('ViewAny:Protocol');
     }
 
     public function view(AuthUser $authUser, Protocol $protocol): bool
     {
-        // return $authUser->can('View:Protocol');
-
-        // 1. Admin & Super Admin selalu boleh
-        if ($authUser->hasRole(['admin', 'super_admin', 'sekertaris', 'reviewer', 'user'])) {
-            return true;
-        }
-
-        // 2. Pemilik data (Peneliti) boleh melihat miliknya sendiri
-        if ($authUser->id === $protocol->user_id) {
-            return true;
-        }
-
-        // 3. Reviewer boleh melihat JIKA satu kelompok dengan protokol
-        if ($authUser->hasRole('reviewer')) {
-            // Pastikan reviewer punya kelompok & kelompoknya sama dengan protokol
-            return $authUser->reviewer_kelompok_id == $protocol->reviewer_kelompok_id;
-        }
-
-        return false;
+        return $authUser->can('View:Protocol');
     }
 
     public function create(AuthUser $authUser): bool
