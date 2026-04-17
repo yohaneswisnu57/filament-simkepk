@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIM KEPK - Welcome</title>
 
-    <meta name="title" content="SIMKEP UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
-    <meta name="description" content="SIMKEP UKWMS (Sistem Informasi Manajemen Komite Etik Penelitian) adalah platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
-    <meta name="keywords" content="SIMKEP UKWMS, KEPK UKWMS, Komite Etik Penelitian Surabaya, Etik Penelitian Widya Mandala, Pengajuan Etik Online, Ethical Clearance UKWMS, SIMKEP Universitas Katolik Widya Mandala">
+    <meta name="title" content="SIMKEPK UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
+    <meta name="description" content="SIMKEPK UKWMS (Sistem Informasi Manajemen Komite Etik Penelitian) adalah platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
+    <meta name="keywords" content="SIMKEPK UKWMS, KEPK UKWMS, Komite Etik Penelitian Surabaya, Etik Penelitian Widya Mandala, Pengajuan Etik Online, Ethical Clearance UKWMS, SIMKEP Universitas Katolik Widya Mandala">
     <meta name="author" content="Universitas Katolik Widya Mandala Surabaya">
     <meta name="robots" content="index, follow">
     <meta name="language" content="Indonesian">
@@ -18,7 +18,7 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://simkepk.ukwms.ac.id/">
-    <meta property="og:title" content="SIMKEP UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
+    <meta property="og:title" content="SIMKEPK UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
     <meta property="og:description" content="Platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
     <meta property="og:image" content="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png">
 
