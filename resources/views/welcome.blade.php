@@ -199,11 +199,11 @@
             <div class="mt-8">
                 <p class="text-sm text-slate-500 font-medium mb-3 uppercase tracking-wider">Unduh Dokumen Persyaratan Pengajuan</p>
                 <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                    <a href="{{ route('downloads.requirement', 'Data_Pemohon_KEPK.docx') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Data_Pemohon_KEPK.docx']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Data Pemohon KEPK
                     </a>
-                    <a href="{{ route('downloads.requirement', 'Informed_Consent_KEPK.docx') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Informed_Consent_KEPK.docx']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Informed Consent
                     </a>
