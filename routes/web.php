@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CertificateValidationController;
+use App\Http\Controllers\RequirementDownloadController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -31,3 +32,6 @@ Route::get('/downloads/requirement/{filename}', function ($filename) {
     
     return response()->download($path);
 })->name('downloads.requirement');
+
+Route::get('/downloads/jenis-protokol', [RequirementDownloadController::class, 'downloadJenisProtokol'])
+    ->name('downloads.jenis-protokol');

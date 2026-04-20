@@ -89,6 +89,14 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-primary-100 selection:text-primary-900">
 
+    @if(session('error'))
+    <script>
+        window.onload = function() {
+            alert("{{ session('error') }}");
+        };
+    </script>
+    @endif
+
     <input type="checkbox" id="menu-toggle" class="peer hidden" />
 
     <!-- Mobile Navigation -->
@@ -139,6 +147,7 @@
                 </div>
 
                 <div class="hidden md:flex items-center gap-4">
+                    <a href="#about" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Tentang Kami</a>
                     <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Alur Pengajuan</a>
                     <a href="{{ url('/user') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors border border-primary-200">
                         Login Peneliti
@@ -198,6 +207,10 @@
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Informed Consent
                     </a>
+                    <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-files mr-2 text-xl text-primary-600"></i>
+                        Jenis Protokol
+                    </a>
                 </div>
             </div>
 
@@ -239,26 +252,83 @@
 
     @if(isset($abouts) && count($abouts) > 0)
     <!-- About Section -->
-    <section id="about" class="py-20 bg-slate-50 relative border-t border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Tentang Kami</h2>
-                <div class="w-20 h-1.5 bg-primary-600 mx-auto rounded-full"></div>
+    <section id="about" class="py-24 bg-white relative overflow-hidden">
+        <!-- Background Decorative Elements -->
+        <div class="absolute top-0 left-1/4 w-64 h-64 bg-primary-50 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+        <div class="absolute bottom-40 right-1/4 w-80 h-80 bg-medical-50 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse animation-delay-2000"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-20">
+                <span class="text-primary-600 font-bold tracking-widest uppercase text-xs mb-3 block">Mengenal Lebih Dekat</span>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Tentang <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-medical-600">Kami</span></h2>
+                <div class="w-24 h-1.5 bg-slate-100 mx-auto rounded-full relative">
+                    <div class="absolute inset-0 w-1/2 bg-primary-600 rounded-full"></div>
+                </div>
             </div>
             
-            <div class="flex flex-col gap-16">
+            <div class="space-y-32">
                 @foreach($abouts as $index => $about)
-                <div class="flex flex-col {{ $index % 2 == 1 ? 'md:flex-row-reverse' : 'md:flex-row' }} gap-10 items-center">
+                <div class="flex flex-col {{ $index % 2 == 1 ? 'md:flex-row-reverse' : 'md:flex-row' }} items-center gap-12 lg:gap-24">
+                    <!-- Image Column with Decorative Frame -->
                     @if($about->image_path)
-                    <div class="w-full md:w-1/2">
-                        <img src="{{ Storage::url($about->image_path) }}" alt="{{ $about->title }}" class="rounded-2xl shadow-lg w-full h-auto object-cover max-h-[400px]">
+                    <div class="w-full md:w-1/2 relative group">
+                        <div class="absolute -inset-4 bg-gradient-to-tr from-primary-100 to-medical-100 rounded-[2.5rem] transform {{ $index % 2 == 1 ? '-rotate-3' : 'rotate-3' }} group-hover:rotate-0 transition-all duration-700 -z-10 opacity-60"></div>
+                        <div class="relative overflow-hidden rounded-[2rem] shadow-2xl border-8 border-white">
+                            <img src="{{ Storage::url($about->image_path) }}" 
+                                 alt="{{ $about->title }}" 
+                                 class="w-full h-auto object-cover max-h-[500px] transform group-hover:scale-105 transition-transform duration-1000">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                        <!-- Floating Badge -->
+                        <div class="absolute -bottom-6 {{ $index % 2 == 1 ? '-left-6' : '-right-6' }} bg-white p-4 rounded-2xl shadow-xl border border-slate-100 hidden lg:block animate-bounce animation-duration-3000">
+                           <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white">
+                                    <i class="ph-bold ph-seal-check text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Terlisensi</p>
+                                    <p class="text-sm font-extrabold text-slate-900">Komite Etik Nasional</p>
+                                </div>
+                           </div>
+                        </div>
                     </div>
                     @endif
-                    <div class="w-full {{ $about->image_path ? 'md:w-1/2' : '' }}">
-                        <h3 class="text-2xl font-bold text-slate-900 mb-4">{{ $about->title }}</h3>
-                        <div class="prose prose-slate prose-primary max-w-none text-slate-600 leading-relaxed text-lg">
+
+                    <!-- Content Column -->
+                    <div class="w-full {{ $about->image_path ? 'md:w-1/2' : 'max-w-4xl mx-auto text-center' }}">
+                        <div class="inline-flex items-center gap-3 mb-6 px-4 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
+                            <span class="w-2 h-2 bg-primary-600 rounded-full animate-ping"></span>
+                            <span class="text-xs font-bold text-primary-700 uppercase tracking-wider">Visi & Misi Kami</span>
+                        </div>
+                        <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 leading-tight">{{ $about->title }}</h3>
+                        
+                        <div class="prose prose-lg prose-slate prose-primary max-w-none text-slate-600 leading-relaxed mb-10">
                             {!! $about->content !!}
                         </div>
+                        
+                        @if($about->image_path)
+                        <div class="grid grid-cols-2 gap-8 pt-8 border-t border-slate-100">
+                            <div>
+                                <h4 class="text-3xl font-black text-primary-600 mb-1">Online</h4>
+                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Sistem Full Digital</p>
+                            </div>
+                            <div>
+                                <h4 class="text-3xl font-black text-medical-600 mb-1">Cepat</h4>
+                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Proses Telaah Efisien</p>
+                            </div>
+                        </div>
+                        @else
+                        <div class="flex justify-center gap-12 pt-8 border-t border-slate-100">
+                             <div class="text-center">
+                                <h4 class="text-3xl font-black text-primary-600 mb-1">Integrity</h4>
+                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Etika Utama</p>
+                            </div>
+                            <div class="text-center">
+                                <h4 class="text-3xl font-black text-medical-600 mb-1">Trusted</h4>
+                                <p class="text-sm font-bold text-slate-400 uppercase tracking-widest">Hasil Akurat</p>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -268,41 +338,192 @@
     @endif
 
     <!-- Features / Alur Section -->
-    <section id="alur" class="py-20 bg-white relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="alur" class="py-24 bg-slate-50 relative border-y border-slate-200 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Alur Pengajuan Mudah</h2>
-                <p class="text-slate-500 max-w-xl mx-auto">Proses simplifikasi untuk mempercepat penelitian Anda tanpa mengurangi standar etik.</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Alur Pelayanan KEPK</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Proses simplifikasi dan transparan untuk penerbitan Ethical Clearance yang akuntabel.</p>
+                <div class="w-20 h-1.5 bg-primary-600 mx-auto rounded-full mt-6"></div>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Step 1 -->
-                <div class="bg-slate-50 rounded-2xl p-8 transition-all hover:-translate-y-2 hover:shadow-lg border border-slate-100">
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 mb-6">
-                        <i class="ph-duotone ph-upload-simple text-3xl"></i>
+            <!-- Mobile View (Timeline Vertical List) -->
+            <div class="lg:hidden space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
+               
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                        1
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">1. Upload Dokumen</h3>
-                    <p class="text-slate-500 leading-relaxed">Login ke akun peneliti, isi formulir pengajuan, dan unggah dokumen protokol penelitian Anda secara digital.</p>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-lg">Penerimaan Berkas</h4>
+                        <p class="text-sm text-primary-600 font-medium mt-1">simkepk.ukwms.ac.id</p>
+                    </div>
+                </div>
+                
+                <div class="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                        2
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
+                        <div class="flex items-center justify-between mb-1">
+                            <h4 class="font-bold text-slate-800 text-lg">Review Cepat – 3 Orang</h4>
+                        </div>
+                        <p class="text-sm text-slate-500 mb-3">(Ketua & Sekretaris KEPK)</p>
+                        <div class="flex gap-2">
+                           <span class="text-xs font-bold px-2.5 py-1.5 bg-medical-50 text-medical-700 border border-medical-200 rounded-lg">Maks 5 Hari</span>
+                           <span class="inline-flex items-center gap-1 text-xs font-bold bg-green-50 text-green-700 border border-green-200 px-2.5 py-1.5 rounded-lg ml-auto">
+                                <i class="ph-fill ph-arrow-right"></i> EXEMPTED
+                           </span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Step 2 -->
-                <div class="bg-slate-50 rounded-2xl p-8 transition-all hover:-translate-y-2 hover:shadow-lg border border-slate-100">
-                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-6">
-                        <i class="ph-duotone ph-magnifying-glass-plus text-3xl"></i>
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                        3
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">2. Telaah Reviewer</h3>
-                    <p class="text-slate-500 leading-relaxed">Tim penelaah melakukan review protokol secara online. Anda dapat memantau revisi dan catatan secara real-time.</p>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
+                        <div class="flex items-center justify-between mb-1">
+                            <h4 class="font-bold text-slate-800 text-lg">Telaah Mendalam</h4>
+                        </div>
+                        <p class="text-sm text-slate-500 mb-3">Review Kelompok</p>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                           <span class="text-xs font-bold px-2.5 py-1.5 bg-medical-50 text-medical-700 border border-medical-200 rounded-lg w-full text-center">14 Hari Pengerjaan</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center justify-center gap-1 text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-1.5 rounded-lg flex-1">
+                                EXPEDITED
+                            </span>
+                            <span class="inline-flex items-center justify-center gap-1 text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-1.5 rounded-lg flex-1">
+                                FULL BOARD
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Step 3 -->
-                <div class="bg-slate-50 rounded-2xl p-8 transition-all hover:-translate-y-2 hover:shadow-lg border border-slate-100">
-                    <div class="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center text-teal-600 mb-6">
-                        <i class="ph-duotone ph-certificate text-3xl"></i>
+                <div class="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                        4
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">3. Penerbitan EC</h3>
-                    <p class="text-slate-500 leading-relaxed">Setelah disetujui, sertifikat <i>Ethical Clearance</i> diterbitkan secara digital dengan QR Code validasi.</p>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
+                        <h4 class="font-bold text-slate-800 text-lg">Persetujuan</h4>
+                        <p class="text-sm text-slate-500 mt-1">(+ Rekomendasi Kpd Peneliti)</p>
+                    </div>
+                </div>
+
+                <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-green-500 text-white shadow shrink-0 shadow-green-500/50 z-10">
+                        <i class="ph-bold ph-certificate"></i>
+                    </div>
+                    <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-xl shadow-green-500/10 ring-2 ring-green-400 border-transparent">
+                        <h4 class="font-extrabold text-green-700 text-lg uppercase tracking-wide">Surat Laik Etik</h4>
+                        <p class="text-sm text-slate-600 mt-1">Diterbitkan otomatis sistem.</p>
+                    </div>
                 </div>
             </div>
+
+            <!-- Desktop View (Visual Branching Flowchart) -->
+            <div class="hidden lg:block relative max-w-5xl mx-auto pt-6">
+                <!-- CSS Connectors (Absolute) -->
+                <div class="absolute inset-0 pointer-events-none z-0">
+                    <!-- Vertical Spine Line connecting stages -->
+                    <div class="absolute left-1/2 top-[70px] bottom-[100px] w-[3px] bg-slate-300 -translate-x-1/2"></div>
+                    <!-- Spine Arrow Heads -->
+                    <i class="ph-fill ph-caret-down text-2xl text-slate-400 absolute left-1/2 top-[155px] -translate-x-1/2 -ml-[0.5px]"></i>
+                    <i class="ph-fill ph-caret-down text-2xl text-slate-400 absolute left-1/2 top-[325px] -translate-x-1/2 -ml-[0.5px]"></i>
+                    <i class="ph-fill ph-caret-down text-2xl text-slate-400 absolute left-1/2 top-[495px] -translate-x-1/2 -ml-[0.5px]"></i>
+                    <i class="ph-fill ph-caret-down text-2xl text-slate-400 absolute left-1/2 top-[665px] -translate-x-1/2 -ml-[0.5px]"></i>
+
+                    <!-- Branch: Review Cepat to Exempted (Right) -->
+                    <div class="absolute left-1/2 top-[230px] w-[31%] h-[3px] bg-slate-300"></div>
+                    <i class="ph-fill ph-caret-right text-2xl text-slate-400 absolute left-[81%] top-[220px] -ml-2"></i>
+
+                    <!-- Branch: Telaah Mendalam to Expedited (Left) -->
+                    <div class="absolute right-1/2 top-[400px] w-[31%] h-[3px] bg-slate-300"></div>
+                    <i class="ph-fill ph-caret-left text-2xl text-slate-400 absolute right-[81%] top-[390px] -mr-2"></i>
+
+                    <!-- Branch: Telaah Mendalam to Full Board (Right) -->
+                    <div class="absolute left-1/2 top-[400px] w-[31%] h-[3px] bg-slate-300"></div>
+                    <i class="ph-fill ph-caret-right text-2xl text-slate-400 absolute left-[81%] top-[390px] -ml-2"></i>
+
+                    <!-- Skip Branch: Exempted & Full Board returning to Surat Laik Etik -->
+                    <div class="absolute right-[5%] top-[230px] bottom-[720px] w-[3px] bg-blue-300 opacity-60"></div>
+                    <div class="absolute right-[5%] top-[230px] h-[3px] w-[3%] bg-blue-300 opacity-60 -translate-x-full"></div>
+                    <!-- Drop down line -->
+                    <div class="absolute right-[5%] top-[230px] bottom-[115px] w-[3px] bg-blue-300 opacity-60 border-l-[3px] border-dashed border-white"></div>
+                    <!-- Return line -->
+                    <div class="absolute right-[5%] bottom-[115px] w-[27%] h-[3px] bg-blue-300 opacity-60"></div>
+                    <i class="ph-fill ph-caret-left text-2xl text-blue-400 absolute right-[32%] bottom-[105px] opacity-80 z-20"></i>
+                </div>
+
+                <!-- CSS Grid for perfect positioning -->
+                <div class="grid grid-cols-3 gap-x-12 gap-y-[70px] relative z-10 w-full">
+                    
+                    <!-- Tahap 1 -->
+                    <div class="col-start-2 flex justify-center">
+                        <div class="w-[340px] bg-white border border-slate-200 rounded-2xl p-6 shadow-lg shadow-slate-200/50 text-center font-bold text-slate-800 flex flex-col items-center justify-center h-[100px]">
+                            <h4 class="text-lg">PENERIMAAN BERKAS</h4>
+                            <div class="text-sm text-primary-600 font-medium mt-1">(simkepk.ukwms.ac.id)</div>
+                        </div>
+                    </div>
+
+                    <!-- Tahap 2 -->
+                    <div class="col-start-2 flex justify-center">
+                        <div class="w-[340px] bg-white border border-slate-200 rounded-2xl p-5 shadow-lg shadow-slate-200/50 text-center flex flex-col items-center justify-center h-[100px] relative z-20">
+                            <h4 class="font-bold text-slate-800 text-base">REVIEW CEPAT – 3 ORANG</h4>
+                            <div class="text-xs text-slate-500 font-normal mt-0.5">(Ketua – Sekretaris)</div>
+                            <div class="mt-2 text-[11px] bg-medical-50 border border-medical-200 text-medical-700 font-bold px-2.5 py-1 rounded-md tracking-wide uppercase">Maks 5 Hari Kerja</div>
+                        </div>
+                    </div>
+                    <div class="col-start-3 flex justify-center items-center">
+                        <div class="w-full max-w-[240px] bg-white border border-green-200 rounded-xl p-4 shadow-md text-center h-[80px] flex items-center justify-center relative z-20 overflow-hidden group">
+                            <div class="absolute left-0 top-0 bottom-0 w-2 bg-green-500"></div>
+                            <h4 class="font-extrabold text-green-700 tracking-wider text-lg ml-2">EXEMPTED</h4>
+                        </div>
+                    </div>
+
+                    <!-- Tahap 3 -->
+                    <div class="col-start-1 flex justify-center items-center">
+                        <div class="w-full max-w-[240px] bg-white border border-amber-200 rounded-xl p-4 shadow-md text-center h-[80px] flex items-center justify-center relative z-20">
+                           <div class="absolute right-0 top-0 bottom-0 w-2 bg-amber-500"></div>
+                           <h4 class="font-extrabold text-amber-700 tracking-wider text-lg mr-2">EXPEDITED</h4>
+                        </div>
+                    </div>
+                    <div class="col-start-2 flex justify-center">
+                        <div class="w-[340px] bg-white border border-slate-200 rounded-2xl p-5 shadow-lg shadow-slate-200/50 text-center flex flex-col items-center justify-center h-[100px] relative z-20">
+                            <h4 class="font-bold text-slate-800 text-base uppercase">Telaah Mendalam</h4>
+                            <div class="text-xs text-slate-500 font-normal mt-0.5 mb-2">Review Kelompok</div>
+                            <div class="text-[11px] bg-medical-50 border border-medical-200 text-medical-700 font-bold px-2.5 py-1 rounded-md tracking-wide uppercase">14 Hari</div>
+                        </div>
+                    </div>
+                    <div class="col-start-3 flex justify-center items-center">
+                        <div class="w-full max-w-[240px] bg-white border border-purple-200 rounded-xl p-4 shadow-md text-center h-[80px] flex items-center justify-center relative z-20">
+                            <div class="absolute left-0 top-0 bottom-0 w-2 bg-purple-500"></div>
+                            <h4 class="font-extrabold text-purple-700 tracking-wider text-lg ml-2">FULL BOARD</h4>
+                        </div>
+                    </div>
+
+                    <!-- Tahap 4 -->
+                    <div class="col-start-2 flex justify-center">
+                        <div class="w-[340px] bg-white border border-slate-200 rounded-2xl p-6 shadow-lg shadow-slate-200/50 text-center flex flex-col items-center justify-center h-[100px] relative z-20">
+                            <h4 class="font-bold text-slate-800 text-lg uppercase tracking-wide">Persetujuan</h4>
+                            <div class="text-sm text-slate-500 font-medium mt-1">(+ Rekomendasi Kpd Peneliti)</div>
+                        </div>
+                    </div>
+
+                    <!-- Tahap 5 -->
+                    <div class="col-start-2 flex justify-center relative mt-4">
+                        <div class="w-[340px] bg-white border-2 border-green-500 rounded-2xl p-6 shadow-[0_10px_40px_-15px_rgba(34,197,94,0.4)] text-center relative overflow-hidden group h-[110px] flex flex-col items-center justify-center z-20">
+                            <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-green-100/40 to-transparent group-hover:animate-shimmer"></div>
+                            <div class="relative z-10 flex items-center gap-3">
+                                <i class="ph-fill ph-certificate text-4xl text-green-600"></i>
+                                <h4 class="font-extrabold text-2xl text-green-700 tracking-wide uppercase mt-1">Surat Laik Etik</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </section>
 
