@@ -557,22 +557,79 @@
     </section>
     @endif
 
-    <!-- Simple Footer -->
-    <footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center">
-                    <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-8 h-8 object-contain">
+    <!-- Multi-Column Footer -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                <!-- University Branding Block -->
+                <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                    <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-16 h-16 object-contain mb-6">
+                    <h3 class="text-lg font-bold text-white leading-tight tracking-tight uppercase mb-8">
+                        Universitas Katolik<br>
+                        Widya Mandala<br>
+                        Surabaya
+                    </h3>
+                    
+                    <!-- Social Media Block (Image Style) -->
+                    <div class="flex flex-col items-center md:items-start w-full md:w-auto">
+                        <div class="flex gap-6 mb-4 text-amber-500">
+                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-tiktok-logo text-2xl"></i></a>
+                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-instagram-logo text-2xl"></i></a>
+                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-youtube-logo text-2xl"></i></a>
+                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-twitter-logo text-2xl"></i></a>
+                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-linkedin-logo text-2xl"></i></a>
+                        </div>
+                        <div class="w-full border-t border-amber-500 py-3 text-center md:text-left">
+                            <a href="https://unika.widyamandala.ac.id/" target="_blank" class="text-primary-400 font-bold hover:text-primary-300 transition-colors underline decoration-amber-500 decoration-2 underline-offset-8">@UKWMS</a>
+                        </div>
+                        <div class="w-full border-t border-amber-500"></div>
+                    </div>
                 </div>
-                <span class="font-bold text-white text-lg">SIM KEPK</span>
+
+                <!-- Navigation Links -->
+                <div class="flex flex-col items-center md:items-start gap-4">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-4">Navigasi Cepat</h4>
+                    <nav class="flex flex-col gap-3 text-sm">
+                        <a href="#about" class="hover:text-primary-400 transition-colors">Tentang Kami</a>
+                        <a href="#alur" class="hover:text-primary-400 transition-colors">Alur Pengajuan</a>
+                        <a href="#faq" class="hover:text-primary-400 transition-colors">Pertanyaan Umum</a>
+                        <a href="{{ url('/user') }}" class="text-primary-500 font-semibold hover:text-primary-400 mt-2">Portal Peneliti</a>
+                        <a href="{{ url('/reviewer') }}" class="text-reviewer-500 font-semibold hover:text-reviewer-400">Portal Reviewer</a>
+                    </nav>
+                </div>
+
+                <!-- Contact Info -->
+                <div class="flex flex-col items-center md:items-start gap-4">
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm mb-4">Hubungi Kami</h4>
+                    <div class="flex items-start gap-3 text-sm">
+                        <i class="ph-duotone ph-map-pin text-xl text-primary-500"></i>
+                        <p>Universitas Katolik Widya Mandala <br>
+                            Tower Barat Lt. 6, <br>
+                            Jl. Raya Kalisari Selatan No.1, Pakuwon City, Surabaya</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <i class="ph-duotone ph-phone text-xl text-primary-500"></i>
+                        <p>(031) 99005299 ext.10656,<br>
+                        Fax.(031) 99005278,</p>
+                    </div>
+                    <div class="flex items-center gap-3 text-sm">
+                        <i class="ph-duotone ph-envelope text-xl text-primary-500"></i>
+                        <p> kepk.fkukwms@gmail.com<br>
+                        kepk.fk@ukwms.ac.id</p>
+                    </div>
+                </div>
             </div>
-            <div class="text-sm text-slate-400">
-                &copy; 2026 Komite Etik Penelitian Kesehatan. All rights reserved.
-            </div>
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-white transition">Privacy</a>
-                <a href="#" class="hover:text-white transition">Terms</a>
-                <a href="#" class="hover:text-white transition">Contact</a>
+
+            <!-- Bottom Copyright bar -->
+            <div class="pt-8 border-t border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <span class="font-bold text-white text-lg tracking-tight">SIM KEPK</span>
+                    <span class="text-slate-600">|</span>
+                    <p class="text-sm text-slate-500 italic">Trusted Ethical Clearance System</p>
+                </div>
+                <div class="text-xs text-slate-500 text-center md:text-right">
+                    &copy; 2026 Komite Etik Penelitian Kesehatan UKWMS. All rights reserved.
+                </div>
             </div>
         </div>
     </footer>
