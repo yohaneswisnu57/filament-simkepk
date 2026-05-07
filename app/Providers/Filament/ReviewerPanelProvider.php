@@ -37,7 +37,7 @@ class ReviewerPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('15s')
             ->brandName('Reviewer')
             ->globalSearch(false)
-
+            // ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Amber,
             ])

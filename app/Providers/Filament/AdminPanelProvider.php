@@ -2,11 +2,11 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use App\Filament\Resources\Protocols\Widgets\StatsOverview;
 use App\Filament\Widgets\AdminMonthlyProtocolChart;
 use App\Filament\Widgets\IncomingProtocolsWidget;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -18,7 +18,6 @@ use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
-use Filament\Widgets\AccountWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -28,7 +27,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
-{
+{   
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -44,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
-            ->defaultThemeMode(ThemeMode::Light)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->brandName('Admin SIMKEPK')
             ->colors([
                 'primary' => Color::Green,

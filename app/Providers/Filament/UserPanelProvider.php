@@ -2,11 +2,11 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\UserProtocolStatusStats;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -40,7 +40,7 @@ class UserPanelProvider extends PanelProvider
             ], isRequired: true)
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
-            ->defaultThemeMode(ThemeMode::Light)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->brandName('Peneliti')
             ->globalSearch(false)
             ->colors([
