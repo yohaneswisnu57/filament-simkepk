@@ -33,6 +33,7 @@ class UserPanelProvider extends PanelProvider
             ->path('user')
             ->spa()
             ->login()
+            ->passwordReset()
             ->registration(Register::class)
             ->profile()
             ->multiFactorAuthentication([
