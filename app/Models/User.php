@@ -136,7 +136,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         }
 
         if ($panel->getId() === 'admin') {
-            return $this->hasRole(['admin', 'sekertaris']);
+            return $this->hasRole(['admin', 'sekertaris', 'Ketua Reviewer']);
         }
 
         if ($panel->getId() === 'user') {

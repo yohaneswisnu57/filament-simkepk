@@ -35,3 +35,13 @@ Route::get('/downloads/requirement/{filename}', function ($filename) {
 
 Route::get('/downloads/jenis-protokol', [RequirementDownloadController::class, 'downloadJenisProtokol'])
     ->name('downloads.jenis-protokol');
+
+Route::get('/downloads/import-reviewer-template', function () {
+    $path = storage_path('app/private/templates/import_reviewer_template.csv');
+
+    if (! file_exists($path)) {
+        abort(404, 'Template tidak ditemukan.');
+    }
+
+    return response()->download($path);
+})->middleware('auth')->name('downloads.import-reviewer-template');
