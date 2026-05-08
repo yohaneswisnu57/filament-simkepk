@@ -4,23 +4,23 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
+use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\HasDatabaseNotifications;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Kirschbaum\Commentions\Contracts\Commenter;
-use Spatie\Permission\Traits\HasRoles;
-use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
 class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter, HasEmailAuthentication
 {
-    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, Notifiable, SoftDeletes, LogsActivity;
+    use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, LogsActivity, Notifiable, SoftDeletes;
 
     public function hasEmailAuthentication(): bool
     {
@@ -140,12 +140,12 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         }
 
         if ($panel->getId() === 'user') {
-            return $this->hasRole(['user']);
+            return $this->hasRole(['user', 'panel_user']);
         }
 
         if ($panel->getId() === 'reviewer') {
             // User dengan role user biasa TIDAK akan bisa masuk sini
-            return $this->hasRole(['reviewer']);
+            return $this->hasRole(['reviewer', 'panel_reviewer']);
         }
 
         // 4. PENTING: Ubah ini menjadi FALSE
