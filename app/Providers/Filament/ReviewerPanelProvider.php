@@ -6,6 +6,7 @@ use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\ReviewerAssignedProtocolsWidget;
 use App\Filament\Widgets\ReviewerProtocolStats;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,7 +38,7 @@ class ReviewerPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('15s')
             ->brandName('Reviewer')
             ->globalSearch(false)
-            // ->defaultThemeMode(ThemeMode::Dark)
+            ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Amber,
             ])
