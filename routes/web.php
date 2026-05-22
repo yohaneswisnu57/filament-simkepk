@@ -45,3 +45,33 @@ Route::get('/downloads/import-reviewer-template', function () {
 
     return response()->download($path);
 })->middleware('auth')->name('downloads.import-reviewer-template');
+require __DIR__.'/test_impersonate.php';
+
+Route::get('/leave-impersonation', function () {
+    if (!session()->has('impersonated_by')) {
+        return redirect('/');
+    }
+
+    $originalUserId = session()->get('impersonated_by');
+    $originalUser = \App\Models\User::find($originalUserId);
+
+    if ($originalUser) {
+        auth()->login($originalUser);
+        session()->forget('impersonated_by');
+        session()->put([
+            'password_hash_' . auth()->getDefaultDriver() => $originalUser->getAuthPassword(),
+        ]);
+        session()->regenerate();
+        session()->save();
+
+        if ($originalUser->hasRole(['super_admin', 'admin'])) {
+            return redirect('/admin');
+        } elseif ($originalUser->hasRole(['panel_reviewer', 'reviewer', 'Ketua', 'sekertaris'])) {
+            return redirect('/reviewer');
+        } else {
+            return redirect('/user');
+        }
+    }
+
+    return redirect('/');
+})->name('leave-impersonation');

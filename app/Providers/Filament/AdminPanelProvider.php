@@ -25,6 +25,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\MenuItem;
 
 class AdminPanelProvider extends PanelProvider
 {   
@@ -44,6 +45,14 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
             ->defaultThemeMode(ThemeMode::Dark)
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Leave Impersonation')
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->color('danger')
+                    ->url(fn (): string => route('leave-impersonation'))
+                    ->visible(fn (): bool => session()->has('impersonated_by')),
+            ])
             ->brandName('Admin SIMKEPK')
             ->colors([
                 'primary' => Color::Green,

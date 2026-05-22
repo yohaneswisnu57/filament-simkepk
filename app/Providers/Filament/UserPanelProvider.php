@@ -6,7 +6,6 @@ use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\UserProtocolStatusStats;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
-use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,6 +22,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\MenuItem;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -36,11 +36,16 @@ class UserPanelProvider extends PanelProvider
             ->passwordReset()
             ->registration(Register::class)
             ->profile()
-            ->multiFactorAuthentication([
-                EmailAuthentication::make(),
-            ], isRequired: true)
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Leave Impersonation')
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->color('danger')
+                    ->url(fn (): string => route('leave-impersonation'))
+                    ->visible(fn (): bool => session()->has('impersonated_by')),
+            ])
             ->defaultThemeMode(ThemeMode::Dark)
             ->brandName('Peneliti')
             ->globalSearch(false)

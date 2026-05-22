@@ -23,6 +23,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\MenuItem;
 
 class ReviewerPanelProvider extends PanelProvider
 {
@@ -38,6 +39,14 @@ class ReviewerPanelProvider extends PanelProvider
             ->databaseNotificationsPolling('15s')
             ->brandName('Reviewer')
             ->globalSearch(false)
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Leave Impersonation')
+                    ->icon('heroicon-o-arrow-left-on-rectangle')
+                    ->color('danger')
+                    ->url(fn (): string => route('leave-impersonation'))
+                    ->visible(fn (): bool => session()->has('impersonated_by')),
+            ])
             ->defaultThemeMode(ThemeMode::Dark)
             ->colors([
                 'primary' => Color::Amber,
