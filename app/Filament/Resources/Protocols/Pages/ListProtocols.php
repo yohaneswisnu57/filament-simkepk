@@ -33,13 +33,17 @@ class ListProtocols extends ListRecords
         $fastReviewId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%fast review%'])->value('id');
 
         $userScope = function (Builder $query) use ($user): void {
-            $userReviewerKelompokId = $user->reviewer_kelompok_id;
-
-            $query->where(function (Builder $q) use ($user, $userReviewerKelompokId): void {
+            $query->where(function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->id);
 
-                if ($userReviewerKelompokId) {
-                    $q->orWhere('reviewer_kelompok_id', $userReviewerKelompokId);
+                if ($user->hasRole('reviewer')) {
+                    $q->orWhereHas('reviewers', function ($q2) use ($user) {
+                        $q2->where('users.id', $user->id);
+                    });
+
+                    if ($user->reviewer_kelompok_id) {
+                        $q->orWhere('reviewer_kelompok_id', $user->reviewer_kelompok_id);
+                    }
                 }
             });
         };

@@ -31,12 +31,26 @@ class ProtocolNotificationTest extends TestCase
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Setup Role Permissions
-        // Gunakan firstOrCreate agar aman
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'sekertaris', 'guard_name' => 'web']);
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $reviewer = Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
+        $user = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        $sekertaris = Role::firstOrCreate(['name' => 'sekertaris', 'guard_name' => 'web']);
+
+        $permissions = [
+            'ViewAny:Protocol', 'View:Protocol', 'Create:Protocol',
+            'Update:Protocol', 'Delete:Protocol',
+        ];
+
+        foreach ($permissions as $p) {
+            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
+        }
+
+        $admin->syncPermissions($permissions);
+        $superAdmin->syncPermissions($permissions);
+        $sekertaris->syncPermissions($permissions);
+        $reviewer->syncPermissions(['ViewAny:Protocol', 'View:Protocol']);
+        $user->syncPermissions(['ViewAny:Protocol', 'View:Protocol', 'Create:Protocol']);
     }
     // public function test_example(): void
     // {
@@ -78,7 +92,7 @@ class ProtocolNotificationTest extends TestCase
 
         // 2. Cek Notifikasi Database Admin
         $this->assertCount(1, $admin->notifications);
-        $this->assertEquals('Pengajuan Protokol Baru', $admin->notifications->first()->data['title']);
+        $this->assertEquals('New Protocol Submission', $admin->notifications->first()->data['title']);
     }
 
     #[Test]
@@ -161,7 +175,7 @@ class ProtocolNotificationTest extends TestCase
                 'verdict' => 'Exempted',
             ])
             ->callMountedAction()
-            ->assertNotified('Verdict berhasil disubmit');
+            ->assertNotified('Verdict submitted successfully');
 
         // C. Assert
         $this->assertDatabaseHas('reviews', [

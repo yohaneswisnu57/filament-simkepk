@@ -20,17 +20,38 @@ class ReviewerAssignedProtocolsWidget extends BaseWidget
     public static function canView(): bool
     {
         // Only visible to reviewers
-        return Auth::user()->hasRole('reviewer');
+        return Auth::user()?->hasRole('reviewer') ?? false;
     }
-
+    
     public function table(Table $table): Table
     {
+        $user = Auth::user();
+
+        if (! $user) {
+            return $table->query(Protocol::query()->whereRaw('1=0'));
+        }
+
         return $table
             ->query(
                 Protocol::query()
-                    ->whereHas('reviewers', function ($query) {
-                        $query->where('users.id', Auth::id())
+                    ->where(function ($query) use ($user) {
+                        $query->whereHas('reviewers', function ($q) use ($user) {
+                            $q->where('users.id', $user->id)
                               ->where('feedback_status', 'pending');
+                        })
+                        ->orWhere(function ($q) use ($user) {
+                            if ($user->reviewer_kelompok_id) {
+                                $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
+                                  ->whereDoesntHave('reviewers', function ($q2) use ($user) {
+                                      $q2->where('users.id', $user->id);
+                                  })
+                                  ->whereDoesntHave('reviews', function ($q2) use ($user) {
+                                      $q2->where('user_id', $user->id);
+                                  });
+                            } else {
+                                $q->whereRaw('1=0');
+                            }
+                        });
                     })
                     ->latest('created_at')
             )
