@@ -573,14 +573,14 @@
                     <!-- Social Media Block (Image Style) -->
                     <div class="flex flex-col items-center md:items-start w-full md:w-auto">
                         <div class="flex gap-6 mb-4 text-amber-500">
-                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-tiktok-logo text-2xl"></i></a>
-                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-instagram-logo text-2xl"></i></a>
-                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-youtube-logo text-2xl"></i></a>
-                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-twitter-logo text-2xl"></i></a>
-                            <a href="#" class="hover:text-amber-400 transition-colors"><i class="ph ph-linkedin-logo text-2xl"></i></a>
+                            <a href="https://www.tiktok.com/@ukwms.official" class="hover:text-amber-400 transition-colors"><i class="ph ph-tiktok-logo text-2xl"></i></a>
+                            <a href="https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.instagram.com/ukwmsofficial/&ved=2ahUKEwjR8uqQztOUAxUb4TgGHR9yD2gQFnoECAgQAQ&usg=AOvVaw0Zhb3Y4v1-hzqWTM5kY5sR" class="hover:text-amber-400 transition-colors"><i class="ph ph-instagram-logo text-2xl"></i></a>
+                            <a href="https://www.youtube.com/@ukwmsofficial" class="hover:text-amber-400 transition-colors"><i class="ph ph-youtube-logo text-2xl"></i></a>
+                            <a href="https://x.com/UKWMSofficial" class="hover:text-amber-400 transition-colors"><i class="ph ph-twitter-logo text-2xl"></i></a>
+                            <a href="https://www.linkedin.com/school/universitas-katolik-widya-mandala-surabaya/" class="hover:text-amber-400 transition-colors"><i class="ph ph-linkedin-logo text-2xl"></i></a>
                         </div>
                         <div class="w-full border-t border-amber-500 py-3 text-center md:text-left">
-                            <a href="https://unika.widyamandala.ac.id/" target="_blank" class="text-primary-400 font-bold hover:text-primary-300 transition-colors underline decoration-amber-500 decoration-2 underline-offset-8">@UKWMS</a>
+                            <a href="https://ukwms.ac.id/" target="_blank" class="text-primary-400 font-bold hover:text-primary-300 transition-colors underline decoration-amber-500 decoration-2 underline-offset-8">@UKWMS</a>
                         </div>
                         <div class="w-full border-t border-amber-500"></div>
                     </div>
