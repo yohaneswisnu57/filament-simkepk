@@ -1,62 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
 
-## About Laravel
+# SIKEPK (Sistem Informasi Kelayakan Protokol Etik)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+SIKEPK adalah sebuah sistem manajemen pengajuan dan peninjauan protokol etik penelitian kesehatan berbasis web. Aplikasi ini dibangun dengan framework **Laravel 12** dan **Filament PHP v4**, dirancang untuk mempermudah alur kerja Komite Etik Penelitian Kesehatan dalam memproses pengajuan protokol dari peneliti hingga mendapatkan persetujuan (Ethical Clearance).
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## ✨ Fitur Utama
 
-## Learning Laravel
+- **Multi-Panel System:** Memiliki panel khusus untuk setiap peran (Admin, Reviewer, dan Peneliti/User).
+- **Role-Based Access Control (RBAC):** Hak akses berlapis menggunakan Spatie Permission dan Filament Shield. Tersedia peran: `super_admin`, `admin`, `sekertaris`, `reviewer`, dan `user`.
+- **Alur Pengajuan Protokol:** Peneliti dapat mengunggah form pengajuan, dokumen pernyataan, dan bukti pembayaran.
+- **Manajemen Kelompok Reviewer:** Admin dapat membagi reviewer ke dalam kelompok-kelompok kerja yang dipimpin oleh seorang Ketua.
+- **Review System:** Penugasan protokol ke kelompok reviewer tertentu untuk diberikan catatan/komentar kelayakan.
+- **Tracking Status Real-time:** Memantau tahapan protokol mulai dari Pending, In Review, Under Revision, Approved, hingga Rejected.
+- **Impersonate (Login As):** Super Admin dapat menyamar (*login as*) menjadi akun user/reviewer manapun untuk keperluan *troubleshooting* dengan aman (melewati pengecekan MFA).
+- **Notifikasi Terintegrasi:** Notifikasi database *real-time* untuk setiap aktivitas penting.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Tech Stack
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Backend:** Laravel 12.x, PHP 8.4+
+- **Frontend / Admin Panel:** Filament PHP v4, Livewire v3, Alpine.js
+- **Styling:** Tailwind CSS v4
+- **Database:** SQLite (Default) / MySQL / PostgreSQL
+- **Build Tool:** Vite 7.x
+- **Package Penting:**
+  - `spatie/laravel-permission`
+  - `bezhansalleh/filament-shield`
+  - `spatie/laravel-activitylog`
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Instalasi & Menjalankan Project Lokal
 
-### Premium Partners
+### Prasyarat
+- PHP >= 8.4
+- Composer
+- Node.js & NPM
+- Ekstensi PHP: `mbstring`, `xml`, `pdo`, `sqlite3` (atau database pilihan)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Langkah-Langkah
 
-## Contributing
+1. **Clone repositori ini:**
+   ```bash
+   git clone https://github.com/username-anda/simkepk-filament.git
+   cd simkepk-filament
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. **Install dependensi PHP & Node.js:**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Code of Conduct
+3. **Salin file environment & generate app key:**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. **Konfigurasi Database (.env):**
+   Ubah pengaturan `.env` sesuai dengan database Anda. Secara bawaan Laravel akan menggunakan SQLite:
+   ```env
+   DB_CONNECTION=sqlite
+   ```
 
-## Security Vulnerabilities
+5. **Migrasi database dan jalankan Seeder:**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+   *(Perintah ini juga akan meng-generate permission dari Filament Shield dan membuat akun bawaan jika ada di seeder).*
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. **Build asset untuk frontend (Tailwind & Filament):**
+   ```bash
+   npm run build
+   ```
 
-## License
+7. **Jalankan server lokal:**
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi dapat diakses di `http://localhost:8000`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# filament-simkepk
+---
+
+## 🚪 Akses Login (Panel Entry Points)
+
+Sistem ini memisahkan jalur *login* sesuai dengan panel yang dituju:
+
+- **Panel Admin / Super Admin:** `http://localhost:8000/admin`
+- **Panel Reviewer / Tim Komite Etik:** `http://localhost:8000/reviewer`
+- **Panel Peneliti (User Umum):** `http://localhost:8000/user`
+
+---
+
+## 🏗️ Struktur & Pola Pengembangan (Development)
+
+Untuk *developer* yang ingin berkontribusi, harap perhatikan hal-hal berikut:
+
+- **Filament Custom Schemas:** Project ini memisahkan komponen formulir dan tabel ke dalam *class* Schema tersendiri (berada di folder `app/Filament/Resources/.../Schemas` dan `Tables`).
+- **Observer:** Aksi yang mengikuti perubahan pada `Protocol` (seperti *create*, *update*, *delete*) dikelola di `app/Observers/ProtocolObserver.php`.
+- **Soft Deletes:** Hampir semua entitas utama (`User`, `Protocol`, `ReviewerKelompok`, `Document`) menggunakan metode Soft Delete. Harap perhatikan hal ini jika membuat *query* khusus.
+- **Keamanan Impersonate:** Telah disiapkan *middleware* khusus (`BypassMfaIfImpersonated`) dan modifikasi autentikasi sesi pada Filament agar Super Admin dapat melakukan *Login As* tanpa mengalami kendala *logout* paksa atau terjebak di *page* MFA.
+- **Code Formatting:** Jalankan perintah `vendor/bin/pint` sebelum melakukan *commit* untuk menjaga standar kerapian *code*.
+
+---
+
+## 📝 Lisensi
+
+Meskipun framework utamanya (Laravel & Filament) bersifat *open-sourced* di bawah lisensi MIT, lisensi kode sumber (*source code*) pada aplikasi manajemen SIKEPK ini tunduk pada kebijakan hak cipta organisasi/institusi pemilik repository ini.
+
+---
+*Dibuat untuk mempermudah proses Komite Etik Penelitian Kesehatan.*
