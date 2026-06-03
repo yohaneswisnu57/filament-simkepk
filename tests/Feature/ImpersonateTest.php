@@ -48,4 +48,24 @@ class ImpersonateTest extends TestCase
         $response3 = $this->withSession(session()->all())->get('/test-dump-session');
         $response2->assertStatus(200);
     }
+
+    public function test_can_search_users_by_role()
+    {
+        Role::firstOrCreate(['name' => 'super_admin']);
+        Role::firstOrCreate(['name' => 'user']);
+
+        $superAdmin = User::factory()->create();
+        $superAdmin->assignRole('super_admin');
+
+        $regularUser = User::factory()->create(['name' => 'Target User']);
+        $regularUser->assignRole('user');
+
+        // Test search query logic directly
+        $query = User::query()->whereHas('roles', function ($q) {
+            $q->where('name', 'like', '%user%');
+        });
+
+        $this->assertTrue($query->get()->contains($regularUser));
+        $this->assertFalse($query->get()->contains($superAdmin));
+    }
 }

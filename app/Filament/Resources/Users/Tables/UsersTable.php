@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Filament\Forms\Components\Select;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class UsersTable
 {
     public static function configure(Table $table): Table
@@ -29,7 +31,11 @@ class UsersTable
                 TextColumn::make('roles')
                     ->label('Roles')
                     ->getStateUsing(fn ($record) => $record->roles->pluck('name')->join(', '))
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('roles', function (Builder $q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                    }),
                 TextColumn::make('reviewerKelompok.nama_kelompok')
                     ->label('Reviewer Group')
                     ->searchable(),
