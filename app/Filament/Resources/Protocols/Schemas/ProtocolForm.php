@@ -229,6 +229,34 @@ class ProtocolForm
                             ]),
                     ]),
 
+                // ──────────────────────────────────────────────────
+                // SECTION 5: Certificate Upload
+                // ──────────────────────────────────────────────────
+                Section::make('Certificate Upload')
+                    ->columns(1)
+                    ->visible(function ($get): bool {
+                        $statusId = $get('status_id');
+                        return $statusId == 5 && auth()->user()->hasRole(['admin', 'super_admin']);
+                    })
+                    ->schema([
+                        FileUpload::make('certificate_file')
+                            ->label('Certificate')
+                            ->disk('public')
+                            ->directory('certificates')
+                            ->preserveFilenames()
+                            ->acceptedFileTypes(['application/pdf'])
+                            ->maxSize(5120)
+                            ->helperText('Format: PDF. Maximum size: 5MB.')
+                            ->required(function ($get): bool {
+                                $statusId = $get('status_id');
+                                return $statusId == 5 && auth()->user()->hasRole(['admin', 'super_admin']);
+                            })
+                            ->validationMessages([
+                                'acceptedFileTypes' => 'The file must be in PDF format.',
+                                'max' => 'File size cannot exceed 5MB.',
+                            ]),
+                    ]),
+
             ]);
     }
 }

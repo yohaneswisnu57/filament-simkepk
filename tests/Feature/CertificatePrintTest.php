@@ -58,10 +58,10 @@ class CertificatePrintTest extends TestCase
     public function owner_can_access_certificate_of_their_exempted_protocol(): void
     {
         $this->actingAs($this->owner);
+        $this->protocol->update(['certificate_name' => 'John Doe']);
 
         $response = $this->get(route('certificates.protocol', [
             'protocol' => $this->protocol->id,
-            'nama'     => 'John Doe',
         ]));
 
         $response->assertStatus(200);
@@ -77,10 +77,10 @@ class CertificatePrintTest extends TestCase
     public function admin_can_access_certificate_of_any_exempted_protocol(): void
     {
         $this->actingAs($this->admin);
+        $this->protocol->update(['certificate_name' => 'Admin Nama']);
 
         $response = $this->get(route('certificates.protocol', [
             'protocol' => $this->protocol->id,
-            'nama'     => 'Admin Nama',
         ]));
 
         $response->assertStatus(200);

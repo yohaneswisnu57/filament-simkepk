@@ -87,6 +87,24 @@ class ProtocolInfolist
                                                     ->visible(fn (Protocol $record): bool => ! empty($record->buktipembayaran))
                                             ),
                                     ]),
+
+                                Section::make('Certificate')
+                                    ->columns(1)
+                                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file))
+                                    ->schema([
+                                        TextEntry::make('certificate_file')
+                                            ->label('Certificate')
+                                            ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
+                                            ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
+                                            ->action(
+                                                \Filament\Actions\Action::make('downloadCertificate')
+                                                    ->label('Download File')
+                                                    ->icon(Heroicon::ArrowDownTray)
+                                                    ->color('success')
+                                                    ->action(fn (Protocol $record) => Storage::disk('public')->download($record->certificate_file))
+                                                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file))
+                                            ),
+                                    ]),
                             ]),
 
                         // ──────────────────────────────────────────────────

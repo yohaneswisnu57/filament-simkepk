@@ -105,61 +105,26 @@ class ProtocolsTable
 
             ])
             ->recordActions([
+                Action::make('showQR')
+                    ->label('Show QR')
+                    ->tooltip('View Verification QR Code')
+                    ->icon('heroicon-o-qr-code')
+                    ->color('secondary')
+                    ->modalHeading('Verification QR Code')
+                    ->modalContent(fn (Protocol $record) => new \Illuminate\Support\HtmlString('<div style="text-align:center; padding: 20px;">' . \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(route('certificates.verify', $record->certificate_uuid)) . '</div>'))
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Close')
+                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_uuid)),
                 Action::make('cetakCertificate')
-                    ->label('Print')
-                    ->tooltip('Print Certificate')
-                    ->icon('heroicon-o-printer')
-                    ->color('info')
-                    ->modalHeading('Print Certificate')
-                    ->modalDescription('Please enter your full name to ensure it is printed correctly on the certificate.')
-                    ->visible(fn (Protocol $record): bool => $record->isReadyForCertificate() && (
+                    ->label('Print Certificate')
+                    ->tooltip('Download Certificate Document')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('success')
+                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file) && (
                         auth()->id() === $record->user_id
                         || auth()->user()->hasRole(['admin', 'super_admin'])
-                    )
-                    )
-                    ->form([
-                        TextInput::make('nama_lengkap')
-                            ->label('Full Name')
-                            ->placeholder('Enter full name as per official documents')
-                            ->default(fn (Protocol $record) => $record->certificate_name ?? auth()->user()->name)
-                            ->required()
-                            ->maxLength(255)
-                            ->disabled(fn (Protocol $record) => ! auth()->user()->hasRole(['admin', 'super_admin'])
-                                && ! $record->canResearcherUpdateName()
-                            )
-                            ->helperText(function (Protocol $record) {
-                                if (auth()->user()->hasRole(['admin', 'super_admin'])) {
-                                    return "Admin can update name anytime. Current changes: {$record->certificate_name_changes}";
-                                }
-                                $remaining = 2 - $record->certificate_name_changes;
-
-                                return $remaining > 0
-                                    ? "Remaining name update attempts: {$remaining}"
-                                    : 'No more update attempts remaining. Please contact admin if correction is needed.';
-                            }),
-                    ])
-                    ->action(function (Protocol $record, array $data, $livewire): void {
-                        $isAdmin = auth()->user()->hasRole(['admin', 'super_admin']);
-                        $newName = $data['nama_lengkap'];
-
-                        // Jika nama berubah atau status belum CERTIFICATE, kita update database
-                        if ($newName !== $record->certificate_name || $record->status_id !== 5) {
-                            $updateData = [
-                                'certificate_name' => $newName,
-                                'status_id' => 5, // Mark as CERTIFICATE automatically
-                            ];
-                            if (! $isAdmin) {
-                                $updateData['certificate_name_changes'] = $record->certificate_name_changes + 1;
-                            }
-                            $record->update($updateData);
-                        }
-
-                        $url = route('certificates.protocol', [
-                            'protocol' => $record->id,
-                        ]);
-
-                        $livewire->dispatch('open-url', url: $url);
-                    }),
+                    ))
+                    ->action(fn (Protocol $record) => \Illuminate\Support\Facades\Storage::disk('public')->download($record->certificate_file)),
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()->requiresConfirmation(),

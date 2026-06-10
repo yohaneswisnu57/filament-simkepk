@@ -124,66 +124,25 @@ class ViewProtocol extends ViewRecord
                     $this->refreshFormData(['status_id']);
                 }),
 
-            // ──────────────────────────────────────────────────
-            // ACTION 3: Print Certificate (for owner & admin)
-            // ──────────────────────────────────────────────────
+            Action::make('showQR')
+                ->label('Show QR')
+                ->icon('heroicon-o-qr-code')
+                ->color('secondary')
+                ->modalHeading('Verification QR Code')
+                ->modalContent(fn () => new \Illuminate\Support\HtmlString('<div style="text-align:center; padding: 20px;">' . \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(route('certificates.verify', $this->record->certificate_uuid)) . '</div>'))
+                ->modalSubmitAction(false)
+                ->modalCancelActionLabel('Close')
+                ->visible(fn (): bool => ! empty($this->record->certificate_uuid)),
+
             Action::make('cetakCertificate')
                 ->label('Print Certificate')
-                ->icon(Heroicon::Printer)
-                ->color('info')
-                ->modalHeading('Print Certificate')
-                ->modalDescription('Please enter your full name to ensure it is printed correctly on the certificate.')
-                ->visible(function (): bool {
-                    $statusName = strtolower($this->record->statusReview?->status_name ?? '');
-
-                    return (str_contains($statusName, 'exempted') || str_contains($statusName, 'certificate'))
-                        && (
-                            auth()->id() === $this->record->user_id
-                            || auth()->user()->hasRole(['admin', 'super_admin'])
-                        );
-                })
-                ->schema([
-                    TextInput::make('nama_lengkap')
-                        ->label('Full Name')
-                        ->placeholder('Enter full name as per official documents')
-                        ->default(fn () => $this->record->certificate_name ?? auth()->user()->name)
-                        ->required()
-                        ->maxLength(255)
-                        ->disabled(fn () => 
-                            !auth()->user()->hasRole(['admin', 'super_admin']) 
-                            && !$this->record->canResearcherUpdateName()
-                        )
-                        ->helperText(function () {
-                            if (auth()->user()->hasRole(['admin', 'super_admin'])) {
-                                return "Admin can update name anytime. Current changes: {$this->record->certificate_name_changes}";
-                            }
-                            $remaining = 2 - $this->record->certificate_name_changes;
-                            return $remaining > 0 
-                                ? "Remaining name update attempts: {$remaining}" 
-                                : "No more update attempts remaining. Please contact admin if correction is needed.";
-                        }),
-                ])
-                ->action(function (array $data): void {
-                    $record = $this->record;
-                    $isAdmin = auth()->user()->hasRole(['admin', 'super_admin']);
-                    $newName = $data['nama_lengkap'];
-
-                    // Jika nama berubah, kita update database dan increment counter (hanya untuk peneliti)
-                    if ($newName !== $record->certificate_name) {
-                        $updateData = ['certificate_name' => $newName];
-                        if (!$isAdmin) {
-                            $updateData['certificate_name_changes'] = $record->certificate_name_changes + 1;
-                        }
-                        $record->update($updateData);
-                    }
-
-                    $url = route('certificates.protocol', [
-                        'protocol' => $record->id,
-                    ]);
-
-                    // Dispatch browser event
-                    $this->dispatch('open-url', url: $url);
-                }),
+                ->icon(Heroicon::DocumentArrowDown)
+                ->color('success')
+                ->visible(fn (): bool => ! empty($this->record->certificate_file) && (
+                    auth()->id() === $this->record->user_id
+                    || auth()->user()->hasRole(['admin', 'super_admin'])
+                ))
+                ->action(fn () => \Illuminate\Support\Facades\Storage::disk('public')->download($this->record->certificate_file)),
         ];
     }
 }

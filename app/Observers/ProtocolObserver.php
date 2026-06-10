@@ -67,6 +67,11 @@ class ProtocolObserver
                 $protocol->fast_review_decision = $newDecision;
             }
         }
+
+        // Generate certificate UUID if status is CERTIFICATE and it doesn't have one
+        if ((int) $protocol->status_id === 5 && empty($protocol->certificate_uuid)) {
+            $protocol->certificate_uuid = \Illuminate\Support\Str::uuid()->toString();
+        }
     }
 
     /**
