@@ -18,6 +18,7 @@ return new class extends Migration
             // kolom data
             $table->string('namadokumen'); // teks nama dokumen
             $table->string('jenisdokumen'); // bisa dijadikan foreign key kalau ada master jenis dokumen
+            $table->string('path')->nullable(); // path file dokumen pendukung
             // relasi user
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             // relasi ke protocols

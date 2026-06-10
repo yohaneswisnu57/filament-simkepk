@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Protocols\RelationManagers;
 
 use App\Filament\Resources\Documents\DocumentResource;
+use App\Models\Document;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -173,6 +175,12 @@ class DocumentRelationManager extends RelationManager
                     ->successNotificationTitle('Success add document'),
             ])
             ->actions([
+                Action::make('download')
+                    ->label('Download')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('info')
+                    ->visible(fn (Document $record): bool => ! empty($record->path))
+                    ->action(fn (Document $record) => \Illuminate\Support\Facades\Storage::disk('public')->download($record->path)),
                 EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-o-pencil'),
