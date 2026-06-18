@@ -110,4 +110,9 @@ class Protocol extends Model implements Commentable
         // Atur logika siapa yang bisa mengomentari
         return true; // Contoh: semua pengguna dapat mengomentari
     }
+
+    public function certificate()
+    {
+        return $this->hasOne(Certificate::class);
+    }
 }
