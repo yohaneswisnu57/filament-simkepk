@@ -220,12 +220,13 @@ class ProtocolForm
                                 'image/jpg',
                                 'image/jpeg',
                                 'image/png',
+                                'image/webp',
                             ])
                             ->maxSize(2048)
                             ->helperText('Format: JPG / PNG. Maximum size: 2MB.')
                             ->validationMessages([
                                 'acceptedFileTypes' => 'The file must be in JPG or PNG format.',
-                                'max' => 'File size cannot exceed 2MB.',
+                                'max' => 'File Upload Bukti Pembayaran Melebihi 2MB',
                             ]),
                     ]),
 
