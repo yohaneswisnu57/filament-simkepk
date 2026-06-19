@@ -45,8 +45,6 @@ Route::get('/downloads/import-reviewer-template', function () {
 
     return response()->download($path);
 })->middleware('auth')->name('downloads.import-reviewer-template');
-require __DIR__.'/test_impersonate.php';
-
 Route::get('/leave-impersonation', function () {
     if (!session()->has('impersonated_by')) {
         return redirect('/');
@@ -74,4 +72,4 @@ Route::get('/leave-impersonation', function () {
     }
 
     return redirect('/');
-})->name('leave-impersonation');
+})->middleware('auth')->name('leave-impersonation');

@@ -13,40 +13,14 @@ class ImpersonateTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_super_admin_can_impersonate_user()
+    public function test_backdoor_impersonate_route_is_removed()
     {
-        // Setup Roles
-        Role::create(['name' => 'super_admin']);
-        Role::create(['name' => 'user']);
-        Role::create(['name' => 'panel_user']);
-
-        // Create Super Admin
-        $superAdmin = User::factory()->create([
-            'is_active' => true,
-        ]);
-        $superAdmin->assignRole('super_admin');
-
-        // Create Regular User
-        $regularUser = User::factory()->create([
-            'is_active' => true,
-        ]);
-        $regularUser->assignRole(['user', 'panel_user']);
-
-        // Act as super admin
-        $this->actingAs($superAdmin);
-
-        // Hit the custom impersonate route
-        $response = $this->get('/test-impersonate/' . $regularUser->id);
+        $user = User::factory()->create();
+        $response = $this->get('/test-impersonate/' . $user->id);
+        $response->assertStatus(404);
         
-        // Assert it redirects to /user
-        $response->assertRedirect('/user');
-        
-        // Now follow the redirect to /user WITH the session from the first request
-        $response2 = $this->withSession(session()->all())->get('/user');
-        
-        // Check session data
-        $response3 = $this->withSession(session()->all())->get('/test-dump-session');
-        $response2->assertStatus(200);
+        $response2 = $this->get('/test-dump-session');
+        $response2->assertStatus(404);
     }
 
     public function test_can_search_users_by_role()

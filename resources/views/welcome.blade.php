@@ -303,7 +303,7 @@
                         <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 leading-tight">{{ $about->title }}</h3>
                         
                         <div class="prose prose-lg prose-slate prose-primary max-w-none text-slate-600 leading-relaxed mb-10">
-                            {!! $about->content !!}
+                            {!! \App\Services\HtmlSanitizer::sanitize($about->content) !!}
                         </div>
                         
                         @if($about->image_path)
@@ -548,7 +548,7 @@
                         </span>
                     </summary>
                     <div class="bg-white px-6 pb-6 pt-2 text-slate-600 prose prose-slate max-w-none leading-relaxed border-t border-slate-100">
-                        {!! $faq->answer !!}
+                        {!! \App\Services\HtmlSanitizer::sanitize($faq->answer) !!}
                     </div>
                 </details>
                 @endforeach

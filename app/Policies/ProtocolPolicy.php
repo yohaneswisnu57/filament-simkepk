@@ -12,6 +12,39 @@ class ProtocolPolicy
 {
     use HandlesAuthorization;
     
+    private function canAccessProtocol(AuthUser $authUser, Protocol $protocol): bool
+    {
+        if ($authUser->hasRole(['super_admin', 'admin', 'sekertaris'])) {
+            return true;
+        }
+
+        // Check ownership
+        if ($protocol->user_id === $authUser->id) {
+            return true;
+        }
+
+        // Check if assigned reviewer
+        if ($authUser->hasRole('reviewer')) {
+            if ($protocol->reviewers()->where('users.id', $authUser->id)->exists()) {
+                return true;
+            }
+            if ($protocol->reviewer_kelompok_id && $protocol->reviewer_kelompok_id === $authUser->reviewer_kelompok_id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function canModifyProtocol(AuthUser $authUser, Protocol $protocol): bool
+    {
+        if ($authUser->hasRole(['super_admin', 'admin', 'sekertaris'])) {
+            return true;
+        }
+
+        return $protocol->user_id === $authUser->id;
+    }
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Protocol');
@@ -19,7 +52,7 @@ class ProtocolPolicy
 
     public function view(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('View:Protocol');
+        return $authUser->can('View:Protocol') && $this->canAccessProtocol($authUser, $protocol);
     }
 
     public function create(AuthUser $authUser): bool
@@ -29,22 +62,22 @@ class ProtocolPolicy
 
     public function update(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Update:Protocol');
+        return $authUser->can('Update:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
     public function delete(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Delete:Protocol');
+        return $authUser->can('Delete:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
     public function restore(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Restore:Protocol');
+        return $authUser->can('Restore:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
     public function forceDelete(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('ForceDelete:Protocol');
+        return $authUser->can('ForceDelete:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
@@ -59,7 +92,7 @@ class ProtocolPolicy
 
     public function replicate(AuthUser $authUser, Protocol $protocol): bool
     {
-        return $authUser->can('Replicate:Protocol');
+        return $authUser->can('Replicate:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
     public function reorder(AuthUser $authUser): bool

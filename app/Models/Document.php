@@ -8,7 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Document extends Model
 {
     use softDeletes;
-    protected $guarded = [];
+    protected $fillable = [
+        'namadokumen',
+        'jenisdokumen',
+        'path',
+        'user_id',
+        'protocol_id',
+    ];
 
     public function protocol()
     {

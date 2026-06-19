@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Certificate extends Model
 {
-    protected $guarded = [];
+    protected $fillable = [
+        'protocol_id',
+        'certificate_number',
+        'institution_name',
+        'members',
+        'approval_date',
+        'file_path',
+    ];
 
     protected $casts = [
         'members' => 'array',

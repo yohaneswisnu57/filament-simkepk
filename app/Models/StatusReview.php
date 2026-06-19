@@ -11,7 +11,9 @@ class StatusReview extends Model
 
     protected $table = 'status_reviews';
 
-    protected $guarded = [];
+    protected $fillable = [
+        'status_name',
+    ];
 
     
 }

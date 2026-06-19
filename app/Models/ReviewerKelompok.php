@@ -11,9 +11,7 @@ class ReviewerKelompok extends Model
 
     use SoftDeletes;
 
-    protected $guarded = [];
-
-    // protected $fillable = ['nama_kelompok', 'is_active', 'ketua_user_id', 'created_by'];
+    protected $fillable = ['nama_kelompok', 'is_active', 'ketua_user_id', 'created_by'];
 
     public function users()
     {

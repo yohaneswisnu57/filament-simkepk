@@ -103,6 +103,11 @@ class UsersTable
                             $action->cancel();
                         }
 
+                        activity()
+                            ->causedBy(auth()->user())
+                            ->performedOn($record)
+                            ->log("Impersonated user: {$record->email}");
+
                         session()->put('impersonated_by', auth()->id());
                         
                         auth()->login($record);

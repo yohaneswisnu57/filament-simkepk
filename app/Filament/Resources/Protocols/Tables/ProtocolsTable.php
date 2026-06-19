@@ -14,6 +14,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Filament\Support\Enums\Size;
 
 class ProtocolsTable
 {
@@ -105,83 +106,100 @@ class ProtocolsTable
 
             ])
             ->recordActions([
-                Action::make('showQR')
-                    ->label('Show QR')
-                    ->tooltip('View Verification QR Code')
-                    ->icon('heroicon-o-qr-code')
-                    ->color('secondary')
-                    ->modalHeading('Verification QR Code')
-                    ->modalContent(fn (Protocol $record) => new \Illuminate\Support\HtmlString('<div style="text-align:center; padding: 20px;">' . \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(route('certificates.verify', $record->certificate_uuid)) . '</div>'))
-                    ->modalSubmitAction(false)
-                    ->modalCancelActionLabel('Close')
-                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_uuid)),
-                Action::make('generateCertificate')
-                    ->label('Generate Certificate')
-                    ->icon('heroicon-o-document-plus')
-                    ->color('warning')
-                    ->visible(fn (Protocol $record): bool => auth()->user()->hasRole(['admin', 'super_admin']) && $record->isReadyForCertificate())
-                    ->form([
-                        \Filament\Forms\Components\Repeater::make('members')
-                            ->label('Member of Investigator')
-                            ->schema([
-                                \Filament\Forms\Components\TextInput::make('name')
-                                    ->required()
-                                    ->label('Name')
-                            ])
-                            ->default(fn(Protocol $record) => $record->certificate?->members ?? [])
-                            ->addActionLabel('Add Member'),
-                        \Filament\Forms\Components\TextInput::make('certificate_number')
-                            ->label('Certificate Number / Ref')
-                            ->default(fn(Protocol $record) => $record->certificate?->certificate_number)
-                            ->required(),
-                        \Filament\Forms\Components\TextInput::make('institution_name')
-                            ->label('Institution(s)/Place(s) of research')
-                            ->default(fn(Protocol $record) => $record->certificate?->institution_name),
-                        \Filament\Forms\Components\DatePicker::make('approval_date')
-                            ->label('Date of Approval')
-                            ->default(fn(Protocol $record) => $record->certificate?->approval_date ?? now())
-                            ->required(),
-                    ])
-                    ->action(function (array $data, Protocol $record) {
-                        $certificate = $record->certificate()->updateOrCreate(
-                            ['protocol_id' => $record->id],
-                            [
-                                'certificate_number' => $data['certificate_number'],
-                                'institution_name' => $data['institution_name'],
-                                'members' => $data['members'],
-                                'approval_date' => $data['approval_date'],
-                            ]
-                        );
-                        
-                        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.certificate', [
-                            'protocol' => $record,
-                            'certificate' => $certificate,
-                        ]);
-                        
-                        $fileName = 'certificates/certificate_protocol_' . $record->id . '_' . time() . '.pdf';
-                        \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $pdf->output());
-                        
-                        $certificate->update(['file_path' => $fileName]);
-                        $record->update(['certificate_file' => $fileName]);
-                        
-                        \Filament\Notifications\Notification::make()
-                            ->title('Certificate generated successfully')
-                            ->success()
-                            ->send();
-                    }),
-                Action::make('cetakCertificate')
-                    ->label('Print Certificate')
-                    ->tooltip('Download Certificate Document')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->color('success')
-                    ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file) && (
-                        auth()->id() === $record->user_id
-                        || auth()->user()->hasRole(['admin', 'super_admin'])
-                    ))
-                    ->action(fn (Protocol $record) => \Illuminate\Support\Facades\Storage::disk('public')->download($record->certificate_file)),
-                ViewAction::make(),
-                EditAction::make(),
-                DeleteAction::make()->requiresConfirmation(),
+                \Filament\Actions\ActionGroup::make([
+                    Action::make('showQR')
+                        ->label('Show QR')
+                        ->tooltip('View Verification QR Code')
+                        ->icon('heroicon-o-qr-code')
+                        ->color('secondary')
+                        ->modalHeading('Verification QR Code')
+                        ->modalContent(fn (Protocol $record) => new \Illuminate\Support\HtmlString('<div style="text-align:center; padding: 20px;">' . \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(route('certificates.verify', $record->certificate_uuid)) . '</div>'))
+                        ->modalSubmitAction(false)
+                        ->modalCancelActionLabel('Close')
+                        ->visible(fn (Protocol $record): bool => ! empty($record->certificate_uuid)),
+                    Action::make('generateCertificate')
+                        ->label('Generate Certificate')
+                        ->icon('heroicon-o-document-plus')
+                        ->color('warning')
+                        ->visible(fn (Protocol $record): bool => auth()->user()->hasRole(['admin', 'super_admin']) && $record->isReadyForCertificate())
+                        ->form([
+                            \Filament\Forms\Components\Repeater::make('members')
+                                ->label('Member of Investigator')
+                                ->schema([
+                                    \Filament\Forms\Components\TextInput::make('name')
+                                        ->required()
+                                        ->label('Name')
+                                ])
+                                ->default(fn(Protocol $record) => $record->certificate?->members ?? [])
+                                ->addActionLabel('Add Member'),
+                            \Filament\Forms\Components\TextInput::make('certificate_number')
+                                ->label('Certificate Number / Ref')
+                                ->default(fn(Protocol $record) => $record->certificate?->certificate_number)
+                                ->required(),
+                            \Filament\Forms\Components\TextInput::make('institution_name')
+                                ->label('Institution(s)/Place(s) of research')
+                                ->default(fn(Protocol $record) => $record->certificate?->institution_name),
+                            \Filament\Forms\Components\DatePicker::make('approval_date')
+                                ->label('Date of Approval')
+                                ->default(fn(Protocol $record) => $record->certificate?->approval_date ?? now())
+                                ->required(),
+                        ])
+                        ->action(function (array $data, Protocol $record) {
+                            $certificate = $record->certificate()->updateOrCreate(
+                                ['protocol_id' => $record->id],
+                                [
+                                    'certificate_number' => $data['certificate_number'],
+                                    'institution_name' => $data['institution_name'],
+                                    'members' => $data['members'],
+                                    'approval_date' => $data['approval_date'],
+                                ]
+                            );
+                            
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.certificate', [
+                                'protocol' => $record,
+                                'certificate' => $certificate,
+                            ]);
+                            
+                            $fileName = 'certificates/certificate_protocol_' . $record->id . '_' . time() . '.pdf';
+                            \Illuminate\Support\Facades\Storage::disk('public')->put($fileName, $pdf->output());
+                            
+                            $certificate->update(['file_path' => $fileName]);
+                            $record->update(['certificate_file' => $fileName]);
+                            
+                            \Filament\Notifications\Notification::make()
+                                ->title('Certificate generated successfully')
+                                ->success()
+                                ->send();
+                        }),
+                    Action::make('previewCertificate')
+                        ->label('Preview Certificate')
+                        ->tooltip('View Certificate Document in Browser')
+                        ->icon('heroicon-o-eye')
+                        ->color('info')
+                        ->url(fn (Protocol $record) => \Illuminate\Support\Facades\Storage::url($record->certificate_file))
+                        ->openUrlInNewTab()
+                        ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file) && (
+                            auth()->id() === $record->user_id
+                            || auth()->user()->hasRole(['admin', 'super_admin'])
+                        )),
+                    Action::make('cetakCertificate')
+                        ->label('Download Certificate')
+                        ->tooltip('Download Certificate Document')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->color('success')
+                        ->visible(fn (Protocol $record): bool => ! empty($record->certificate_file) && (
+                            auth()->id() === $record->user_id
+                            || auth()->user()->hasRole(['admin', 'super_admin'])
+                        ))
+                        ->action(fn (Protocol $record) => \Illuminate\Support\Facades\Storage::disk('public')->download($record->certificate_file)),
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make()->requiresConfirmation(),
+                ])->label('More actions')
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->size(Size::Small)
+                    ->color('primary')
+                    ->button()
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

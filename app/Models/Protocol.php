@@ -24,7 +24,25 @@ class Protocol extends Model implements Commentable
     use SoftDeletes;
     use LogsActivity;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'perihal_pengajuan',
+        'jenis_protocol',
+        'tanggal_pengajuan',
+        'contact_person',
+        'status_id',
+        'certificate_file',
+        'uploadpernyataan',
+        'buktipembayaran',
+        'user_id',
+        'tgl_mulai_review',
+        'tgl_selesai_review',
+        'reviewer_kelompok_id',
+        'fast_review_decision',
+        'certificate_name',
+        'certificate_name_changes',
+        'certificate_uuid',
+        'certificate_published_at',
+    ];
 
     protected function casts(): array
     {

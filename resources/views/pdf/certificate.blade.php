@@ -13,33 +13,28 @@
             font-size: 14px;
         }
         .header-table {
-            width: 100%;
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto;
+            width: auto;
         }
         .header-logo {
-            width: 20%;
-            text-align: center;
-            vertical-align: middle;
+            vertical-align: top;
         }
         .header-logo img {
-            width: 110px;
+            width: 90px;
             height: auto;
+            margin-left: -10px;
         }
         .header-text {
-            width: 80%;
             text-align: center;
+            font-family: 'Times New Roman', Times, serif;
         }
-        .header-text h1, .header-text h2, .header-text h3, .header-text h4 {
-            margin: 2px 0;
-            font-weight: normal;
-        }
-        .header-text h1 { font-size: 18px; font-weight: bold; }
-        .header-text h2 { font-size: 16px; font-weight: bold; }
-        .header-text h3 { font-size: 16px; font-weight: bold; }
-        .header-text h4 { font-size: 12px; }
+        .header-text h1 { font-size: 14px; font-weight: bold; margin: 2px 0; }
+        .header-text h2 { font-size: 15px; font-weight: bold; margin: 2px 0; }
+        .header-text h3 { font-size: 16px; font-weight: bold; margin: 2px 0; }
         .header-address {
             font-size: 11px;
             margin-top: 5px;
+            font-family: 'Times New Roman', Times, serif;
         }
         .divider {
             border-top: 3px solid #000;
@@ -95,9 +90,10 @@
             text-align: center;
         }
         .signature-box .date {
-            margin-bottom: 5px;
+            margin-bottom: -1px;
         }
         .signature-box .name {
+            margin-top:1px;
             font-weight: bold;
             text-decoration: underline;
         }
@@ -124,7 +120,7 @@
                 <div class="header-address">
                     Universitas Katolik Widya Mandala Tower Barat Lt. 6, Jl. Raya Kalisari Selatan No.1, Pakuwon City, Surabaya<br>
                     Telp.(031) 99005299 ext. 10656, Fax.(031) 99005278, http://fk.ukwms.ac.id<br>
-                    email: kepk.fk@ukwms.ac.id
+                    email: kepk.fkukwms@gmail.com; kepk.fk@ukwms.ac.id
                 </div>
             </td>
         </tr>
@@ -186,20 +182,20 @@
 
     <div class="signature-section">
         <div class="signature-box" style="float: right; width: 300px; text-align: center;">
-            <div class="date" style="text-align: center; margin-bottom: 5px; font-size: 15px;">Surabaya, {{ $certificate->approval_date ? $certificate->approval_date->format('d F Y') : date('d F Y') }}</div>
+            <div class="date" style="text-align: center; margin-bottom: -5px; font-size: 15px;">Surabaya, {{ $certificate->approval_date ? $certificate->approval_date->format('d F Y') : date('d F Y') }}</div>
             
             @php
                 $sigPath = public_path('images/tandatanga-chairperson.png');
                 $sigData = file_exists($sigPath) ? base64_encode(file_get_contents($sigPath)) : '';
             @endphp
 
-            <div class="signature-images" style="margin: 10px 0;">
+            <div class="signature-images" style="margin: 0 0 5px 0;">
                 @if($sigData)
                     <img src="data:image/png;base64,{{ $sigData }}" style="width: 200px; height: auto;" alt="Signature and Stamp">
                 @endif
             </div>
 
-            <div class="name" style="font-weight: bold; font-size: 15px;">Caroline, S.Si., M.Si., Apt</div>
+            <div class="name" style="font-weight: bold; font-size: 15px; margin-top: -15px;">Caroline, S.Si., M.Si., Apt</div>
             <div class="title" style="font-weight: bold; font-size: 15px;">Chairperson</div>
         </div>
         <div style="clear: both;"></div>
