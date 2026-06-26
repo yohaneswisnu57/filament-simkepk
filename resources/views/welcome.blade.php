@@ -120,6 +120,9 @@
                 <a href="#alur" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
                     Alur Pengajuan <i class="ph ph-caret-right"></i>
                 </a>
+                <a href="#pembayaran" class="flex items-center justify-between text-lg font-semibold text-slate-700 p-4 bg-slate-50 rounded-xl">
+                    Biaya <i class="ph ph-caret-right"></i>
+                </a>
 
 
                 <a href="{{ url('/user') }}" class="mt-4 text-center text-white bg-primary-600 px-6 py-4 rounded-2xl font-bold shadow-lg shadow-primary-500/30">
@@ -149,6 +152,7 @@
                 <div class="hidden md:flex items-center gap-4">
                     <a href="#about" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Tentang Kami</a>
                     <a href="#alur" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Alur Pengajuan</a>
+                    <a href="#pembayaran" class="text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors mr-4">Biaya</a>
                     <a href="{{ url('/user') }}" class="text-sm font-semibold text-primary-600 hover:text-primary-700 px-4 py-2 rounded-full hover:bg-primary-50 transition-colors border border-primary-200">
                         Login Peneliti
                     </a>
@@ -248,6 +252,69 @@
                     <p class="text-sm text-slate-500 font-medium">Paperless</p>
                 </div>
             </div>
+    </section>
+
+    <!-- Payment Information Section -->
+    <section id="pembayaran" class="py-24 bg-white relative overflow-hidden border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Informasi Pembayaran</h2>
+                <p class="text-slate-500 max-w-2xl mx-auto text-lg">Detail biaya administrasi kaji etik penelitian KEPK UKWMS.</p>
+                <div class="w-20 h-1.5 bg-primary-600 mx-auto rounded-full mt-6"></div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
+                <!-- Rekening Info -->
+                <div class="bg-slate-50 rounded-3xl p-10 border border-slate-100 flex flex-col items-center text-center relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-primary-100 rounded-bl-full -mr-16 -mt-16 transition-transform group-hover:scale-110 duration-500"></div>
+                    <div class="w-20 h-20 bg-white shadow-md text-primary-600 rounded-2xl flex items-center justify-center mb-8 relative z-10">
+                        <i class="ph-duotone ph-bank text-4xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2 relative z-10">Rekening KEPK</h3>
+                    <p class="text-lg text-slate-600 font-medium mb-3 relative z-10">Bank BCA</p>
+                    <div class="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-4 relative z-10 inline-block">
+                        <p class="text-3xl font-extrabold text-primary-600 tracking-wider">788-065-3550</p>
+                    </div>
+                    <p class="text-slate-500 font-medium relative z-10">a.n. <span class="text-slate-800">W. F Maramis dan B. Triagung</span></p>
+                </div>
+
+                <!-- Klasifikasi Pembayaran -->
+                <div class="bg-white rounded-3xl p-10 shadow-xl shadow-slate-200/40 border border-slate-100 relative">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 bg-medical-50 text-medical-600 rounded-2xl flex items-center justify-center shrink-0">
+                            <i class="ph-duotone ph-wallet text-3xl"></i>
+                        </div>
+                        <div>
+                            <h3 class=\"text-2xl font-bold text-slate-900\">Klasifikasi Biaya</h3>
+                            <p class=\"text-sm text-slate-500 font-medium\">Tarif telaah etik berdasarkan kategori</p>
+                        </div>
+                    </div>
+                    
+                    <ul class="space-y-4">
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa UKWMS</span>
+                            <span class="font-bold text-slate-900">Rp 150.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa FK UKWMS</span>
+                            <span class="font-bold text-slate-900">Rp 100.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa diluar UKWMS</span>
+                            <span class="font-bold text-slate-900">Rp 400.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen Widya Mandala</span>
+                            <span class="font-bold text-slate-900">Rp 150.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pt-2">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen Non Widya Mandala</span>
+                            <span class="font-bold text-slate-900">Rp 700.000</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </section>
 
     @if(isset($abouts) && count($abouts) > 0)
