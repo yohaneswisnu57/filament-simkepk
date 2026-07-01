@@ -31,6 +31,7 @@ class ListProtocols extends ListRecords
         $expeditedId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%expedited%'])->value('id') ?? 3;
         $fullboardId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%full board%'])->value('id') ?? 2;
         $fastReviewId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%fast review%'])->value('id');
+        $certificateId = StatusReview::whereRaw('LOWER(status_name) LIKE ?', ['%certificate%'])->value('id');
 
         $userScope = function (Builder $query) use ($user): void {
             $query->where(function (Builder $q) use ($user): void {
@@ -68,6 +69,9 @@ class ListProtocols extends ListRecords
                 'fullboard' => Tab::make('Full Board')
                     ->badge(Protocol::query()->where($userScope)->where($statusColumn, $fullboardId)->count())
                     ->query(fn (Builder $query) => $query->where($statusColumn, $fullboardId)),
+                'certificate' => Tab::make('Certificate')
+                    ->badge(Protocol::query()->where($userScope)->where($statusColumn, $certificateId)->count())
+                    ->query(fn (Builder $query) => $query->where($statusColumn, $certificateId)),
             ];
 
             return $tabs;
@@ -92,6 +96,10 @@ class ListProtocols extends ListRecords
             'fullboard' => Tab::make('Full Board')
                 ->badge(Protocol::where($statusColumn, $fullboardId)->count())
                 ->query(fn (Builder $query) => $query->where($statusColumn, $fullboardId)),
+            'certificate' => Tab::make('Certificate')
+                ->badge(Protocol::where($statusColumn, $certificateId)->count())
+                ->query(fn (Builder $query) => $query->where($statusColumn, $certificateId)),
+
         ];
     }
 }

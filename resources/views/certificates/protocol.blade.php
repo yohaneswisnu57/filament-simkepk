@@ -8,7 +8,7 @@
         /* A4 Size Print Styling */
         @page {
             size: A4;
-            margin: 20mm;
+            margin: 10mm 20mm 20mm 20mm;
         }
 
         body {
@@ -217,10 +217,10 @@
         @media screen {
             body {
                 background: #f5f5f0;
-                padding: 40px 20px;
+                padding: 20px;
             }
             .certificate-container {
-                padding: 50px 60px;
+                padding: 30px 60px 50px 60px;
                 box-shadow: 0 8px 40px rgba(0,0,0,0.1);
                 border: 1px solid #ddd;
             }
@@ -252,7 +252,7 @@
             <h3>FAKULTAS KEDOKTERAN</h3>
             <h4>KOMISI ETIK PENELITIAN</h4>
             <p>Universitas Katolik Widya Mandala Tower Barat Lt. 6, Jl. Raya Kalisari Selatan No.1, Pakuwon City, Surabaya</p>
-            <p>Telp.(031) 99005299 ext.10656, Fax.(031) 99005278, <a href="http://fk.ukwms.ac.id">http://fk.ukwms.ac.id</a></p>
+            <p>Telp.(031) 99005299 ext.10656, Fax.(031) 99005278, <a href="http://fk.ukwms.ac.id">http://fk.ukwms.ac.id</a>, <a href="https://simkepk.ukwms.ac.id">https://simkepk.ukwms.ac.id</a></p>
             <p>email: <a href="mailto:kepk.fkukwms@gmail.com">kepk.fkukwms@gmail.com</a>; <a href="mailto:kepk.fk@ukwms.ac.id">kepk.fk@ukwms.ac.id</a></p>
         </div>
     </div>

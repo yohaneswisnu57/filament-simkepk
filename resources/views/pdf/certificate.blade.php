@@ -7,7 +7,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 5px 20px 20px 20px;
             color: #000;
             line-height: 1.4;
             font-size: 14px;
@@ -119,7 +119,7 @@
                 <h3>KOMISI ETIK PENELITIAN KESEHATAN</h3>
                 <div class="header-address">
                     Universitas Katolik Widya Mandala Tower Barat Lt. 6, Jl. Raya Kalisari Selatan No.1, Pakuwon City, Surabaya<br>
-                    Telp.(031) 99005299 ext. 10656, Fax.(031) 99005278, http://fk.ukwms.ac.id<br>
+                    Telp.(031) 99005299 ext. 10656, Fax.(031) 99005278, http://fk.ukwms.ac.id, https://simkepk.ukwms.ac.id<br>
                     email: kepk.fkukwms@gmail.com; kepk.fk@ukwms.ac.id
                 </div>
             </td>
