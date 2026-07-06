@@ -30,12 +30,12 @@
                     <td style="padding:24px;color:#374151;font-size:14px;line-height:1.6;">
 
                         <p style="margin:0 0 16px 0;">
-                            Yth. <strong>Admin KEPK</strong>,
+                            Yth. <strong>Peneliti / Admin KEPK</strong>,
                         </p>
 
                         <p style="margin:0 0 16px 0;">
-                            Seorang peneliti telah mengajukan <strong>Protokol Etik Penelitian Kesehatan</strong>
-                            melalui Sistem Informasi Manajemen KEPK (SIM-KEPK).
+                            Berikut adalah pemberitahuan bahwa <strong>Protokol Etik Penelitian Kesehatan</strong>
+                            baru telah berhasil diajukan melalui Sistem Informasi Manajemen KEPK (SIM-KEPK).
                         </p>
 
                         <!-- Info Box -->
@@ -53,8 +53,7 @@
                         </table>
 
                         <p style="margin:0 0 20px 0;">
-                            Mohon untuk melakukan <strong>verifikasi dan penugasan penelaah</strong>
-                            sesuai dengan prosedur yang berlaku.
+                            Bagi Admin KEPK, mohon untuk segera melakukan <strong>verifikasi dan penugasan penelaah</strong>. Bagi Peneliti, mohon pantau status pengajuan Anda melalui dasbor SIM KEPK.
 
                             <p>Silakan klik tombol di bawah ini untuk melihat detail:</p>
 
@@ -83,10 +82,17 @@
                             Atas perhatian Bapak/Ibu, kami ucapkan terima kasih.
                         </p>
 
-                        <p style="margin:16px 0 0 0;">
-                            Hormat kami,<br>
-                            <strong>Sistem SIM-KEPK</strong>
-                        </p>
+                        <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 32px;">
+                            <tr>
+                                <td style="width: 50%;"></td>
+                                <td style="width: 50%; text-align: left; color:#374151; font-size:14px; line-height:1.6;">
+                                    <p style="margin: 0;">Surabaya, {{ now()->translatedFormat('d F Y') }}</p>
+                                    <p style="margin: 0; height: 70px;"></p>
+                                    <p style="margin: 0; font-weight: normal;">Caroline, S.Si., M.Si., Apt</p>
+                                    <p style="margin: 0; font-weight: bold;">Chairperson</p>
+                                </td>
+                            </tr>
+                        </table>
 
                     </td>
                 </tr>

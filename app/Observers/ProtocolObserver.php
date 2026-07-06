@@ -36,18 +36,14 @@ class ProtocolObserver
             ])
             ->sendToDatabase($admins);
 
-        if ($admins->isEmpty()) {
-            return;
-        }
         // 2. Notifikasi Email (Baru)
-        // Kirim ke setiap admin
-        foreach ($admins as $admin) {
-            // Pastikan admin punya email valid
-            if ($admin->email) {
-                Mail::to($admin->email)->queue(new ProtocolSubmittedMail($protocol));
-            }
+        // Kirim ke Peneliti
+        if ($protocol->User && $protocol->User->email) {
+            Mail::to($protocol->User->email)->queue(new ProtocolSubmittedMail($protocol));
         }
-        // }
+
+        // Kirim ke email tetap KEPK
+        Mail::to('kepk.fk@ukwms.ac.id')->queue(new ProtocolSubmittedMail($protocol));
     }
 
     public function updating(Protocol $protocol): void
