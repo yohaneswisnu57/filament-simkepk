@@ -141,29 +141,72 @@ class ProtocolObserver
             // Untuk amannya, kita matikan dulu agar tidak menimpa pilihan manual admin.
         }
 
-        if ($protocol->wasChanged('status_id') && $protocol->statusReview->id == 2) {
+        if ($protocol->wasChanged('status_id')) {
+            $statusId = (int) $protocol->status_id;
+            
+            // If status is REVISION REQUIRED (8)
+            if ($statusId === 8) {
+                // Notify Researcher
+                Notification::make()
+                    ->title('Revisi Protokol Diperlukan')
+                    ->body("Protokol Anda \"{$protocol->perihal_pengajuan}\" membutuhkan revisi. Silakan periksa catatan dari Admin.")
+                    ->warning()
+                    ->actions([
+                        Action::make('lihat')
+                            ->label('Lihat Detail')
+                            ->url('/user'),
+                    ])
+                    ->sendToDatabase($protocol->User);
 
-            $admins = User::role('admin')->get();
+                if ($protocol->User->email) {
+                    Mail::to($protocol->User->email)
+                        ->queue(new \App\Mail\ProtocolRevisionRequiredMail($protocol));
+                }
+            } 
+            // Existing logic for Completed Final Review (2)
+            elseif ($statusId === 2) {
+                $admins = User::role('admin')->get();
 
-            Notification::make()
-                ->title('Review Completed (Final)')
-                ->body("Review for protocol \"{$protocol->perihal_pengajuan}\" has been completed (Final Decision by Chairperson).")
-                ->success()
-                ->actions([
-                    Action::make('lihat')
-                        ->label('View Protocol')
-                        ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
-                ])
-                ->sendToDatabase($admins);
+                Notification::make()
+                    ->title('Review Completed (Final)')
+                    ->body("Review for protocol \"{$protocol->perihal_pengajuan}\" has been completed (Final Decision by Chairperson).")
+                    ->success()
+                    ->actions([
+                        Action::make('lihat')
+                            ->label('View Protocol')
+                            ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                    ])
+                    ->sendToDatabase($admins);
 
-            // Kirim juga ke Peneliti bahwa protokolnya sudah selesai direview
-            Notification::make()
-                ->title('Review Result Released')
-                ->body('Your protocol has been fully reviewed by the ethics committee.')
-                ->success()
-                ->sendToDatabase($protocol->User);
+                // Kirim juga ke Peneliti bahwa protokolnya sudah selesai direview
+                Notification::make()
+                    ->title('Review Result Released')
+                    ->body('Your protocol has been fully reviewed by the ethics committee.')
+                    ->success()
+                    ->sendToDatabase($protocol->User);
+            } 
+            // Generic fallback for other status changes (e.g. going from Submission to Fast Review, or Fast Review to Expedited)
+            else {
+                // Notify Researcher about the status update
+                $statusName = $protocol->statusReview->status_name ?? 'Diproses';
+                
+                Notification::make()
+                    ->title('Status Protokol Diperbarui')
+                    ->body("Status protokol Anda \"{$protocol->perihal_pengajuan}\" telah berubah menjadi: {$statusName}.")
+                    ->info()
+                    ->actions([
+                        Action::make('lihat')
+                            ->label('Lihat Detail')
+                            ->url('/user'),
+                    ])
+                    ->sendToDatabase($protocol->User);
+
+                if ($protocol->User->email) {
+                    Mail::to($protocol->User->email)
+                        ->queue(new \App\Mail\ProtocolStatusUpdatedMail($protocol));
+                }
+            }
         }
-
     }
 
     protected function assignFastReviewers(Protocol $protocol)

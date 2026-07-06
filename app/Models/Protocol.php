@@ -42,6 +42,7 @@ class Protocol extends Model implements Commentable
         'certificate_name_changes',
         'certificate_uuid',
         'certificate_published_at',
+        'revision_notes',
     ];
 
     protected function casts(): array

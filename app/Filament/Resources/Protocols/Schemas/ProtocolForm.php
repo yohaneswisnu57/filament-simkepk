@@ -58,12 +58,18 @@ class ProtocolForm
                             ->default(now())
                             ->readOnly(),
 
-                        // Status — only admin can change
                         Select::make('status_id')
                             ->label('Status')
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->live()
                             ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin'])),
+                        
+                        \Filament\Forms\Components\Textarea::make('revision_notes')
+                            ->label('Revision Notes')
+                            ->columnSpanFull()
+                            ->visible(fn ($get): bool => $get('status_id') == 8)
+                            ->required(fn ($get): bool => $get('status_id') == 8)
+                            ->helperText('Please explain what needs to be revised by the researcher.'),
 
                         // Created By — display only
                         Select::make('user_id')

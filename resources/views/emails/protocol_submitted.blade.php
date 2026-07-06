@@ -46,7 +46,7 @@
                                         <strong>Detail Pengajuan:</strong><br><br>
                                         <strong>Nama Peneliti:</strong> {{ $protocol->user->name ?? 'Unknown' }}<br>
                                         <strong>Judul Protokol:</strong> {{ $protocol->perihal_pengajuan }}<br>
-                                        <strong>Tanggal Pengajuan:</strong> {{ $protocol->tangal_pengajuan }}
+                                        <strong>Tanggal Pengajuan:</strong> {{ $protocol->tanggal_pengajuan }}
                                     </p>
                                 </td>
                             </tr>
