@@ -202,19 +202,31 @@
             <!-- Download Requirements Area -->
             <div class="mt-8">
                 <p class="text-sm text-slate-500 font-medium mb-3 uppercase tracking-wider">Unduh Dokumen Persyaratan Pengajuan</p>
-                <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Data_Pemohon_KEPK.docx']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                <div class="flex flex-wrap gap-3 justify-center items-center max-w-5xl mx-auto">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Data Pemohon KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Data Pemohon KEPK
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Informed_Consent_KEPK.docx']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Informed Consent KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Informed Consent
                     </a>
-                    <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek hewan.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Protokol Hewan
+                    </a>
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Protokol Manusia
+                    </a>
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia sosial humaniora.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Protokol Sosial Humaniora
+                    </a>
+                    <!-- <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-files mr-2 text-xl text-primary-600"></i>
                         Jenis Protokol
-                    </a>
+                    </a> -->
                 </div>
             </div>
 
@@ -292,24 +304,28 @@
                     
                     <ul class="space-y-4">
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa UKWMS</span>
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen FK UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 150.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen UKWMS di luar FK</span>
+                            <span class="font-bold text-slate-900">Rp 150.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen di luar UKWMS</span>
+                            <span class="font-bold text-slate-900">Rp 700.000</span>
                         </li>
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa FK UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 100.000</span>
                         </li>
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa diluar UKWMS</span>
-                            <span class="font-bold text-slate-900">Rp 400.000</span>
-                        </li>
-                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen Widya Mandala</span>
-                            <span class="font-bold text-slate-900">Rp 150.000</span>
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa UKWMS di luar FK</span>
+                            <span class="font-bold text-slate-900">Rp 100.000</span>
                         </li>
                         <li class="flex justify-between items-center pt-2">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen Non Widya Mandala</span>
-                            <span class="font-bold text-slate-900">Rp 700.000</span>
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa di luar UKWMS</span>
+                            <span class="font-bold text-slate-900">Rp 400.000</span>
                         </li>
                     </ul>
                 </div>

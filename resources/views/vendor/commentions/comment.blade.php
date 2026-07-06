@@ -1,20 +1,23 @@
 @use('\Kirschbaum\Commentions\Config')
 
 <div class="comm:flex comm:items-start comm:gap-x-4 comm:border comm:border-gray-300 comm:dark:border-gray-700 comm:p-4 comm:rounded-lg comm:shadow-sm comm:mb-2" id="filament-comment-{{ $comment->getId() }}">
-    @if ($avatar = $comment->getAuthorAvatar())
+    @php
+        $canSeeIdentity = auth()->check() && (auth()->user()->hasRole(['super_admin', 'admin', 'reviewer', 'sekertaris']) || auth()->id() === $comment->author_id);
+    @endphp
+    @if ($canSeeIdentity && $avatar = $comment->getAuthorAvatar())
         <img
             src="{{ $comment->getAuthorAvatar() }}"
             alt="{{ __('commentions::comments.user_avatar_alt') }}"
             class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:object-cover comm:object-center"
         />
     @else
-        <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 "></div>
+        <div class="comm:w-10 comm:h-10 comm:rounded-full comm:mt-0.5 comm:bg-gray-200"></div>
     @endif
 
     <div class="comm:flex-1">
         <div class="comm:text-sm comm:font-bold comm:text-gray-900 comm:dark:text-gray-100 comm:flex comm:justify-between comm:items-center">
             <div>
-                {{ $comment->getAuthorName() }}
+                {{ $canSeeIdentity ? $comment->getAuthorName() : 'Reviewer' }}
                 <span
                     class="comm:text-xs comm:text-gray-500 comm:dark:text-gray-300"
                     title="{{ __('commentions::comments.commented_at', ['datetime' => $comment->getCreatedAt()->format('Y-m-d H:i:s')]) }}"
@@ -92,7 +95,7 @@
         @if ($editing)
             <div class="comm:mt-2">
                 <div class="tip-tap-container comm:mb-2" wire:ignore>
-                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()))">
+                    <div x-data="editor(@js($commentBody), @js($mentionables), 'comment', null, @js($this->getTipTapCssClasses()), @js($commentionsComponentPrefix . 'comment'))">
                         <div x-ref="element"></div>
                     </div>
                 </div>
