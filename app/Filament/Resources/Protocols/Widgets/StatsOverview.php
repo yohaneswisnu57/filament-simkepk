@@ -19,7 +19,7 @@ class StatsOverview extends StatsOverviewWidget
     protected function getStats(): array
     {
         // 1. Pending Assignment (New Submission + No Reviewer Group)
-        $pendingAssignment = Protocol::where('status_id', 7)
+        $pendingAssignment = Protocol::where('status_id', 0)
             ->whereNull('reviewer_kelompok_id')
             ->count();
 
