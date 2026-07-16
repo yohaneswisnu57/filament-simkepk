@@ -311,10 +311,6 @@
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 150.000</span>
                         </li>
-                        <!-- <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen UKWMS di luar FK</span>
-                            <span class="font-bold text-slate-900">Rp 150.000</span>
-                        </li> -->
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen di luar UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 700.000</span>
