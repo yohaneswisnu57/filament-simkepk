@@ -308,30 +308,26 @@
                     
                     <ul class="space-y-4">
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen FK UKWMS</span>
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 150.000</span>
                         </li>
-                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
+                        <!-- <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen UKWMS di luar FK</span>
                             <span class="font-bold text-slate-900">Rp 150.000</span>
-                        </li>
+                        </li> -->
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Dosen di luar UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 700.000</span>
                         </li>
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa FK UKWMS</span>
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 100.000</span>
                         </li>
                         <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
-                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa UKWMS di luar FK</span>
-                            <span class="font-bold text-slate-900">Rp 100.000</span>
-                        </li>
-                        <li class="flex justify-between items-center pt-2">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa di luar UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 400.000</span>
                         </li>
-                        <li class="flex justify-between items-center pt-2">
+                        <li class="flex justify-between items-center pb-4 border-b border-slate-100/80">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Biaya Adendum(Berlaku 1 Kali Saja)</span>
                             <span class="font-bold text-slate-900">Rp 50.000</span>
                         </li>
