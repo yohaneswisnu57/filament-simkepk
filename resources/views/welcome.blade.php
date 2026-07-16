@@ -223,6 +223,10 @@
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Protokol Sosial Humaniora
                     </a>
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Form permohonan adendum.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                        <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
+                        Form Adendum
+                    </a>
                     <!-- <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
                         <i class="ph-duotone ph-files mr-2 text-xl text-primary-600"></i>
                         Jenis Protokol
@@ -326,6 +330,10 @@
                         <li class="flex justify-between items-center pt-2">
                             <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Mahasiswa di luar UKWMS</span>
                             <span class="font-bold text-slate-900">Rp 400.000</span>
+                        </li>
+                        <li class="flex justify-between items-center pt-2">
+                            <span class="text-slate-600 font-medium flex items-center gap-2"><i class="ph-fill ph-check-circle text-primary-500"></i> Biaya Adendum(Berlaku 1 Kali Saja)</span>
+                            <span class="font-bold text-slate-900">Rp 50.000</span>
                         </li>
                     </ul>
                 </div>
