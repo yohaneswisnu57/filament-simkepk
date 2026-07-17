@@ -6,9 +6,14 @@ use App\Filament\Resources\Protocols\Pages\EditProtocol;
 use App\Models\Protocol;
 use App\Models\ReviewerKelompok;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class WorkflowSynchronizationTest extends TestCase
@@ -21,16 +26,28 @@ class WorkflowSynchronizationTest extends TestCase
     {
         parent::setUp();
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         // Setup Roles
-        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'sekertaris', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+
+        $permissions = [
+            'ViewAny:Protocol', 'View:Protocol', 'Create:Protocol',
+            'Update:Protocol', 'Delete:Protocol',
+        ];
+
+        foreach ($permissions as $p) {
+            Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
+        }
+
+        $admin->syncPermissions($permissions);
+        $superAdmin->syncPermissions($permissions);
 
         // Seed Status Reviews
         \DB::table('status_reviews')->insert([
@@ -70,7 +87,7 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_sends_notification_to_group_members_on_regular_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $reviewer = User::factory()->create(['reviewer_kelompok_id' => $kelompok->id]);
         $reviewer->assignRole('reviewer');
 
@@ -90,7 +107,7 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_skips_group_notification_on_fast_review_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $reviewer = User::factory()->create(['reviewer_kelompok_id' => $kelompok->id]);
         $reviewer->assignRole('reviewer');
 
@@ -110,16 +127,22 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_sends_individual_notifications_on_fast_review_assignment_via_edit_page()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $ketua = User::factory()->create();
         $ketua->assignRole('reviewer');
 
         $sekertaris = User::factory()->create();
         $sekertaris->assignRole('reviewer');
 
+        Storage::fake('public');
+        Storage::disk('public')->putFileAs('uploadpernyataan', UploadedFile::fake()->create('pernyataan.pdf', 100), 'pernyataan.pdf');
+        Storage::disk('public')->putFileAs('buktipembayaran', UploadedFile::fake()->image('bukti.png'), 'bukti.png');
+
         $protocol = Protocol::factory()->create([
             'status_id' => 6,
-            'reviewer_kelompok_id' => $kelompok->id
+            'reviewer_kelompok_id' => $kelompok->id,
+            'uploadpernyataan' => 'uploadpernyataan/pernyataan.pdf',
+            'buktipembayaran' => 'buktipembayaran/bukti.png',
         ]);
 
         $this->actingAs($this->admin);
