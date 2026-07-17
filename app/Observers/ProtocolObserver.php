@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Mail\ProtocolRevisionRequiredMail;
+use App\Mail\ProtocolStatusUpdatedMail;
 use App\Mail\ProtocolSubmittedMail;
 use App\Mail\ReviewAssignmentMail;
 use App\Models\Protocol;
@@ -10,6 +12,7 @@ use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class ProtocolObserver
 {
@@ -66,7 +69,7 @@ class ProtocolObserver
 
         // Generate certificate UUID if status is CERTIFICATE and it doesn't have one
         if ((int) $protocol->status_id === 5 && empty($protocol->certificate_uuid)) {
-            $protocol->certificate_uuid = \Illuminate\Support\Str::uuid()->toString();
+            $protocol->certificate_uuid = Str::uuid()->toString();
         }
     }
 
@@ -80,7 +83,7 @@ class ProtocolObserver
         // ==========================================
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan tidak kosong
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan status BUKAN Fast Review (ID 6)
-        if ($protocol->wasChanged('reviewer_kelompok_id') 
+        if ($protocol->wasChanged('reviewer_kelompok_id')
             && ! empty($protocol->reviewer_kelompok_id)
             && (int) $protocol->status_id !== 6
         ) {
@@ -139,7 +142,7 @@ class ProtocolObserver
 
         if ($protocol->wasChanged('status_id')) {
             $statusId = (int) $protocol->status_id;
-            
+
             // If status is REVISION REQUIRED (8)
             if ($statusId === 8) {
                 // Notify Researcher
@@ -156,9 +159,9 @@ class ProtocolObserver
 
                 if ($protocol->User->email) {
                     Mail::to($protocol->User->email)
-                        ->queue(new \App\Mail\ProtocolRevisionRequiredMail($protocol));
+                        ->queue(new ProtocolRevisionRequiredMail($protocol));
                 }
-            } 
+            }
             // Existing logic for Completed Final Review (2)
             elseif ($statusId === 2) {
                 $admins = User::role('admin')->get();
@@ -180,12 +183,12 @@ class ProtocolObserver
                     ->body('Your protocol has been fully reviewed by the ethics committee.')
                     ->success()
                     ->sendToDatabase($protocol->User);
-            } 
+            }
             // Generic fallback for other status changes (e.g. going from Submission to Fast Review, or Fast Review to Expedited)
             else {
                 // Notify Researcher about the status update
                 $statusName = $protocol->statusReview->status_name ?? 'Diproses';
-                
+
                 Notification::make()
                     ->title('Status Protokol Diperbarui')
                     ->body("Status protokol Anda \"{$protocol->perihal_pengajuan}\" telah berubah menjadi: {$statusName}.")
@@ -199,7 +202,7 @@ class ProtocolObserver
 
                 if ($protocol->User->email) {
                     Mail::to($protocol->User->email)
-                        ->queue(new \App\Mail\ProtocolStatusUpdatedMail($protocol));
+                        ->queue(new ProtocolStatusUpdatedMail($protocol));
                 }
             }
         }

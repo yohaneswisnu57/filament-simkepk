@@ -3,10 +3,10 @@
 namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Notifications\Notification;
-use Filament\Notifications\Actions\Action;
 use App\Models\User;
+use Filament\Notifications\Actions\Action;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
 
 class CreateProtocol extends CreateRecord
 {
@@ -51,7 +51,7 @@ class CreateProtocol extends CreateRecord
 
             // Kirim Notifikasi khusus ke Penilai Fast Review
             $assignedIds = array_filter([$ketuaId, $sekertarisId]);
-            if (!empty($assignedIds)) {
+            if (! empty($assignedIds)) {
                 $reviewersToNotify = User::whereIn('id', $assignedIds)->get();
                 Notification::make()
                     ->title('Penugasan Fast Review Baru')

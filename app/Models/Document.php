@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Document extends Model
 {
-    use softDeletes;
+    use SoftDeletes;
+
     protected $fillable = [
         'namadokumen',
         'jenisdokumen',
@@ -25,5 +26,4 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
 }

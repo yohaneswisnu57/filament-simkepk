@@ -2,19 +2,21 @@
 
 namespace App\Mail;
 
+use App\Models\Protocol;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Protocol;
 
 class ReviewSubmittedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public $protocol;
+
     public $reviewerName;
 
     /**
@@ -34,7 +36,7 @@ class ReviewSubmittedMail extends Mailable implements ShouldQueue
     {
         return new Envelope(
             // Subjek yang lebih jelas bagi peneliti
-            subject: 'Update Progress: Hasil Telaah Masuk - ' . $this->protocol->perihal_pengajuan,
+            subject: 'Update Progress: Hasil Telaah Masuk - '.$this->protocol->perihal_pengajuan,
         );
     }
 
@@ -52,7 +54,7 @@ class ReviewSubmittedMail extends Mailable implements ShouldQueue
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     * @return array<int, Attachment>
      */
     public function attachments(): array
     {

@@ -6,6 +6,7 @@ use App\Models\Protocol;
 use App\Models\StatusReview;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -45,7 +46,7 @@ class CertificatePrintTest extends TestCase
         $this->exemptedStatus = StatusReview::create(['status_name' => 'Exempted']);
 
         $this->protocol = Protocol::factory()->create([
-            'user_id'   => $this->owner->id,
+            'user_id' => $this->owner->id,
             'status_id' => $this->exemptedStatus->id,
         ]);
     }
@@ -54,7 +55,7 @@ class CertificatePrintTest extends TestCase
     // TEST: Pemilik protokol Exempted dapat akses
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function owner_can_access_certificate_of_their_exempted_protocol(): void
     {
         $this->actingAs($this->owner);
@@ -73,7 +74,7 @@ class CertificatePrintTest extends TestCase
     // TEST: Admin dapat akses certificate siapapun
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function admin_can_access_certificate_of_any_exempted_protocol(): void
     {
         $this->actingAs($this->admin);
@@ -91,14 +92,14 @@ class CertificatePrintTest extends TestCase
     // TEST: User lain tidak bisa akses certificate milik orang lain
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function other_user_cannot_access_certificate_belonging_to_someone_else(): void
     {
         $this->actingAs($this->otherUser);
 
         $response = $this->get(route('certificates.protocol', [
             'protocol' => $this->protocol->id,
-            'nama'     => 'Hacker',
+            'nama' => 'Hacker',
         ]));
 
         $response->assertStatus(403);
@@ -108,13 +109,13 @@ class CertificatePrintTest extends TestCase
     // TEST: Protokol non-Exempted tidak bisa dicetak
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function certificate_cannot_be_printed_for_non_exempted_protocol(): void
     {
         $fastReviewStatus = StatusReview::create(['status_name' => 'Fast Review']);
 
         $nonExemptedProtocol = Protocol::factory()->create([
-            'user_id'   => $this->owner->id,
+            'user_id' => $this->owner->id,
             'status_id' => $fastReviewStatus->id,
         ]);
 
@@ -122,7 +123,7 @@ class CertificatePrintTest extends TestCase
 
         $response = $this->get(route('certificates.protocol', [
             'protocol' => $nonExemptedProtocol->id,
-            'nama'     => 'John Doe',
+            'nama' => 'John Doe',
         ]));
 
         $response->assertStatus(403);
@@ -132,12 +133,12 @@ class CertificatePrintTest extends TestCase
     // TEST: Guest (belum login) diredirect ke login
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function unauthenticated_user_is_redirected_to_login(): void
     {
         $response = $this->get(route('certificates.protocol', [
             'protocol' => $this->protocol->id,
-            'nama'     => 'Guest',
+            'nama' => 'Guest',
         ]));
 
         $response->assertRedirect('/admin/login');
@@ -147,7 +148,7 @@ class CertificatePrintTest extends TestCase
     // TEST: nama_lengkap query default ke user->name jika kosong
     // ==========================================
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function nama_lengkap_defaults_to_owner_name_when_not_provided(): void
     {
         $this->actingAs($this->owner);

@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Protocol;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CertificateController extends Controller
@@ -36,15 +37,15 @@ class CertificateController extends Controller
         }
 
         $isAdmin = $user->hasRole(['admin', 'super_admin']);
-        
-        // Mengambil nama langsung dari database. 
+
+        // Mengambil nama langsung dari database.
         // Peneliti tidak akan bisa memanipulasi nama lewat URL
         $nama_lengkap = $protocol->certificate_name ?? $user->name;
 
         // Generate UUID untuk tracker jika belum ada
         if (! $protocol->certificate_uuid) {
             $protocol->updateQuietly([
-                'certificate_uuid' => \Illuminate\Support\Str::uuid()->toString(),
+                'certificate_uuid' => Str::uuid()->toString(),
                 'certificate_published_at' => now(),
             ]);
         }

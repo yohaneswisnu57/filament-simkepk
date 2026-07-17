@@ -23,7 +23,7 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::User;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Management Access';
+    protected static string|UnitEnum|null $navigationGroup = 'Management Access';
 
     // protected static ?string $recordTitleAttribute = 'User';
 
@@ -58,6 +58,7 @@ class UserResource extends Resource
             'edit' => EditUser::route('/{record}/edit'),
         ];
     }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
