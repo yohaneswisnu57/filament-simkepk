@@ -73,7 +73,7 @@ class RoleSwitcher extends Component
         }
 
         return view('livewire.role-switcher', [
-            'options' => $options
+            'options' => $options,
         ]);
     }
 }

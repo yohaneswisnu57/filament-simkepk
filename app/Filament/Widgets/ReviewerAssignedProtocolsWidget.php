@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Models\Protocol;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -22,7 +23,7 @@ class ReviewerAssignedProtocolsWidget extends BaseWidget
         // Only visible to reviewers
         return Auth::user()?->hasRole('reviewer') ?? false;
     }
-    
+
     public function table(Table $table): Table
     {
         $user = Auth::user();
@@ -37,21 +38,21 @@ class ReviewerAssignedProtocolsWidget extends BaseWidget
                     ->where(function ($query) use ($user) {
                         $query->whereHas('reviewers', function ($q) use ($user) {
                             $q->where('users.id', $user->id)
-                              ->where('feedback_status', 'pending');
+                                ->where('feedback_status', 'pending');
                         })
-                        ->orWhere(function ($q) use ($user) {
-                            if ($user->reviewer_kelompok_id) {
-                                $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
-                                  ->whereDoesntHave('reviewers', function ($q2) use ($user) {
-                                      $q2->where('users.id', $user->id);
-                                  })
-                                  ->whereDoesntHave('reviews', function ($q2) use ($user) {
-                                      $q2->where('user_id', $user->id);
-                                  });
-                            } else {
-                                $q->whereRaw('1=0');
-                            }
-                        });
+                            ->orWhere(function ($q) use ($user) {
+                                if ($user->reviewer_kelompok_id) {
+                                    $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
+                                        ->whereDoesntHave('reviewers', function ($q2) use ($user) {
+                                            $q2->where('users.id', $user->id);
+                                        })
+                                        ->whereDoesntHave('reviews', function ($q2) use ($user) {
+                                            $q2->where('user_id', $user->id);
+                                        });
+                                } else {
+                                    $q->whereRaw('1=0');
+                                }
+                            });
                     })
                     ->latest('created_at')
             )
@@ -95,7 +96,7 @@ class ReviewerAssignedProtocolsWidget extends BaseWidget
             ])
             ->actions([
                 ViewAction::make()
-                    ->url(fn (Protocol $record): string => \App\Filament\Resources\Protocols\ProtocolResource::getUrl('view', ['record' => $record])),
+                    ->url(fn (Protocol $record): string => ProtocolResource::getUrl('view', ['record' => $record])),
             ]);
     }
 }

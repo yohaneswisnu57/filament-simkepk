@@ -21,8 +21,8 @@ class Protocol extends Model implements Commentable
 {
     use HasComments;
     use HasFactory;
-    use SoftDeletes;
     use LogsActivity;
+    use SoftDeletes;
 
     protected $fillable = [
         'perihal_pengajuan',
@@ -51,6 +51,7 @@ class Protocol extends Model implements Commentable
             'certificate_published_at' => 'datetime',
         ];
     }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
@@ -109,7 +110,7 @@ class Protocol extends Model implements Commentable
     /** True jika siap cetak certificate */
     public function isReadyForCertificate(): bool
     {
-        return $this->fast_review_decision === 'Exempted' 
+        return $this->fast_review_decision === 'Exempted'
             || in_array($this->status_id, [1, 5]);
     }
 

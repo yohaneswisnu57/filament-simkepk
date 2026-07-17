@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Protocol;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -31,7 +30,7 @@ class ProtocolStatusUpdatedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Perubahan Status Protokol KEPK: ' . $this->protocol->perihal_pengajuan,
+            subject: 'Perubahan Status Protokol KEPK: '.$this->protocol->perihal_pengajuan,
         );
     }
 

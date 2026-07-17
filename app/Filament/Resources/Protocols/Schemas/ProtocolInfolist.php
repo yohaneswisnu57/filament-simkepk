@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Protocols\Schemas;
 
 use App\Models\Protocol;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Icon;
@@ -67,7 +68,7 @@ class ProtocolInfolist
                                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                                             ->action(
-                                                \Filament\Actions\Action::make('downloadPernyataan')
+                                                Action::make('downloadPernyataan')
                                                     ->label('Download File')
                                                     ->icon(Heroicon::ArrowDownTray)
                                                     ->color('info')
@@ -79,7 +80,7 @@ class ProtocolInfolist
                                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                                             ->action(
-                                                \Filament\Actions\Action::make('downloadBukti')
+                                                Action::make('downloadBukti')
                                                     ->label('Download File')
                                                     ->icon(Heroicon::ArrowDownTray)
                                                     ->color('info')
@@ -97,7 +98,7 @@ class ProtocolInfolist
                                             ->beforeContent(Icon::make(Heroicon::DocumentArrowDown))
                                             ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                                             ->action(
-                                                \Filament\Actions\Action::make('downloadCertificate')
+                                                Action::make('downloadCertificate')
                                                     ->label('Download File')
                                                     ->icon(Heroicon::ArrowDownTray)
                                                     ->color('success')

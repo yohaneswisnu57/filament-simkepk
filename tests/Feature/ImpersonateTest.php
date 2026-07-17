@@ -2,12 +2,10 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Resources\Users\Pages\ListUsers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
-use Tests\TestCase;
 use Spatie\Permission\Models\Role;
+use Tests\TestCase;
 
 class ImpersonateTest extends TestCase
 {
@@ -16,9 +14,9 @@ class ImpersonateTest extends TestCase
     public function test_backdoor_impersonate_route_is_removed()
     {
         $user = User::factory()->create();
-        $response = $this->get('/test-impersonate/' . $user->id);
+        $response = $this->get('/test-impersonate/'.$user->id);
         $response->assertStatus(404);
-        
+
         $response2 = $this->get('/test-dump-session');
         $response2->assertStatus(404);
     }

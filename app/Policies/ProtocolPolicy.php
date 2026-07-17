@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Protocol;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ProtocolPolicy
 {
     use HandlesAuthorization;
-    
+
     private function canAccessProtocol(AuthUser $authUser, Protocol $protocol): bool
     {
         if ($authUser->hasRole(['super_admin', 'admin', 'sekertaris'])) {
@@ -99,5 +99,4 @@ class ProtocolPolicy
     {
         return $authUser->can('Reorder:Protocol');
     }
-
 }

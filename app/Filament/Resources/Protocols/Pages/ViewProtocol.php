@@ -10,10 +10,12 @@ use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ViewProtocol extends ViewRecord
 {
@@ -129,7 +131,7 @@ class ViewProtocol extends ViewRecord
                 ->icon('heroicon-o-qr-code')
                 ->color('secondary')
                 ->modalHeading('Verification QR Code')
-                ->modalContent(fn () => new \Illuminate\Support\HtmlString('<div style="text-align:center; padding: 20px;">' . \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate(route('certificates.verify', $this->record->certificate_uuid)) . '</div>'))
+                ->modalContent(fn () => new HtmlString('<div style="text-align:center; padding: 20px;">'.QrCode::size(200)->generate(route('certificates.verify', $this->record->certificate_uuid)).'</div>'))
                 ->modalSubmitAction(false)
                 ->modalCancelActionLabel('Close')
                 ->visible(fn (): bool => ! empty($this->record->certificate_uuid)),
@@ -142,7 +144,7 @@ class ViewProtocol extends ViewRecord
                     auth()->id() === $this->record->user_id
                     || auth()->user()->hasRole(['admin', 'super_admin'])
                 ))
-                ->action(fn () => \Illuminate\Support\Facades\Storage::disk('public')->download($this->record->certificate_file)),
+                ->action(fn () => Storage::disk('public')->download($this->record->certificate_file)),
         ];
     }
 }

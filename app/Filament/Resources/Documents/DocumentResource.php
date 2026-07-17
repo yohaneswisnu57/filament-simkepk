@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Documents;
 
-use App\Filament\Resources\Documents\Pages;
 use App\Models\Document;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -17,7 +16,6 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -56,7 +54,7 @@ class DocumentResource extends Resource
                     ->required()
                     ->relationship('protocol', 'perihal_pengajuan')
                     ->label('Protocol')
-                    ->when(fn (Select $component) => !Auth::user()->hasRole('super_admin') && !Auth::user()->hasRole('admin'), function (Select $component) {
+                    ->when(fn (Select $component) => ! Auth::user()->hasRole('super_admin') && ! Auth::user()->hasRole('admin'), function (Select $component) {
                         $userId = Auth::id();
                         $component->options(fn () => Document::whereHas('protocol', function (Builder $query) use ($userId) {
                             $query->where('user_id', $userId);
@@ -70,18 +68,18 @@ class DocumentResource extends Resource
                 //     ->required(),
                 //     // ->maxSize(10240) // Maksimum ukuran file 10MB
                 FileUpload::make('path')
-                            ->label('Upload Document')
-                            ->required()
-                            ->preserveFilenames()
-                            ->disk('public')
-                            ->directory('dokumen_pendukung')
-                            ->acceptedFileTypes([
-                                'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-                            ]) // Opsional: Batasi hanya PDF/Docx
-                            ->maxSize(3072) // <--- Batasan 3MB (3072 KB)
-                            ->validationMessages([
-                                'max' => 'Ukuran file terlalu besar. Maksimal hanya 3MB.',
-                            ]),
+                    ->label('Upload Document')
+                    ->required()
+                    ->preserveFilenames()
+                    ->disk('public')
+                    ->directory('dokumen_pendukung')
+                    ->acceptedFileTypes([
+                        'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    ]) // Opsional: Batasi hanya PDF/Docx
+                    ->maxSize(3072) // <--- Batasan 3MB (3072 KB)
+                    ->validationMessages([
+                        'max' => 'Ukuran file terlalu besar. Maksimal hanya 3MB.',
+                    ]),
 
             ]);
     }
@@ -184,17 +182,19 @@ class DocumentResource extends Resource
     public function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->user()->id;
+
         return $data;
     }
 
-    public static function getEloquentQuery(): Builder{
+    public static function getEloquentQuery(): Builder
+    {
         $user = auth()->user();
 
         $query = parent::getEloquentQuery();
         // dd($query);
         // Ganti 'Admin' dengan nama peran admin Anda jika berbeda
         // Logika ini: "Jika pengguna TIDAK memiliki peran Admin..."
-        if (!$user->hasRole('super_admin') && !$user->hasRole('admin')) {
+        if (! $user->hasRole('super_admin') && ! $user->hasRole('admin')) {
             // "...maka filter data hanya untuk user_id miliknya."
             $query->where('user_id', $user->id);
         }

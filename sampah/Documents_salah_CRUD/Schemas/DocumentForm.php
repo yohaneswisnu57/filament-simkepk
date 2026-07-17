@@ -39,7 +39,7 @@ class DocumentForm
                     ->directory('dokumen_pendukung')
                     ->preserveFilenames()
                     ->required(),
-                    // ->maxSize(10240) // Maksimum ukuran file 10MB
+                // ->maxSize(10240) // Maksimum ukuran file 10MB
 
             ]);
     }

@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentRelationManager extends RelationManager
 {
@@ -180,7 +181,7 @@ class DocumentRelationManager extends RelationManager
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('info')
                     ->visible(fn (Document $record): bool => ! empty($record->path))
-                    ->action(fn (Document $record) => \Illuminate\Support\Facades\Storage::disk('public')->download($record->path)),
+                    ->action(fn (Document $record) => Storage::disk('public')->download($record->path)),
                 EditAction::make()
                     ->label('Edit')
                     ->icon('heroicon-o-pencil'),

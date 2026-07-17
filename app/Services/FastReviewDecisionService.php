@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Mail\ReviewAssignmentMail;
 use App\Models\Protocol;
 use App\Models\Review;
 use App\Models\StatusReview;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Mail;
 
 class FastReviewDecisionService
 {
@@ -141,8 +143,8 @@ class FastReviewDecisionService
                 // Notifikasi Email
                 foreach ($kelompok->users as $reviewer) {
                     if ($reviewer->email) {
-                        \Illuminate\Support\Facades\Mail::to($reviewer->email)
-                            ->queue(new \App\Mail\ReviewAssignmentMail($protocol));
+                        Mail::to($reviewer->email)
+                            ->queue(new ReviewAssignmentMail($protocol));
                     }
                 }
             }
