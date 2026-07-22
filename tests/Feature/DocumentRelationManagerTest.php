@@ -35,6 +35,7 @@ class DocumentRelationManagerTest extends TestCase
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
 
         $this->admin = User::factory()->create();
         $this->admin->assignRole('admin');
@@ -84,5 +85,31 @@ class DocumentRelationManagerTest extends TestCase
         ])
             ->callTableAction('download', $document)
             ->assertFileDownloaded('test.pdf', 'dummy content');
+    }
+
+    /** @test */
+    public function assigned_reviewer_can_view_document_revision_tab_without_document_permission()
+    {
+        $reviewer = User::factory()->create();
+        $reviewer->assignRole('reviewer');
+        $this->protocol->reviewers()->attach($reviewer->id, [
+            'role_in_review' => 'Ketua',
+            'feedback_status' => 'pending',
+        ]);
+
+        $this->actingAs($reviewer);
+
+        $this->assertTrue(DocumentRelationManager::canViewForRecord($this->protocol, EditProtocol::class));
+    }
+
+    /** @test */
+    public function unassigned_reviewer_cannot_view_document_revision_tab()
+    {
+        $reviewer = User::factory()->create();
+        $reviewer->assignRole('reviewer');
+
+        $this->actingAs($reviewer);
+
+        $this->assertFalse(DocumentRelationManager::canViewForRecord($this->protocol, EditProtocol::class));
     }
 }

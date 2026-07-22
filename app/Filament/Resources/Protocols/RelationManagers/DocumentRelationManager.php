@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentRelationManager extends RelationManager
@@ -140,6 +141,11 @@ class DocumentRelationManager extends RelationManager
     public static function getBadge(Model $ownerRecord, string $pageClass): string
     {
         return $ownerRecord->document()->count();
+    }
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        return Gate::allows('view', $ownerRecord) || parent::canViewForRecord($ownerRecord, $pageClass);
     }
 
     public function table(Table $table): Table
