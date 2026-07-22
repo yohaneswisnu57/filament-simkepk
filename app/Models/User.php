@@ -147,7 +147,7 @@ class User extends Authenticatable implements Commenter, FilamentUser, HasEmailA
 
         if ($panel->getId() === 'reviewer') {
             // User dengan role user biasa TIDAK akan bisa masuk sini
-            return $this->hasRole(['reviewer', 'panel_reviewer']);
+            return $this->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer']);
         }
 
         // 4. PENTING: Ubah ini menjadi FALSE
