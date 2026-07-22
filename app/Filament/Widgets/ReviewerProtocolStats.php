@@ -14,7 +14,7 @@ class ReviewerProtocolStats extends StatsOverviewWidget
     public static function canView(): bool
     {
         // Only visible to reviewers
-        return Auth::user()?->hasRole('reviewer') ?? false;
+        return Auth::user()?->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer']) ?? false;
     }
 
     protected function getStats(): array

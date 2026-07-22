@@ -20,7 +20,7 @@ class ReviewerAssignedProtocolsWidget extends BaseWidget
     public static function canView(): bool
     {
         // Only visible to reviewers
-        return Auth::user()?->hasRole('reviewer') ?? false;
+        return Auth::user()?->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer']) ?? false;
     }
     
     public function table(Table $table): Table

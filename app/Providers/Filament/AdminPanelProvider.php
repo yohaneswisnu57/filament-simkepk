@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Resources\Protocols\Widgets\StatsOverview;
 use App\Filament\Widgets\AdminMonthlyProtocolChart;
 use App\Filament\Widgets\IncomingProtocolsWidget;
+use App\Http\Middleware\SetLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Enums\ThemeMode;
@@ -75,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
+                SetLocale::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,

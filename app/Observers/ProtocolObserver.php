@@ -79,10 +79,8 @@ class ProtocolObserver
         // SKENARIO: ASSIGN KE KELOMPOK REVIEWER
         // ==========================================
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan tidak kosong
-        // Trigger: Kolom 'reviewer_kelompok_id' berubah dan status BUKAN Fast Review (ID 6)
         if ($protocol->wasChanged('reviewer_kelompok_id') 
             && ! empty($protocol->reviewer_kelompok_id)
-            && (int) $protocol->status_id !== 6
         ) {
 
             // 1. Ambil Kelompok ID yang baru di-assign

@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\UserProtocolStatusStats;
+use App\Http\Middleware\SetLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -71,6 +72,7 @@ class UserPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
+                SetLocale::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,

@@ -46,7 +46,9 @@ class ProtocolForm
                             ->maxLength(15)
                             ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                             ->validationMessages([
-                                'telRegex' => 'Contact person must be a valid phone number.',
+                                'regex' => 'Format nomor telepon tidak valid. Pastikan hanya berisi angka dan simbol yang benar (contoh: 0812... atau +628...).',
+                                'min' => 'Nomor telepon minimal harus 10 digit/karakter.',
+                                'max' => 'Nomor telepon maksimal 15 digit/karakter.',
                             ])
                             ->nullable(),
 

@@ -44,6 +44,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         'email',
         'password',
         'is_active',
+        'reviewer_kelompok_id',
     ];
 
     public function getActivitylogOptions(): LogOptions

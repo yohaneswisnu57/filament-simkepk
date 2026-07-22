@@ -99,7 +99,7 @@ class ProtocolResource extends Resource
             $q->where('user_id', $user->id);
 
             // B. JIKA dia adalah Reviewer
-            if ($user->hasRole('reviewer')) {
+            if ($user->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
                 // Tampilkan jika assigned di pivot table
                 $q->orWhereHas('reviewers', function ($q2) use ($user) {
                     $q2->where('users.id', $user->id);
