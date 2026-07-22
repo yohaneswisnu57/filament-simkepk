@@ -4,9 +4,10 @@ namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Models\User;
-use Filament\Actions\Action;
+use Filament\Actions\Action as PageAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Actions\Action as NotificationAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 
@@ -88,7 +89,7 @@ class EditProtocol extends EditRecord
                     ->body("Anda telah ditugaskan sebagai penilai Fast Review untuk protokol: \"{$protocol->perihal_pengajuan}\"")
                     ->danger()
                     ->actions([
-                        Action::make('cek')
+                        NotificationAction::make('cek')
                             ->label('Buka Protokol')
                             ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
                     ])
