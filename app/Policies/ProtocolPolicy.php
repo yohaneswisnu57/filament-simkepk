@@ -56,7 +56,7 @@ class ProtocolPolicy
 
     public function view(AuthUser $authUser, Protocol $protocol): bool
     {
-        return ($authUser->can('View:Protocol') || $authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) 
+        return ($authUser->can('View:Protocol') || $authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer']))
             && $this->canAccessProtocol($authUser, $protocol);
     }
 
