@@ -37,7 +37,7 @@ class ListProtocols extends ListRecords
             $query->where(function (Builder $q) use ($user): void {
                 $q->where('user_id', $user->id);
 
-                if ($user->hasRole('reviewer')) {
+                if ($user->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
                     $q->orWhereHas('reviewers', function ($q2) use ($user) {
                         $q2->where('users.id', $user->id);
                     });

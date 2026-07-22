@@ -24,7 +24,7 @@ class ProtocolPolicy
         }
 
         // Check if assigned reviewer
-        if ($authUser->hasRole('reviewer')) {
+        if ($authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
             if ($protocol->reviewers()->where('users.id', $authUser->id)->exists()) {
                 return true;
             }

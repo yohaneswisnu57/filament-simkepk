@@ -87,6 +87,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | The locales the application provides translations for. Used to detect
+    | the visitor's preferred locale from their browser's Accept-Language
+    | header, falling back to the app locale when none of these match.
+    |
+    */
+
+    'supported_locales' => ['id', 'en'],
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

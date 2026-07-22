@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Filament\Widgets\ReviewerAssignedProtocolsWidget;
 use App\Filament\Widgets\ReviewerProtocolStats;
+use App\Http\Middleware\SetLocale;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -72,6 +73,7 @@ class ReviewerPanelProvider extends PanelProvider
                 StartSession::class,
                 AuthenticateSession::class,
                 ShareErrorsFromSession::class,
+                SetLocale::class,
                 VerifyCsrfToken::class,
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
