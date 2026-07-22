@@ -79,8 +79,8 @@ class ProtocolObserver
         // SKENARIO: ASSIGN KE KELOMPOK REVIEWER
         // ==========================================
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan tidak kosong
-        if ($protocol->wasChanged('reviewer_kelompok_id') 
-            && ! empty($protocol->reviewer_kelompok_id)
+        if ($protocol->wasChanged('reviewer_kelompok_id')
+            && filled($protocol->reviewer_kelompok_id)
         ) {
 
             // 1. Ambil Kelompok ID yang baru di-assign
