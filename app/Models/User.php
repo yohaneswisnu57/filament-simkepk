@@ -138,7 +138,7 @@ class User extends Authenticatable implements Commenter, FilamentUser, HasEmailA
         }
 
         if ($panel->getId() === 'admin') {
-            return $this->hasRole(['admin', 'sekertaris', 'Ketua Reviewer']);
+            return $this->hasRole(['super_admin', 'admin', 'sekertaris', 'Ketua Reviewer']);
         }
 
         if ($panel->getId() === 'user') {
