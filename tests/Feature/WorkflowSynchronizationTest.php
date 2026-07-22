@@ -8,7 +8,9 @@ use App\Models\ReviewerKelompok;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Livewire\Livewire;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
@@ -28,11 +30,26 @@ class WorkflowSynchronizationTest extends TestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         // Setup Roles
-        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'sekertaris', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
-        Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $sekertaris = Role::firstOrCreate(['name' => 'sekertaris', 'guard_name' => 'web']);
+        $reviewer = Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
+        $user = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+
+        $permissions = [
+            'ViewAny:Protocol', 'View:Protocol', 'Create:Protocol',
+            'Update:Protocol', 'Delete:Protocol',
+        ];
+
+        foreach ($permissions as $p) {
+            Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
+        }
+
+        $adminRole->syncPermissions($permissions);
+        $superAdmin->syncPermissions($permissions);
+        $sekertaris->syncPermissions($permissions);
+        $reviewer->syncPermissions(['ViewAny:Protocol', 'View:Protocol']);
+        $user->syncPermissions(['ViewAny:Protocol', 'View:Protocol', 'Create:Protocol']);
 
         // Seed Status Reviews
         \DB::table('status_reviews')->insert([
@@ -129,6 +146,9 @@ class WorkflowSynchronizationTest extends TestCase
         // Simulate Filament Edit Page Save
         Livewire::test(EditProtocol::class, ['record' => $protocol->getKey()])
             ->fillForm([
+                'jenis_protocol' => 'Manusia',
+                'uploadpernyataan' => [UploadedFile::fake()->create('pernyataan.pdf', 100)],
+                'buktipembayaran' => [UploadedFile::fake()->image('bukti.png')],
                 'fast_review_ketua_id' => $ketua->id,
                 'fast_review_secretary_id' => $sekertaris->id,
             ])

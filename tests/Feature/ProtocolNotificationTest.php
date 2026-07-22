@@ -87,9 +87,9 @@ class ProtocolNotificationTest extends TestCase
 
         // C. Assert (Verifikasi)
 
-        // 1. Cek Email terkirim ke Admin
-        Mail::assertQueued(ProtocolSubmittedMail::class, function ($mail) use ($admin) {
-            return $mail->hasTo($admin->email);
+        // 1. Cek Email terkirim ke Peneliti
+        Mail::assertQueued(ProtocolSubmittedMail::class, function ($mail) use ($peneliti) {
+            return $mail->hasTo($peneliti->email);
         });
 
         // 2. Cek Notifikasi Database Admin
