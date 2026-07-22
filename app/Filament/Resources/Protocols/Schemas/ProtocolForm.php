@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -65,8 +66,8 @@ class ProtocolForm
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->live()
                             ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin'])),
-                        
-                        \Filament\Forms\Components\Textarea::make('revision_notes')
+
+                        Textarea::make('revision_notes')
                             ->label('Revision Notes')
                             ->columnSpanFull()
                             ->visible(fn ($get): bool => $get('status_id') == 8)
@@ -238,7 +239,6 @@ class ProtocolForm
                             ]),
                     ]),
 
-                
             ]);
     }
 }

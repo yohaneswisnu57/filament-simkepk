@@ -6,9 +6,11 @@ use App\Filament\Resources\Protocols\Pages\EditProtocol;
 use App\Models\Protocol;
 use App\Models\ReviewerKelompok;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class WorkflowSynchronizationTest extends TestCase
@@ -21,9 +23,9 @@ class WorkflowSynchronizationTest extends TestCase
     {
         parent::setUp();
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         // Setup Roles
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
@@ -70,7 +72,7 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_sends_notification_to_group_members_on_regular_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $reviewer = User::factory()->create(['reviewer_kelompok_id' => $kelompok->id]);
         $reviewer->assignRole('reviewer');
 
@@ -90,7 +92,7 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_skips_group_notification_on_fast_review_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $reviewer = User::factory()->create(['reviewer_kelompok_id' => $kelompok->id]);
         $reviewer->assignRole('reviewer');
 
@@ -110,7 +112,7 @@ class WorkflowSynchronizationTest extends TestCase
     public function it_sends_individual_notifications_on_fast_review_assignment_via_edit_page()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
-        
+
         $ketua = User::factory()->create();
         $ketua->assignRole('reviewer');
 
@@ -119,7 +121,7 @@ class WorkflowSynchronizationTest extends TestCase
 
         $protocol = Protocol::factory()->create([
             'status_id' => 6,
-            'reviewer_kelompok_id' => $kelompok->id
+            'reviewer_kelompok_id' => $kelompok->id,
         ]);
 
         $this->actingAs($this->admin);

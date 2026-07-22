@@ -3,12 +3,12 @@
 namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
+use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Notifications\Notification;
 use Filament\Notifications\Actions\Action;
-use App\Models\User;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 
 class EditProtocol extends EditRecord
 {
@@ -81,7 +81,7 @@ class EditProtocol extends EditRecord
 
             // 4. Kirim Notifikasi khusus ke Penilai Fast Review
             $assignedIds = array_filter([$ketuaId, $sekertarisId]);
-            if (!empty($assignedIds)) {
+            if (! empty($assignedIds)) {
                 $reviewersToNotify = User::whereIn('id', $assignedIds)->get();
                 Notification::make()
                     ->title('Penugasan Fast Review')

@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Protocol;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -31,7 +30,7 @@ class ProtocolRevisionRequiredMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Revisi Diperlukan untuk Protokol KEPK: ' . $this->protocol->perihal_pengajuan,
+            subject: 'Revisi Diperlukan untuk Protokol KEPK: '.$this->protocol->perihal_pengajuan,
         );
     }
 

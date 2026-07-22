@@ -2,14 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Protocols\Pages\EditProtocol;
 use App\Filament\Resources\Protocols\RelationManagers\DocumentRelationManager;
-use App\Models\Protocol;
 use App\Models\Document;
+use App\Models\Protocol;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class DocumentRelationManagerTest extends TestCase
@@ -17,15 +20,16 @@ class DocumentRelationManagerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Protocol $protocol;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         // Setup Roles
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
@@ -53,7 +57,7 @@ class DocumentRelationManagerTest extends TestCase
 
         Livewire::test(DocumentRelationManager::class, [
             'ownerRecord' => $this->protocol,
-            'pageClass' => \App\Filament\Resources\Protocols\Pages\EditProtocol::class,
+            'pageClass' => EditProtocol::class,
         ])
             ->assertCanSeeTableRecords([$document]);
     }
@@ -76,7 +80,7 @@ class DocumentRelationManagerTest extends TestCase
 
         Livewire::test(DocumentRelationManager::class, [
             'ownerRecord' => $this->protocol,
-            'pageClass' => \App\Filament\Resources\Protocols\Pages\EditProtocol::class,
+            'pageClass' => EditProtocol::class,
         ])
             ->callTableAction('download', $document)
             ->assertFileDownloaded('test.pdf', 'dummy content');

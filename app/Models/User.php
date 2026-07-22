@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
-class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter, HasEmailAuthentication
+class User extends Authenticatable implements Commenter, FilamentUser, HasEmailAuthentication
 {
     use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, LogsActivity, Notifiable, SoftDeletes;
 

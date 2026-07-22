@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Protocol;
 use App\Models\Review;
 use App\Models\User;
-use App\Models\StatusReview;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -39,7 +38,7 @@ class FlowDummySeeder extends Seeder
         );
 
         // Pastikan role (asumsi menggunakan Spatie Permissions)
-        // $reviewer1->assignRole('reviewer'); 
+        // $reviewer1->assignRole('reviewer');
         // $reviewer2->assignRole('reviewer');
 
         // ────────────────────────────────────────────────────────────────
@@ -102,7 +101,7 @@ class FlowDummySeeder extends Seeder
             'verdict' => 'Exempted',
             'submitted_at' => now()->subDays(3),
         ]);
-        $protocolC->comment("Protokol ini memenuhi kriteria Exempted karena hanya menggunakan data sekunder anonim.", $reviewer1);
+        $protocolC->comment('Protokol ini memenuhi kriteria Exempted karena hanya menggunakan data sekunder anonim.', $reviewer1);
 
         Review::create([
             'protocol_id' => $protocolC->id,
@@ -111,6 +110,6 @@ class FlowDummySeeder extends Seeder
             'verdict' => 'Exempted',
             'submitted_at' => now()->subDays(2),
         ]);
-        $protocolC->comment("Setuju. Risiko minimal.", $reviewer2);
+        $protocolC->comment('Setuju. Risiko minimal.', $reviewer2);
     }
 }

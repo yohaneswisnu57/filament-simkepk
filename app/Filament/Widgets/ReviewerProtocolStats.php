@@ -30,21 +30,21 @@ class ReviewerProtocolStats extends StatsOverviewWidget
             ->where(function ($query) use ($user) {
                 $query->whereHas('reviewers', function ($q) use ($user) {
                     $q->where('users.id', $user->id)
-                      ->where('feedback_status', 'pending');
+                        ->where('feedback_status', 'pending');
                 })
-                ->orWhere(function ($q) use ($user) {
-                    if ($user->reviewer_kelompok_id) {
-                        $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
-                          ->whereDoesntHave('reviewers', function ($q2) use ($user) {
-                              $q2->where('users.id', $user->id);
-                          })
-                          ->whereDoesntHave('reviews', function ($q2) use ($user) {
-                              $q2->where('user_id', $user->id);
-                          });
-                    } else {
-                        $q->whereRaw('1=0');
-                    }
-                });
+                    ->orWhere(function ($q) use ($user) {
+                        if ($user->reviewer_kelompok_id) {
+                            $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
+                                ->whereDoesntHave('reviewers', function ($q2) use ($user) {
+                                    $q2->where('users.id', $user->id);
+                                })
+                                ->whereDoesntHave('reviews', function ($q2) use ($user) {
+                                    $q2->where('user_id', $user->id);
+                                });
+                        } else {
+                            $q->whereRaw('1=0');
+                        }
+                    });
             })->count();
 
         // 2. Completed Tasks (Finished Review)
@@ -52,21 +52,21 @@ class ReviewerProtocolStats extends StatsOverviewWidget
             ->where(function ($query) use ($user) {
                 $query->whereHas('reviewers', function ($q) use ($user) {
                     $q->where('users.id', $user->id)
-                      ->where('feedback_status', 'submitted');
+                        ->where('feedback_status', 'submitted');
                 })
-                ->orWhere(function ($q) use ($user) {
-                    if ($user->reviewer_kelompok_id) {
-                        $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
-                          ->whereDoesntHave('reviewers', function ($q2) use ($user) {
-                              $q2->where('users.id', $user->id);
-                          })
-                          ->whereHas('reviews', function ($q2) use ($user) {
-                              $q2->where('user_id', $user->id);
-                          });
-                    } else {
-                        $q->whereRaw('1=0');
-                    }
-                });
+                    ->orWhere(function ($q) use ($user) {
+                        if ($user->reviewer_kelompok_id) {
+                            $q->where('reviewer_kelompok_id', $user->reviewer_kelompok_id)
+                                ->whereDoesntHave('reviewers', function ($q2) use ($user) {
+                                    $q2->where('users.id', $user->id);
+                                })
+                                ->whereHas('reviews', function ($q2) use ($user) {
+                                    $q2->where('user_id', $user->id);
+                                });
+                        } else {
+                            $q->whereRaw('1=0');
+                        }
+                    });
             })->count();
 
         // 3. Total Assignments
