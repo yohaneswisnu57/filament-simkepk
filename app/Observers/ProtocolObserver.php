@@ -35,7 +35,7 @@ class ProtocolObserver
             ->actions([
                 Action::make('cek')
                     ->label('Check Protocol Completeness')
-                    ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                    ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'admin')),
             ])
             ->sendToDatabase($admins);
 
@@ -108,7 +108,7 @@ class ProtocolObserver
                         ->actions([
                             Action::make('lihat')
                                 ->label('View Protocol')
-                                ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                                ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
                         ])
                         ->sendToDatabase($reviewers);
                 }
@@ -153,7 +153,7 @@ class ProtocolObserver
                     ->actions([
                         Action::make('lihat')
                             ->label('Lihat Detail')
-                            ->url('/user'),
+                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'user')),
                     ])
                     ->sendToDatabase($protocol->User);
 
@@ -173,7 +173,7 @@ class ProtocolObserver
                     ->actions([
                         Action::make('lihat')
                             ->label('View Protocol')
-                            ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'admin')),
                     ])
                     ->sendToDatabase($admins);
 
@@ -196,7 +196,7 @@ class ProtocolObserver
                     ->actions([
                         Action::make('lihat')
                             ->label('Lihat Detail')
-                            ->url('/user'),
+                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'user')),
                     ])
                     ->sendToDatabase($protocol->User);
 
@@ -246,7 +246,7 @@ class ProtocolObserver
             ->actions([
                 Action::make('review')
                     ->label('Review Now')
-                    ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                    ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
             ])
             ->sendToDatabase($usersToNotify);
     }

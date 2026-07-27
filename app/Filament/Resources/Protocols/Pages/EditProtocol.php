@@ -90,7 +90,7 @@ class EditProtocol extends EditRecord
                     ->actions([
                         NotificationAction::make('cek')
                             ->label('Buka Protokol')
-                            ->url(ProtocolResource::getUrl('edit', ['record' => $protocol])),
+                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
                     ])
                     ->sendToDatabase($reviewersToNotify);
             }
