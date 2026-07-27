@@ -19,7 +19,7 @@ class ProtocolPolicy
         }
 
         // Check ownership
-        if ($protocol->user_id === $authUser->id) {
+        if ($protocol->user_id == $authUser->id) {
             return true;
         }
 
@@ -28,7 +28,7 @@ class ProtocolPolicy
             if ($protocol->reviewers()->where('users.id', $authUser->id)->exists()) {
                 return true;
             }
-            if ($protocol->reviewer_kelompok_id && $protocol->reviewer_kelompok_id === $authUser->reviewer_kelompok_id) {
+            if ($protocol->reviewer_kelompok_id && $protocol->reviewer_kelompok_id == $authUser->reviewer_kelompok_id) {
                 return true;
             }
         }
@@ -42,11 +42,7 @@ class ProtocolPolicy
             return true;
         }
 
-        if ($authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
-            return $this->canAccessProtocol($authUser, $protocol);
-        }
-
-        return $protocol->user_id === $authUser->id;
+        return $protocol->user_id == $authUser->id;
     }
 
     public function viewAny(AuthUser $authUser): bool
@@ -67,10 +63,6 @@ class ProtocolPolicy
 
     public function update(AuthUser $authUser, Protocol $protocol): bool
     {
-        if ($authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
-            return $this->canAccessProtocol($authUser, $protocol);
-        }
-
         return $authUser->can('Update:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
