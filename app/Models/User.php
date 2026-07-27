@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use BezhanSalleh\FilamentShield\Traits\HasPanelShield;
 use Filament\Auth\MultiFactor\Email\Contracts\HasEmailAuthentication;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 // use Filament\Models\Contracts\Panel\FilamentUser;
 
-class User extends Authenticatable implements \Filament\Models\Contracts\FilamentUser, Commenter, HasEmailAuthentication
+class User extends Authenticatable implements Commenter, FilamentUser, HasEmailAuthentication
 {
     use HasDatabaseNotifications, HasFactory, HasPanelShield, HasRoles, LogsActivity, Notifiable, SoftDeletes;
 
@@ -44,6 +45,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         'email',
         'password',
         'is_active',
+        'reviewer_kelompok_id',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -136,7 +138,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
         }
 
         if ($panel->getId() === 'admin') {
-            return $this->hasRole(['admin', 'sekertaris', 'Ketua Reviewer']);
+            return $this->hasRole(['super_admin', 'admin', 'sekertaris', 'Ketua Reviewer']);
         }
 
         if ($panel->getId() === 'user') {
@@ -145,7 +147,7 @@ class User extends Authenticatable implements \Filament\Models\Contracts\Filamen
 
         if ($panel->getId() === 'reviewer') {
             // User dengan role user biasa TIDAK akan bisa masuk sini
-            return $this->hasRole(['reviewer', 'panel_reviewer']);
+            return $this->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer']);
         }
 
         // 4. PENTING: Ubah ini menjadi FALSE

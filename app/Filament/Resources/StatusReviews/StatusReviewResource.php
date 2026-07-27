@@ -25,7 +25,7 @@ class StatusReviewResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::Tag;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
     // protected static ?string $recordTitleAttribute = 'Status Review';
 

@@ -6,9 +6,6 @@ class HtmlSanitizer
 {
     /**
      * Sanitize a rich text HTML content to prevent XSS attacks.
-     *
-     * @param string|null $html
-     * @return string
      */
     public static function sanitize(?string $html): string
     {

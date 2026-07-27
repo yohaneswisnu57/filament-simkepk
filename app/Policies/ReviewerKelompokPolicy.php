@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\ReviewerKelompok;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class ReviewerKelompokPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:ReviewerKelompok');
@@ -66,5 +66,4 @@ class ReviewerKelompokPolicy
     {
         return $authUser->can('Reorder:ReviewerKelompok');
     }
-
 }

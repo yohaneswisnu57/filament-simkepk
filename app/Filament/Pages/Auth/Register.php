@@ -3,8 +3,8 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
-use Filament\Forms\Components\TextInput;
 use Filament\Auth\Pages\Register as BaseRegister;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -62,7 +62,6 @@ class Register extends BaseRegister
             return $user;
         });
     }
-
 
     protected function shouldLoginAfterRegistration()
     {

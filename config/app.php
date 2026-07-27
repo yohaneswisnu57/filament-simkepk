@@ -68,7 +68,6 @@ return [
     // 'timezone' => 'UTC',
     'timezone' => env('APP_TIMEZONE', 'UTC'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -85,6 +84,19 @@ return [
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
     'faker_locale' => env('APP_FAKER_LOCALE', 'en_US'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | The locales the application provides translations for. Used to detect
+    | the visitor's preferred locale from their browser's Accept-Language
+    | header, falling back to the app locale when none of these match.
+    |
+    */
+
+    'supported_locales' => ['id', 'en'],
 
     /*
     |--------------------------------------------------------------------------

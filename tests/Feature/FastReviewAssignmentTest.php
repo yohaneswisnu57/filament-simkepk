@@ -8,6 +8,7 @@ use App\Models\StatusReview;
 use App\Models\User;
 use App\Services\FastReviewDecisionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -56,7 +57,7 @@ class FastReviewAssignmentTest extends TestCase
     // TEST: Manual assignment ke pivot dengan feedback_status=pending
     // ──────────────────────────────────────────────────
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function it_manually_assigns_ketua_and_sekertaris_to_protocol_reviewers(): void
     {
         // Simulasi admin melakukan manual assign (seperti yang dilakukan di afterSave EditProtocol)
@@ -96,7 +97,7 @@ class FastReviewAssignmentTest extends TestCase
     // TEST: Decision engine → semua Exempted
     // ──────────────────────────────────────────────────
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function decision_engine_marks_exempted_when_all_verdicts_are_exempted(): void
     {
         // Assign 2 reviewer
@@ -154,7 +155,7 @@ class FastReviewAssignmentTest extends TestCase
     // TEST: Decision engine → ada 1 Full Board → eskalasi
     // ──────────────────────────────────────────────────
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function decision_engine_escalates_to_full_board_when_any_verdict_is_full_board(): void
     {
         StatusReview::create(['status_name' => 'Full Board']);
@@ -205,7 +206,7 @@ class FastReviewAssignmentTest extends TestCase
     // TEST: allReviewersSubmitted() helper
     // ──────────────────────────────────────────────────
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function all_reviewers_submitted_returns_false_when_any_is_pending(): void
     {
         $this->protocol->reviewers()->attach($this->ketua->id, [
@@ -220,7 +221,7 @@ class FastReviewAssignmentTest extends TestCase
         $this->assertFalse($this->protocol->allReviewersSubmitted());
     }
 
-    #[\PHPUnit\Framework\Attributes\Test]
+    #[Test]
     public function all_reviewers_submitted_returns_true_when_all_submitted(): void
     {
         $this->protocol->reviewers()->attach($this->ketua->id, [

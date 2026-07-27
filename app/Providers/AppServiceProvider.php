@@ -5,9 +5,9 @@ namespace App\Providers;
 // use App\Models\Protocol;
 // use App\Observers\ProtocolObserver;
 // use Filament\Auth\Http\Responses\LoginResponse;
+use App\Http\Responses\LoginResponse as CustomLoginResponse;
 use BezhanSalleh\PanelSwitch\PanelSwitch;
 use Filament\Auth\Http\Responses\Contracts\LoginResponse as LoginResponseContract;
-use App\Http\Responses\LoginResponse as CustomLoginResponse;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

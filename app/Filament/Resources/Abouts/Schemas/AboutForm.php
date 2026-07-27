@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Abouts\Schemas;
 
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class AboutForm
@@ -25,7 +25,7 @@ class AboutForm
                             ->label('Konten Deskripsi')
                             ->required()
                             ->toolbarButtons([
-                                'bold', 'italic', 'link', 'orderedList', 'bulletList', 'h2', 'h3'
+                                'bold', 'italic', 'link', 'orderedList', 'bulletList', 'h2', 'h3',
                             ]),
                         FileUpload::make('image_path')
                             ->label('Gambar Pendukung')

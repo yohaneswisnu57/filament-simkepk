@@ -1,9 +1,15 @@
 <?php
 
+use App\Providers\AppServiceProvider;
+use App\Providers\Filament\AdminPanelProvider;
+use App\Providers\Filament\ReviewerPanelProvider;
+use App\Providers\Filament\UserPanelProvider;
+use App\Providers\TelescopeServiceProvider;
+
 return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\Filament\AdminPanelProvider::class,
-    App\Providers\Filament\ReviewerPanelProvider::class,
-    App\Providers\Filament\UserPanelProvider::class,
-    App\Providers\TelescopeServiceProvider::class,
+    AppServiceProvider::class,
+    AdminPanelProvider::class,
+    ReviewerPanelProvider::class,
+    UserPanelProvider::class,
+    TelescopeServiceProvider::class,
 ];

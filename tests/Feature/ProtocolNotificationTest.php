@@ -14,7 +14,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class ProtocolNotificationTest extends TestCase
@@ -28,7 +30,7 @@ class ProtocolNotificationTest extends TestCase
     {
         parent::setUp();
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Setup Role Permissions
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
@@ -43,7 +45,7 @@ class ProtocolNotificationTest extends TestCase
         ];
 
         foreach ($permissions as $p) {
-            \Spatie\Permission\Models\Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
         }
 
         $admin->syncPermissions($permissions);
@@ -85,9 +87,13 @@ class ProtocolNotificationTest extends TestCase
 
         // C. Assert (Verifikasi)
 
-        // 1. Cek Email terkirim ke Admin
-        Mail::assertQueued(ProtocolSubmittedMail::class, function ($mail) use ($admin) {
-            return $mail->hasTo($admin->email);
+        // 1. Cek Email terkirim ke Peneliti dan KEPK
+        Mail::assertQueued(ProtocolSubmittedMail::class, function ($mail) use ($peneliti) {
+            return $mail->hasTo($peneliti->email);
+        });
+
+        Mail::assertQueued(ProtocolSubmittedMail::class, function ($mail) {
+            return $mail->hasTo('kepk.fk@ukwms.ac.id');
         });
 
         // 2. Cek Notifikasi Database Admin

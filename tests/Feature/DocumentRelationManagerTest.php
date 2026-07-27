@@ -2,14 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Protocols\Pages\EditProtocol;
 use App\Filament\Resources\Protocols\RelationManagers\DocumentRelationManager;
-use App\Models\Protocol;
 use App\Models\Document;
+use App\Models\Protocol;
 use App\Models\User;
+use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
 
 class DocumentRelationManagerTest extends TestCase
@@ -17,20 +20,22 @@ class DocumentRelationManagerTest extends TestCase
     use RefreshDatabase;
 
     protected User $admin;
+
     protected Protocol $protocol;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        \Filament\Facades\Filament::setCurrentPanel(\Filament\Facades\Filament::getPanel('admin'));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         // Setup Roles
         Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
 
         $this->admin = User::factory()->create();
         $this->admin->assignRole('admin');
@@ -53,7 +58,7 @@ class DocumentRelationManagerTest extends TestCase
 
         Livewire::test(DocumentRelationManager::class, [
             'ownerRecord' => $this->protocol,
-            'pageClass' => \App\Filament\Resources\Protocols\Pages\EditProtocol::class,
+            'pageClass' => EditProtocol::class,
         ])
             ->assertCanSeeTableRecords([$document]);
     }
@@ -76,9 +81,35 @@ class DocumentRelationManagerTest extends TestCase
 
         Livewire::test(DocumentRelationManager::class, [
             'ownerRecord' => $this->protocol,
-            'pageClass' => \App\Filament\Resources\Protocols\Pages\EditProtocol::class,
+            'pageClass' => EditProtocol::class,
         ])
             ->callTableAction('download', $document)
             ->assertFileDownloaded('test.pdf', 'dummy content');
+    }
+
+    /** @test */
+    public function assigned_reviewer_can_view_document_revision_tab_without_document_permission()
+    {
+        $reviewer = User::factory()->create();
+        $reviewer->assignRole('reviewer');
+        $this->protocol->reviewers()->attach($reviewer->id, [
+            'role_in_review' => 'Ketua',
+            'feedback_status' => 'pending',
+        ]);
+
+        $this->actingAs($reviewer);
+
+        $this->assertTrue(DocumentRelationManager::canViewForRecord($this->protocol, EditProtocol::class));
+    }
+
+    /** @test */
+    public function unassigned_reviewer_cannot_view_document_revision_tab()
+    {
+        $reviewer = User::factory()->create();
+        $reviewer->assignRole('reviewer');
+
+        $this->actingAs($reviewer);
+
+        $this->assertFalse(DocumentRelationManager::canViewForRecord($this->protocol, EditProtocol::class));
     }
 }

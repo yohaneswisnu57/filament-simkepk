@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use ZipArchive;
 use Illuminate\Support\Facades\File;
+use ZipArchive;
 
 class RequirementDownloadController extends Controller
 {
@@ -12,9 +11,9 @@ class RequirementDownloadController extends Controller
     {
         $dir = storage_path('app/private/jenis_protokol');
         $zipFileName = 'Jenis_Protokol_Pengajuan.zip';
-        $zipPath = storage_path('app/private/' . $zipFileName);
+        $zipPath = storage_path('app/private/'.$zipFileName);
 
-        if (!File::exists($dir)) {
+        if (! File::exists($dir)) {
             abort(404, 'Folder tidak ditemukan.');
         }
 
@@ -26,7 +25,7 @@ class RequirementDownloadController extends Controller
 
         $zip = new ZipArchive;
 
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             foreach ($files as $file) {
                 $zip->addFile($file->getPathname(), $file->getFilename());
             }

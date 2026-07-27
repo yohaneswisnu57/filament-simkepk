@@ -2,8 +2,6 @@
 
 namespace App\Http\Responses;
 
-
-use Auth;
 use Filament\Auth\Http\Responses\LoginResponse as BaseLoginResponse;
 use Filament\Facades\Filament;
 use Illuminate\Http\RedirectResponse;

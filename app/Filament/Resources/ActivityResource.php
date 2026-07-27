@@ -4,8 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ActivityResource\Pages\ListActivities;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Spatie\Activitylog\Models\Activity;
@@ -14,9 +12,9 @@ class ActivityResource extends Resource
 {
     protected static ?string $model = Activity::class;
 
-    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clock';
-    
-    protected static string | \UnitEnum | null $navigationGroup = 'Settings';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-clock';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     public static function table(Table $table): Table
     {
@@ -34,8 +32,8 @@ class ActivityResource extends Resource
                 TextColumn::make('subject_type')
                     ->label('Subject')
                     ->formatStateUsing(function (Activity $record) {
-                        return $record->subject?->perihal_pengajuan 
-                            ?? $record->subject?->name 
+                        return $record->subject?->perihal_pengajuan
+                            ?? $record->subject?->name
                             ?? $record->subject_type;
                     })
                     ->wrap(),
@@ -58,7 +56,7 @@ class ActivityResource extends Resource
             'index' => ListActivities::route('/'),
         ];
     }
-    
+
     public static function canCreate(): bool
     {
         return false;

@@ -14,6 +14,4 @@ class StatusReview extends Model
     protected $fillable = [
         'status_name',
     ];
-
-    
 }

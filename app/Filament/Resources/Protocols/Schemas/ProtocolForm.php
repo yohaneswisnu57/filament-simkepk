@@ -8,6 +8,7 @@ use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -46,7 +47,9 @@ class ProtocolForm
                             ->maxLength(15)
                             ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                             ->validationMessages([
-                                'telRegex' => 'Contact person must be a valid phone number.',
+                                'regex' => 'Format nomor telepon tidak valid. Pastikan hanya berisi angka dan simbol yang benar (contoh: 0812... atau +628...).',
+                                'min' => 'Nomor telepon minimal harus 10 digit/karakter.',
+                                'max' => 'Nomor telepon maksimal 15 digit/karakter.',
                             ])
                             ->nullable(),
 
@@ -63,8 +66,8 @@ class ProtocolForm
                             ->relationship(name: 'StatusReview', titleAttribute: 'status_name')
                             ->live()
                             ->visible(fn (): bool => auth()->user()->hasRole(['admin', 'super_admin'])),
-                        
-                        \Filament\Forms\Components\Textarea::make('revision_notes')
+
+                        Textarea::make('revision_notes')
                             ->label('Revision Notes')
                             ->columnSpanFull()
                             ->visible(fn ($get): bool => $get('status_id') == 8)
@@ -236,7 +239,6 @@ class ProtocolForm
                             ]),
                     ]),
 
-                
             ]);
     }
 }

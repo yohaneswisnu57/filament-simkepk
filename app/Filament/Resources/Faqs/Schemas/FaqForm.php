@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Faqs\Schemas;
 
-use Filament\Schemas\Components\Section;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class FaqForm
@@ -24,7 +24,7 @@ class FaqForm
                             ->label('Jawaban')
                             ->required()
                             ->toolbarButtons([
-                                'bold', 'italic', 'link', 'orderedList', 'bulletList', 'h2', 'h3'
+                                'bold', 'italic', 'link', 'orderedList', 'bulletList', 'h2', 'h3',
                             ]),
                         Toggle::make('is_active')
                             ->label('Tampilkan di Halaman Utama')
