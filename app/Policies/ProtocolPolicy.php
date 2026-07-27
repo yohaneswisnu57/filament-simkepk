@@ -42,10 +42,6 @@ class ProtocolPolicy
             return true;
         }
 
-        if ($authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
-            return $this->canAccessProtocol($authUser, $protocol);
-        }
-
         return $protocol->user_id == $authUser->id;
     }
 
@@ -67,10 +63,6 @@ class ProtocolPolicy
 
     public function update(AuthUser $authUser, Protocol $protocol): bool
     {
-        if ($authUser->hasRole(['reviewer', 'panel_reviewer', 'Ketua Reviewer'])) {
-            return $this->canAccessProtocol($authUser, $protocol);
-        }
-
         return $authUser->can('Update:Protocol') && $this->canModifyProtocol($authUser, $protocol);
     }
 
