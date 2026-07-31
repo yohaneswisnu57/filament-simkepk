@@ -15,6 +15,8 @@ Route::get('/', function () {
     return view('welcome', compact('faqs', 'abouts'));
 });
 
+Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
+
 Route::get('/certificates/protocol/{protocol}', [CertificateController::class, 'show'])
     ->name('certificates.protocol');
 
