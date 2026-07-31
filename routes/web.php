@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CertificateValidationController;
 use App\Http\Controllers\RequirementDownloadController;
@@ -17,6 +18,8 @@ Route::get('/', function () {
 
 Route::view('/privacy-policy', 'privacy-policy')->name('privacy-policy');
 
+Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 Route::get('/certificates/protocol/{protocol}', [CertificateController::class, 'show'])
     ->name('certificates.protocol');
 

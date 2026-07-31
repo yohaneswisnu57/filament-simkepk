@@ -46,6 +46,8 @@ class User extends Authenticatable implements Commenter, FilamentUser, HasEmailA
         'password',
         'is_active',
         'reviewer_kelompok_id',
+        'google_id',
+        'provider',
     ];
 
     public function getActivitylogOptions(): LogOptions
