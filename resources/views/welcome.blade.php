@@ -289,9 +289,9 @@
                     <h3 class="text-2xl font-bold text-slate-900 mb-2 relative z-10">Rekening KEPK</h3>
                     <p class="text-lg text-slate-600 font-medium mb-3 relative z-10">Bank BCA</p>
                     <div class="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-4 relative z-10 inline-block">
-                        <p class="text-3xl font-extrabold text-primary-600 tracking-wider">788-065-3550</p>
+                        <p class="text-3xl font-extrabold text-primary-600 tracking-wider">8725239935</p>
                     </div>
-                    <p class="text-slate-500 font-medium relative z-10">a.n. <span class="text-slate-800">W. F Maramis dan B. Triagung</span></p>
+                    <p class="text-slate-500 font-medium relative z-10">a.n. <span class="text-slate-800">Caroline</span></p>
                 </div>
 
                 <!-- Klasifikasi Pembayaran -->
