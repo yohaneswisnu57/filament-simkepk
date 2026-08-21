@@ -28,3 +28,12 @@ PRD_CICD.md
 .agents
 CLAUDE.md
 GUIDELINES.md
+
+# Laravel Boost
+boost.json
+.mcp.json
+.claude/settings.json
+.claude/settings.local.json
+.claude/skills/
+.github/skills/
+.github/copilot-instructions.md
