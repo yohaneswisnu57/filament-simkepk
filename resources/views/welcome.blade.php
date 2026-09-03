@@ -232,6 +232,28 @@
                         Jenis Protokol
                     </a> -->
                 </div>
+
+                <!-- Urutan Berkas PDF -->
+                <div class="mt-8 max-w-3xl mx-auto text-left bg-amber-50/60 border border-amber-200 rounded-2xl p-6">
+                    <p class="text-sm font-bold text-amber-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="ph-duotone ph-list-numbers text-xl"></i>
+                        Urutan Dokumen dalam 1 File PDF
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-700">
+                        <li class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold text-slate-900">Penelitian Subjek Manusia:</span>
+                            <span>Data Pemohon KEPK <i class="ph-bold ph-arrow-right text-amber-600"></i> Protokol Manusia <i class="ph-bold ph-arrow-right text-amber-600"></i> Informed Consent <i class="ph-bold ph-arrow-right text-amber-600"></i> Proposal</span>
+                        </li>
+                        <li class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold text-slate-900">Penelitian Subjek Hewan:</span>
+                            <span>Data Pemohon KEPK <i class="ph-bold ph-arrow-right text-amber-600"></i> Protokol Hewan <i class="ph-bold ph-arrow-right text-amber-600"></i> Proposal</span>
+                        </li>
+                        <li class="flex flex-wrap items-center gap-2">
+                            <span class="font-semibold text-slate-900">Penelitian Jenis Sosial Humaniora:</span>
+                            <span>Data Pemohon KEPK <i class="ph-bold ph-arrow-right text-amber-600"></i> Protokol Humaniora <i class="ph-bold ph-arrow-right text-amber-600"></i> Informed Consent <i class="ph-bold ph-arrow-right text-amber-600"></i> Proposal</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <!-- Stats / Trust Indicators -->
