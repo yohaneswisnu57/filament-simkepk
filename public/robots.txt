@@ -1,2 +1,12 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /user
+Disallow: /reviewer
+Disallow: /auth/
+Disallow: /certificates/
+Disallow: /verify/
+Disallow: /downloads/
+Disallow: /leave-impersonation
+Disallow: /livewire/
+
+Sitemap: https://simkepk.ukwms.ac.id/sitemap.xml
