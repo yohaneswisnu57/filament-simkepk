@@ -3,34 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM KEPK - Welcome</title>
+    <title>SIMKEPK UKWMS - Pengajuan Etik Penelitian Online | KEPK Widya Mandala</title>
 
-    <meta name="title" content="SIMKEPK UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
     <meta name="description" content="SIMKEPK UKWMS (Sistem Informasi Manajemen Komite Etik Penelitian) adalah platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
-    <meta name="keywords" content="SIMKEPK UKWMS, KEPK UKWMS, Komite Etik Penelitian Surabaya, Etik Penelitian Widya Mandala, Pengajuan Etik Online, Ethical Clearance UKWMS, SIMKEP Universitas Katolik Widya Mandala">
     <meta name="author" content="Universitas Katolik Widya Mandala Surabaya">
     <meta name="robots" content="index, follow">
-    <meta name="language" content="Indonesian">
-    
-    <!-- Canonical URL (Ganti dengan URL asli website saat rilis) -->
+
     <link rel="canonical" href="https://simkepk.ukwms.ac.id/">
+
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:site_name" content="SIMKEPK UKWMS">
     <meta property="og:url" content="https://simkepk.ukwms.ac.id/">
     <meta property="og:title" content="SIMKEPK UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
     <meta property="og:description" content="Platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
-    <meta property="og:image" content="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png">
+    <meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="SIMKEPK UKWMS - Pengajuan Etik Penelitian Online">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://simkepk.ukwms.ac.id/">
-    <meta property="twitter:title" content="SIMKEP UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
-    <meta property="twitter:description" content="Platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
-    <meta property="twitter:image" content="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://simkepk.ukwms.ac.id/">
+    <meta name="twitter:title" content="SIMKEPK UKWMS - Sistem Informasi Manajemen Komite Etik Penelitian">
+    <meta name="twitter:description" content="Platform resmi Universitas Katolik Widya Mandala Surabaya untuk pengajuan dan telaah etik penelitian secara online, mudah, dan transparan.">
+    <meta name="twitter:image" content="{{ asset('images/og-image.jpg') }}">
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    @php
+        $structuredData = [
+            [
+                '@context' => 'https://schema.org',
+                '@type' => 'Organization',
+                'name' => 'Komite Etik Penelitian Kesehatan (KEPK) Universitas Katolik Widya Mandala Surabaya',
+                'alternateName' => 'SIMKEPK UKWMS',
+                'url' => 'https://simkepk.ukwms.ac.id/',
+                'logo' => asset('images/logo-ukwms.png'),
+                'email' => 'kepk.fk@ukwms.ac.id',
+                'address' => [
+                    '@type' => 'PostalAddress',
+                    'streetAddress' => 'Jl. Raya Kalisari Selatan No.1, Pakuwon City',
+                    'addressLocality' => 'Surabaya',
+                    'addressCountry' => 'ID',
+                ],
+                'parentOrganization' => [
+                    '@type' => 'CollegeOrUniversity',
+                    'name' => 'Universitas Katolik Widya Mandala Surabaya',
+                    'url' => 'https://ukwms.ac.id/',
+                    'sameAs' => [
+                        'https://www.instagram.com/ukwmsofficial/',
+                        'https://www.youtube.com/@ukwmsofficial',
+                        'https://x.com/UKWMSofficial',
+                        'https://www.tiktok.com/@ukwms.official',
+                        'https://www.linkedin.com/school/universitas-katolik-widya-mandala-surabaya/',
+                    ],
+                ],
+            ],
+        ];
+
+        if (isset($faqs) && count($faqs) > 0) {
+            $structuredData[] = [
+                '@context' => 'https://schema.org',
+                '@type' => 'FAQPage',
+                'mainEntity' => $faqs->map(fn ($faq) => [
+                    '@type' => 'Question',
+                    'name' => $faq->question,
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($faq->answer)))),
+                    ],
+                ])->values()->all(),
+            ];
+        }
+    @endphp
+    <script type="application/ld+json">{!! json_encode($structuredData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+
+    @vite('resources/css/landing.css')
 
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,54 +89,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Icons: Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb', // Royal Blue
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        },
-                        medical: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            600: '#0d9488', // Teal
-                        },
-                        reviewer: {
-                            50: '#fffbeb',
-                            100: '#fef3c7',
-                            600: '#d97706', // Amber/Orange
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Custom Gradient Animation */
-        .blob {
-            position: absolute;
-            filter: blur(40px);
-            z-index: -1;
-            opacity: 0.4;
-            animation: move 10s infinite alternate;
-        }
-        @keyframes move {
-            from { transform: translate(0, 0) scale(1); }
-            to { transform: translate(20px, -20px) scale(1.1); }
-        }
-    </style>
+    <script src="https://unpkg.com/@phosphor-icons/web" defer></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg-primary-100 selection:text-primary-900">
 
@@ -107,7 +111,7 @@
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-2">
                     <div class="flex items-center justify-center">
-                        <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-8 h-8 object-contain">
+                        <img src="{{ asset('images/logo-ukwms-128.png') }}" alt="Logo UKWMS" width="32" height="32" class="w-8 h-8 object-contain">
                     </div>
                     <span class="font-bold text-slate-900">Menu Navigasi</span>
                 </div>
@@ -141,10 +145,10 @@
             <div class="flex justify-between items-center h-20">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="window.scrollTo(0,0)">
                     <div class="flex items-center justify-center">
-                        <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-10 h-10 object-contain">
+                        <img src="{{ asset('images/logo-ukwms-128.png') }}" alt="Logo UKWMS" width="40" height="40" class="w-10 h-10 object-contain">
                     </div>
                     <div>
-                        <h1 class="font-bold text-xl text-slate-900 leading-none">SIM KEPK</h1>
+                        <p class="font-bold text-xl text-slate-900 leading-none">SIM KEPK</p>
                         <p class="text-[10px] font-medium text-slate-500 tracking-wider uppercase mt-0.5">Komite Etik Penelitian</p>
                     </div>
                 </div>
@@ -176,14 +180,14 @@
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
 
-            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight md:leading-none">
                 Etik Penelitian <br>
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-medical-600">
                     Cepat & Transparan
                 </span>
             </h1>
 
-            <p class="mt-4 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p class="mt-4 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed md:leading-7">
                 Platform terintegrasi untuk pengajuan kelaikan etik, penelaahan protokol, dan penerbitan <i>Ethical Clearance</i> secara digital.
             </p>
 
@@ -203,31 +207,31 @@
             <div class="mt-8">
                 <p class="text-sm text-slate-500 font-medium mb-3 uppercase tracking-wider">Unduh Dokumen Persyaratan Pengajuan</p>
                 <div class="flex flex-wrap gap-3 justify-center items-center max-w-5xl mx-auto">
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Data Pemohon KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Data Pemohon KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Data Pemohon KEPK
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Informed Consent KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Informed Consent KEPK.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Informed Consent
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek hewan.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek hewan.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Protokol Hewan
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Protokol Manusia
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia sosial humaniora.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Protokol subyek manusia sosial humaniora.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Protokol Sosial Humaniora
                     </a>
-                    <a href="{{ route('downloads.requirement', ['filename' => 'Form permohonan adendum.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <a href="{{ route('downloads.requirement', ['filename' => 'Form permohonan adendum.doc']) }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-file-doc mr-2 text-xl text-primary-600"></i>
                         Form Adendum
                     </a>
-                    <!-- <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-sm">
+                    <!-- <a href="{{ route('downloads.jenis-protokol') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50 hover:border-primary-300 hover:text-primary-700 shadow-xs">
                         <i class="ph-duotone ph-files mr-2 text-xl text-primary-600"></i>
                         Jenis Protokol
                     </a> -->
@@ -310,7 +314,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-slate-900 mb-2 relative z-10">Rekening KEPK</h3>
                     <p class="text-lg text-slate-600 font-medium mb-3 relative z-10">Bank BCA</p>
-                    <div class="bg-white px-6 py-3 rounded-xl shadow-sm border border-slate-100 mb-4 relative z-10 inline-block">
+                    <div class="bg-white px-6 py-3 rounded-xl shadow-xs border border-slate-100 mb-4 relative z-10 inline-block">
                         <p class="text-3xl font-extrabold text-primary-600 tracking-wider">8725239935</p>
                     </div>
                     <p class="text-slate-500 font-medium relative z-10">a.n. <span class="text-slate-800">Caroline</span></p>
@@ -323,8 +327,8 @@
                             <i class="ph-duotone ph-wallet text-3xl"></i>
                         </div>
                         <div>
-                            <h3 class=\"text-2xl font-bold text-slate-900\">Klasifikasi Biaya</h3>
-                            <p class=\"text-sm text-slate-500 font-medium\">Tarif telaah etik berdasarkan kategori</p>
+                            <h3 class="text-2xl font-bold text-slate-900">Klasifikasi Biaya</h3>
+                            <p class="text-sm text-slate-500 font-medium">Tarif telaah etik berdasarkan kategori</p>
                         </div>
                     </div>
                     
@@ -380,7 +384,9 @@
                         <div class="absolute -inset-4 bg-gradient-to-tr from-primary-100 to-medical-100 rounded-[2.5rem] transform {{ $index % 2 == 1 ? '-rotate-3' : 'rotate-3' }} group-hover:rotate-0 transition-all duration-700 -z-10 opacity-60"></div>
                         <div class="relative overflow-hidden rounded-[2rem] shadow-2xl border-8 border-white">
                             <img src="{{ Storage::url($about->image_path) }}" 
-                                 alt="{{ $about->title }}" 
+                                 alt="{{ $about->title }}"
+                                 loading="lazy"
+                                 decoding="async"
                                  class="w-full h-auto object-cover max-h-[500px] transform group-hover:scale-105 transition-transform duration-1000">
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
@@ -405,7 +411,7 @@
                             <span class="w-2 h-2 bg-primary-600 rounded-full animate-ping"></span>
                             <span class="text-xs font-bold text-primary-700 uppercase tracking-wider">Visi & Misi Kami</span>
                         </div>
-                        <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 leading-tight">{{ $about->title }}</h3>
+                        <h3 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 leading-tight md:leading-10">{{ $about->title }}</h3>
                         
                         <div class="prose prose-lg prose-slate prose-primary max-w-none text-slate-600 leading-relaxed mb-10">
                             {!! \App\Services\HtmlSanitizer::sanitize($about->content) !!}
@@ -455,7 +461,7 @@
             <div class="lg:hidden space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 before:to-transparent">
                
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow-sm shrink-0 z-10">
                         1
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
@@ -465,7 +471,7 @@
                 </div>
                 
                 <div class="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow-sm shrink-0 z-10">
                         2
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
@@ -483,7 +489,7 @@
                 </div>
 
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow-sm shrink-0 z-10">
                         3
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
@@ -506,7 +512,7 @@
                 </div>
 
                 <div class="relative flex items-center justify-between md:justify-normal md:even:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow shrink-0 z-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-primary-600 text-white shadow-sm shrink-0 z-10">
                         4
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-md shadow-slate-200/50 border border-slate-100">
@@ -516,7 +522,7 @@
                 </div>
 
                 <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
-                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-green-500 text-white shadow shrink-0 shadow-green-500/50 z-10">
+                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-green-500 text-white shadow-sm shrink-0 shadow-green-500/50 z-10">
                         <i class="ph-bold ph-certificate"></i>
                     </div>
                     <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-white shadow-xl shadow-green-500/10 ring-2 ring-green-400 border-transparent">
@@ -648,7 +654,7 @@
                 <details class="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all hover:border-primary-300">
                     <summary class="flex justify-between items-center font-bold cursor-pointer text-slate-800 p-6 hover:bg-slate-100 transition-colors text-lg list-none" style="list-style: none;">
                         <span>{{ $faq->question }}</span>
-                        <span class="transition-transform duration-300 group-open:rotate-180 bg-white rounded-full p-2 border border-slate-200 shadow-sm text-primary-600">
+                        <span class="transition-transform duration-300 group-open:rotate-180 bg-white rounded-full p-2 border border-slate-200 shadow-xs text-primary-600">
                             <svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24"><polyline points="6 9 12 15 18 9"/></svg>
                         </span>
                     </summary>
@@ -668,7 +674,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
                 <!-- University Branding Block -->
                 <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                    <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-16 h-16 object-contain mb-6">
+                    <img src="{{ asset('images/logo-ukwms-128.png') }}" alt="Logo UKWMS" width="64" height="64" loading="lazy" class="w-16 h-16 object-contain mb-6">
                     <h3 class="text-lg font-bold text-white leading-tight tracking-tight uppercase mb-8">
                         Universitas Katolik<br>
                         Widya Mandala<br>
@@ -740,7 +746,7 @@
     </footer>
 
     <!-- Script for subtle interaction & QR -->
-    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="https://unpkg.com/html5-qrcode" defer></script>
     <script>
         // Simple animation for the shimmer effect on button hover
         const style = document.createElement('style');

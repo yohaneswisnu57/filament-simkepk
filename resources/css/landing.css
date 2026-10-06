@@ -1,0 +1,70 @@
+@import 'tailwindcss' source(none);
+
+@source '../views/welcome.blade.php';
+@source '../views/privacy-policy.blade.php';
+
+@theme {
+    --font-sans: 'Inter', sans-serif;
+
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-900: #1e3a8a;
+
+    --color-medical-50: #f0fdfa;
+    --color-medical-100: #ccfbf1;
+    --color-medical-600: #0d9488;
+
+    --color-reviewer-50: #fffbeb;
+    --color-reviewer-100: #fef3c7;
+    --color-reviewer-600: #d97706;
+}
+
+/* Restore Tailwind v3 preflight defaults (gray-200 borders, pointer cursor on buttons) the pages were designed with. */
+@layer base {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+/* Phosphor's unlayered stylesheet sets line-height: 1, which beats Tailwind v4's layered text-size utilities on icons. */
+[class*='ph-'].text-xl {
+    line-height: var(--text-xl--line-height);
+}
+[class*='ph-'].text-2xl {
+    line-height: var(--text-2xl--line-height);
+}
+[class*='ph-'].text-3xl {
+    line-height: var(--text-3xl--line-height);
+}
+[class*='ph-'].text-4xl {
+    line-height: var(--text-4xl--line-height);
+}
+
+.blob {
+    position: absolute;
+    filter: blur(40px);
+    z-index: -1;
+    opacity: 0.4;
+    animation: move 10s infinite alternate;
+}
+
+@keyframes move {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        transform: translate(20px, -20px) scale(1.1);
+    }
+}

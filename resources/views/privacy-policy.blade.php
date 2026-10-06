@@ -9,38 +9,19 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://simkepk.ukwms.ac.id/privacy-policy">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
+    @vite('resources/css/landing.css')
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a',
-                        },
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased">
     <nav class="border-b border-slate-200 bg-white">
         <div class="max-w-3xl mx-auto px-6 py-4 flex items-center gap-3">
-            <img src="https://unika.widyamandala.ac.id/wp-content/uploads/2025/05/cropped-logos.png" alt="Logo UKWMS" class="w-8 h-8 object-contain">
+            <img src="{{ asset('images/logo-ukwms-128.png') }}" alt="Logo UKWMS" width="32" height="32" class="w-8 h-8 object-contain">
             <a href="{{ url('/') }}" class="font-semibold text-slate-900">SIMKEPK UKWMS</a>
         </div>
     </nav>
