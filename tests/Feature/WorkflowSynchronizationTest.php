@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
@@ -64,7 +65,7 @@ class WorkflowSynchronizationTest extends TestCase
         $this->admin->assignRole('admin');
     }
 
-    /** @test */
+    #[Test]
     public function it_synchronizes_fast_review_decision_when_status_id_is_updated()
     {
         $protocol = Protocol::factory()->create([
@@ -83,7 +84,7 @@ class WorkflowSynchronizationTest extends TestCase
         $this->assertEquals('Expedited', $protocol->fresh()->fast_review_decision);
     }
 
-    /** @test */
+    #[Test]
     public function it_sends_notification_to_group_members_on_regular_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
@@ -103,7 +104,7 @@ class WorkflowSynchronizationTest extends TestCase
         $this->assertStringContainsString('assigned Group "Group A"', $reviewer->notifications->first()->data['body']);
     }
 
-    /** @test */
+    #[Test]
     public function it_skips_group_notification_on_fast_review_assignment()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);
@@ -123,7 +124,7 @@ class WorkflowSynchronizationTest extends TestCase
         $this->assertCount(0, $reviewer->notifications);
     }
 
-    /** @test */
+    #[Test]
     public function it_sends_individual_notifications_on_fast_review_assignment_via_edit_page()
     {
         $kelompok = ReviewerKelompok::create(['nama_kelompok' => 'Group A', 'is_active' => true]);

@@ -7,10 +7,13 @@ use App\Filament\Resources\Protocols\RelationManagers\DocumentRelationManager;
 use App\Models\Document;
 use App\Models\Protocol;
 use App\Models\User;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
+use PHPUnit\Framework\Attributes\Test;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 use Tests\TestCase;
@@ -37,13 +40,18 @@ class DocumentRelationManagerTest extends TestCase
         Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
         Role::firstOrCreate(['name' => 'reviewer', 'guard_name' => 'web']);
 
+        foreach (['ViewAny:Protocol', 'View:Protocol'] as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
+
         $this->admin = User::factory()->create();
         $this->admin->assignRole('admin');
+        $this->admin->syncPermissions(['ViewAny:Protocol', 'View:Protocol']);
 
         $this->protocol = Protocol::factory()->create();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_render_document_relation_manager_table()
     {
         $document = Document::create([
@@ -63,7 +71,7 @@ class DocumentRelationManagerTest extends TestCase
             ->assertCanSeeTableRecords([$document]);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_download_document()
     {
         Storage::fake('public');
@@ -83,11 +91,11 @@ class DocumentRelationManagerTest extends TestCase
             'ownerRecord' => $this->protocol,
             'pageClass' => EditProtocol::class,
         ])
-            ->callTableAction('download', $document)
+            ->callAction(TestAction::make('download')->table($document))
             ->assertFileDownloaded('test.pdf', 'dummy content');
     }
 
-    /** @test */
+    #[Test]
     public function assigned_reviewer_can_view_document_revision_tab_without_document_permission()
     {
         $reviewer = User::factory()->create();
@@ -102,7 +110,7 @@ class DocumentRelationManagerTest extends TestCase
         $this->assertTrue(DocumentRelationManager::canViewForRecord($this->protocol, EditProtocol::class));
     }
 
-    /** @test */
+    #[Test]
     public function unassigned_reviewer_cannot_view_document_revision_tab()
     {
         $reviewer = User::factory()->create();
