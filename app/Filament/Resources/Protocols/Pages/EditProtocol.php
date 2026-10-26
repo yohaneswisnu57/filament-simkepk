@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Protocols\Pages;
 
 use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Models\User;
+use App\Services\ReviewerAssignmentNotifier;
 use Filament\Actions\Action as NotificationAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
@@ -93,6 +94,8 @@ class EditProtocol extends EditRecord
                             ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
                     ])
                     ->sendToDatabase($reviewersToNotify);
+
+                app(ReviewerAssignmentNotifier::class)->sendAssignmentEmails($protocol, $reviewersToNotify);
             }
         }
     }

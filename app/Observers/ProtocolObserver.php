@@ -6,9 +6,9 @@ use App\Filament\Resources\Protocols\ProtocolResource;
 use App\Mail\ProtocolRevisionRequiredMail;
 use App\Mail\ProtocolStatusUpdatedMail;
 use App\Mail\ProtocolSubmittedMail;
-use App\Mail\ReviewAssignmentMail;
 use App\Models\Protocol;
 use App\Models\User;
+use App\Services\ReviewerAssignmentNotifier;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
@@ -96,7 +96,9 @@ class ProtocolObserver
 
                 // 3. Cari SEMUA User yang menjadi anggota kelompok tersebut
                 // Kita filter User berdasarkan reviewer_kelompok_id yang sama
+                $ketuaId = $protocol->assignedReviewerKelompok?->ketua_user_id;
                 $reviewers = User::where('reviewer_kelompok_id', $groupId)
+                    ->when($ketuaId, fn ($query) => $query->orWhere('id', $ketuaId))
                     ->get();
 
                 // 4. Kirim Notifikasi ke semua anggota kelompok
@@ -114,12 +116,7 @@ class ProtocolObserver
                 }
 
                 // 5. Kirim Email ke Reviewer
-                foreach ($reviewers as $reviewer) {
-                    if ($reviewer->email) {
-                        Mail::to($reviewer->email)
-                            ->queue(new ReviewAssignmentMail($protocol));
-                    }
-                }
+                app(ReviewerAssignmentNotifier::class)->sendAssignmentEmails($protocol, $reviewers);
             }
         }
 

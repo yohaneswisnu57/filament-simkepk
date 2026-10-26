@@ -134,14 +134,14 @@ class ProtocolNotificationTest extends TestCase
 
         // 2. Cek Notifikasi Database Reviewer
         $this->assertCount(1, $reviewer->notifications);
-        
+
         $notificationData = $reviewer->notifications->first()->data;
         $this->assertEquals('New Assignment for Group', $notificationData['title']);
         $this->assertStringContainsString('/reviewer/protocols/', $notificationData['actions'][0]['url']);
         $this->assertStringNotContainsString('/edit', $notificationData['actions'][0]['url']);
     }
 
-    // /** @test */
+    // #[Test]
     #[Test]
     public function it_sends_email_to_researcher_when_reviewer_submits_review_via_filament_action()
     {

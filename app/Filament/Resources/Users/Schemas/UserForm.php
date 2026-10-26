@@ -49,9 +49,11 @@ class UserForm
                             ->multiple()
                             ->preload()
                             ->searchable(),
-                        // Select::make('reviewer_kelompok_id')
-                        //     ->label('Kelompok Reviewer')
-                        //     ->relationship('reviewerKelompok', 'name')
+                        Select::make('reviewer_kelompok_id')
+                            ->label('Kelompok Reviewer')
+                            ->relationship('reviewerKelompok', 'nama_kelompok')
+                            ->preload()
+                            ->searchable(),
                     ]),
             ]);
     }

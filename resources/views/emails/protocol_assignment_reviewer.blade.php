@@ -30,7 +30,7 @@
                     <td style="padding:24px;color:#374151;font-size:14px;line-height:1.6;">
 
                         <p style="margin:0 0 16px 0;">
-                            Yth. <strong>Reviewer KEPK</strong>,
+                            Yth. <strong>{{ $reviewer->name ?? 'Reviewer KEPK' }}</strong>,
                         </p>
 
                         <p style="margin:0 0 16px 0;">
@@ -52,30 +52,16 @@
                         </table>
 
                         <p style="margin:0 0 20px 0;">
-                            Mohon untuk melakukan <strong>verifikasi dan penugasan penelaah</strong>
+                            Anda ditugaskan untuk mereview protokol ini. Mohon tinjau
                             sesuai dengan prosedur yang berlaku.
 
                             <p>Silakan klik tombol di bawah ini untuk melihat detail:</p>
 
-                            <a href="{{ \App\Filament\Resources\Protocols\ProtocolResource::getUrl('edit', ['record' => $protocol]) }}"
+                            <a href="{{ \App\Filament\Resources\Protocols\ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer') }}"
                             style="background-color: #d97706; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                             Cek Protokol
                             </a>
                         </p>
-
-                        <!-- Button -->
-                        <table cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-                            <tr>
-                                <td style="background-color:#0f172a;border-radius:6px;">
-                                    <a href="#"
-                                       style="display:inline-block;padding:12px 24px;
-                                              color:#ffffff;text-decoration:none;
-                                              font-size:14px;font-weight:600;">
-                                        Buka SIM-KEPK
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
 
                         <p style="margin:0;">
                             Demikian informasi ini kami sampaikan.<br>
