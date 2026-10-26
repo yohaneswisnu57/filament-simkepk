@@ -3,6 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Protocol;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -17,13 +18,17 @@ class ReviewAssignmentMail extends Mailable implements ShouldQueue
 
     public $protocol;
 
+    public ?User $reviewer;
+
     /**
      * Create a new message instance.
      */
-    public function __construct(Protocol $protocol)
+    public function __construct(Protocol $protocol, ?User $reviewer = null)
     {
         //
         $this->protocol = $protocol;
+        $this->reviewer = $reviewer;
+        $this->afterCommit();
     }
 
     /**
