@@ -112,7 +112,7 @@ class ProtocolForm
                         // Assign to Reviewer Group
                         Select::make('reviewer_kelompok_id')
                             ->label('Assign to Reviewer Group')
-                            ->relationship('assignedReviewerKelompok', 'nama_kelompok')
+                            ->relationship('assignedReviewerKelompok', 'nama_kelompok', fn ($query) => $query->where('is_active', true))
                             ->nullable()
                             ->searchable()
                             ->preload()
