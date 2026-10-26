@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use Symfony\Component\HtmlSanitizer\HtmlSanitizer as SymfonyHtmlSanitizer;
+use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
+
 class HtmlSanitizer
 {
     /**
-     * Sanitize a rich text HTML content to prevent XSS attacks.
+     * Sanitize rich text HTML with an element/attribute allowlist to prevent XSS.
      */
     public static function sanitize(?string $html): string
     {
@@ -13,16 +16,29 @@ class HtmlSanitizer
             return '';
         }
 
-        // 1. Strip tags not on the allowlist
-        $allowedTags = '<p><b><i><u><ul><ol><li><a><br><strong><em><span><h1><h2><h3><h4><h5><h6><div>';
-        $cleaned = strip_tags($html, $allowedTags);
+        $config = (new HtmlSanitizerConfig)
+            ->allowElement('p')
+            ->allowElement('b')
+            ->allowElement('i')
+            ->allowElement('u')
+            ->allowElement('ul')
+            ->allowElement('ol')
+            ->allowElement('li')
+            ->allowElement('br')
+            ->allowElement('strong')
+            ->allowElement('em')
+            ->allowElement('span')
+            ->allowElement('div')
+            ->allowElement('h1')
+            ->allowElement('h2')
+            ->allowElement('h3')
+            ->allowElement('h4')
+            ->allowElement('h5')
+            ->allowElement('h6')
+            ->allowElement('a', ['href'])
+            ->allowLinkSchemes(['http', 'https', 'mailto', 'tel'])
+            ->forceAttribute('a', 'rel', 'noopener noreferrer');
 
-        // 2. Remove event attributes (on*) and javascript: links to prevent attribute injection XSS
-        $cleaned = preg_replace('/on\w+\s*=\s*".*?"/i', '', $cleaned);
-        $cleaned = preg_replace('/on\w+\s*=\s*\'.*?\'/i', '', $cleaned);
-        $cleaned = preg_replace('/on\w+\s*=\s*[^\s>]+/i', '', $cleaned);
-        $cleaned = preg_replace('/javascript\s*:/i', '', $cleaned);
-
-        return $cleaned;
+        return (new SymfonyHtmlSanitizer($config))->sanitize($html);
     }
 }

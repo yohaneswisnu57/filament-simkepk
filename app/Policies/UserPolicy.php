@@ -2,12 +2,21 @@
 
 namespace App\Policies;
 
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 
 class UserPolicy
 {
     use HandlesAuthorization;
+
+    /**
+     * Only a super_admin may manage another super_admin account.
+     */
+    private function canManageTarget(AuthUser $authUser, User $target): bool
+    {
+        return ! $target->hasRole('super_admin') || $authUser->hasRole('super_admin');
+    }
 
     public function viewAny(AuthUser $authUser): bool
     {
@@ -24,24 +33,24 @@ class UserPolicy
         return $authUser->can('Create:User');
     }
 
-    public function update(AuthUser $authUser): bool
+    public function update(AuthUser $authUser, User $user): bool
     {
-        return $authUser->can('Update:User');
+        return $authUser->can('Update:User') && $this->canManageTarget($authUser, $user);
     }
 
-    public function delete(AuthUser $authUser): bool
+    public function delete(AuthUser $authUser, User $user): bool
     {
-        return $authUser->can('Delete:User');
+        return $authUser->can('Delete:User') && $this->canManageTarget($authUser, $user);
     }
 
-    public function restore(AuthUser $authUser): bool
+    public function restore(AuthUser $authUser, User $user): bool
     {
-        return $authUser->can('Restore:User');
+        return $authUser->can('Restore:User') && $this->canManageTarget($authUser, $user);
     }
 
-    public function forceDelete(AuthUser $authUser): bool
+    public function forceDelete(AuthUser $authUser, User $user): bool
     {
-        return $authUser->can('ForceDelete:User');
+        return $authUser->can('ForceDelete:User') && $this->canManageTarget($authUser, $user);
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
@@ -54,9 +63,9 @@ class UserPolicy
         return $authUser->can('RestoreAny:User');
     }
 
-    public function replicate(AuthUser $authUser): bool
+    public function replicate(AuthUser $authUser, User $user): bool
     {
-        return $authUser->can('Replicate:User');
+        return $authUser->can('Replicate:User') && $this->canManageTarget($authUser, $user);
     }
 
     public function reorder(AuthUser $authUser): bool

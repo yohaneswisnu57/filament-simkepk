@@ -31,6 +31,7 @@ class GoogleAuthTest extends TestCase
         Socialite::fake('google', (new SocialiteTwoUser)->map([
             'id' => 'google-123',
             'name' => 'Jane Doe',
+            'user' => ['email_verified' => true],
             'email' => 'newuser@example.com',
         ]));
 
@@ -54,6 +55,7 @@ class GoogleAuthTest extends TestCase
         Socialite::fake('google', (new SocialiteTwoUser)->map([
             'id' => 'google-456',
             'name' => 'Linked User',
+            'user' => ['email_verified' => true],
             'email' => 'linked@example.com',
         ]));
 
@@ -80,6 +82,7 @@ class GoogleAuthTest extends TestCase
         Socialite::fake('google', (new SocialiteTwoUser)->map([
             'id' => 'google-789',
             'name' => 'Inactive User',
+            'user' => ['email_verified' => true],
             'email' => 'inactive@example.com',
         ]));
 
@@ -104,5 +107,24 @@ class GoogleAuthTest extends TestCase
         $this->assertGuest();
         $response->assertRedirect(route('filament.user.auth.login'));
         $response->assertSessionHasErrors('email');
+    }
+
+    #[Test]
+    public function google_user_with_unverified_email_is_rejected(): void
+    {
+        $existing = User::factory()->create(['email' => 'victim@example.com']);
+
+        Socialite::fake('google', (new SocialiteTwoUser)->map([
+            'id' => 'google-evil',
+            'name' => 'Attacker',
+            'user' => ['email_verified' => false],
+            'email' => 'victim@example.com',
+        ]));
+
+        $response = $this->get('/auth/google/callback');
+
+        $response->assertRedirect(route('filament.user.auth.login'));
+        $this->assertGuest();
+        $this->assertNull($existing->fresh()->google_id);
     }
 }

@@ -7,6 +7,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Hash;
 
 class UserForm
@@ -45,7 +46,13 @@ class UserForm
                             ->required(fn (string $operation): bool => $operation === 'create')
                             ->maxLength(255),
                         Select::make('roles')
-                            ->relationship('roles', 'name')
+                            ->relationship(
+                                'roles',
+                                'name',
+                                modifyQueryUsing: fn (Builder $query) => auth()->user()?->hasRole('super_admin')
+                                    ? $query
+                                    : $query->where('name', '!=', 'super_admin'),
+                            )
                             ->multiple()
                             ->preload()
                             ->searchable(),
