@@ -7,6 +7,7 @@ use App\Mail\ProtocolRevisionRequiredMail;
 use App\Mail\ProtocolStatusUpdatedMail;
 use App\Mail\ProtocolSubmittedMail;
 use App\Models\Protocol;
+use App\Models\ReviewerKelompok;
 use App\Models\User;
 use App\Services\ReviewerAssignmentNotifier;
 use Filament\Actions\Action;
@@ -82,42 +83,26 @@ class ProtocolObserver
         // SKENARIO: ASSIGN KE KELOMPOK REVIEWER
         // ==========================================
         // Trigger: Kolom 'reviewer_kelompok_id' berubah dan tidak kosong
-        if ($protocol->wasChanged('reviewer_kelompok_id')
-            && filled($protocol->reviewer_kelompok_id)
-        ) {
-            // Skip group notification if this is a Fast Review (status 6)
-            if ((int) $protocol->status_id !== 6) {
-                // 1. Ambil Kelompok ID yang baru di-assign
-                $groupId = $protocol->reviewer_kelompok_id;
+        if ($protocol->wasChanged('reviewer_kelompok_id')) {
+            $oldGroupId = $protocol->getOriginal('reviewer_kelompok_id');
 
-                // 2. Ambil Nama Kelompok (Optional, untuk pesan notifikasi lebih jelas)
-                // Pastikan Anda punya relasi 'assignedReviewerKelompok' di model Protocol
-                $groupName = $protocol->assignedReviewerKelompok->nama_kelompok ?? 'Kelompok Terpilih';
-
-                // 3. Cari SEMUA User yang menjadi anggota kelompok tersebut
-                // Kita filter User berdasarkan reviewer_kelompok_id yang sama
-                $ketuaId = $protocol->assignedReviewerKelompok?->ketua_user_id;
-                $reviewers = User::where('reviewer_kelompok_id', $groupId)
-                    ->when($ketuaId, fn ($query) => $query->orWhere('id', $ketuaId))
-                    ->get();
-
-                // 4. Kirim Notifikasi ke semua anggota kelompok
-                if ($reviewers->count() > 0) {
-                    Notification::make()
-                        ->title('New Assignment for Group')
-                        ->body("Admin has assigned Group \"{$groupName}\" to review protocol: \"{$protocol->perihal_pengajuan}\".")
-                        ->warning()
-                        ->actions([
-                            Action::make('lihat')
-                                ->label('View Protocol')
-                                ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
-                        ])
-                        ->sendToDatabase($reviewers);
-                }
-
-                // 5. Kirim Email ke Reviewer
-                app(ReviewerAssignmentNotifier::class)->sendAssignmentEmails($protocol, $reviewers);
+            // Beritahu anggota kelompok lama bahwa penugasan dicabut
+            if (filled($oldGroupId)) {
+                $this->notifyGroupUnassigned($protocol, (int) $oldGroupId);
             }
+
+            // Skip group notification if this is a Fast Review (status 6)
+            if (filled($protocol->reviewer_kelompok_id) && (int) $protocol->status_id !== 6) {
+                $this->notifyGroupAssigned($protocol);
+            }
+        }
+        // Protokol kembali dari Fast Review ke tahap review kelompok dengan kelompok yang sudah terisi
+        elseif ($protocol->wasChanged('status_id')
+            && filled($protocol->reviewer_kelompok_id)
+            && (int) $protocol->getOriginal('status_id') === 6
+            && in_array((int) $protocol->status_id, [2, 3, 4], true)
+        ) {
+            $this->notifyGroupAssigned($protocol);
         }
 
         // ==========================================
@@ -270,5 +255,58 @@ class ProtocolObserver
     public function forceDeleted(Protocol $protocol): void
     {
         //
+    }
+
+    /**
+     * Kirim notifikasi database dan email penugasan ke seluruh penerima kelompok.
+     */
+    private function notifyGroupAssigned(Protocol $protocol): void
+    {
+        $kelompok = $protocol->assignedReviewerKelompok;
+
+        if (! $kelompok) {
+            return;
+        }
+
+        $reviewers = $kelompok->recipients();
+
+        if ($reviewers->isNotEmpty()) {
+            Notification::make()
+                ->title('New Assignment for Group')
+                ->body("Admin has assigned Group \"{$kelompok->nama_kelompok}\" to review protocol: \"{$protocol->perihal_pengajuan}\".")
+                ->warning()
+                ->actions([
+                    Action::make('lihat')
+                        ->label('View Protocol')
+                        ->url(ProtocolResource::getUrl('view', ['record' => $protocol], panel: 'reviewer')),
+                ])
+                ->sendToDatabase($reviewers);
+        }
+
+        app(ReviewerAssignmentNotifier::class)->sendAssignmentEmails($protocol, $reviewers);
+    }
+
+    /**
+     * Beritahu anggota kelompok lama bahwa penugasan protokol dialihkan.
+     */
+    private function notifyGroupUnassigned(Protocol $protocol, int $oldGroupId): void
+    {
+        $oldGroup = ReviewerKelompok::find($oldGroupId);
+
+        if (! $oldGroup) {
+            return;
+        }
+
+        $reviewers = $oldGroup->recipients();
+
+        if ($reviewers->isEmpty()) {
+            return;
+        }
+
+        Notification::make()
+            ->title('Group Assignment Removed')
+            ->body("Protocol \"{$protocol->perihal_pengajuan}\" is no longer assigned to Group \"{$oldGroup->nama_kelompok}\".")
+            ->info()
+            ->sendToDatabase($reviewers);
     }
 }

@@ -122,26 +122,8 @@ class FastReviewDecisionService
             ->warning()
             ->sendToDatabase($protocol->User);
 
-        // Notifikasi ke Reviewer Kelompok (Email + Database)
-        if ($protocol->reviewer_kelompok_id) {
-            $kelompok = $protocol->assignedReviewerKelompok;
-            if ($kelompok && $kelompok->users) {
-                // Notifikasi Database
-                Notification::make()
-                    ->title('📌 New Assignment: Expedited Review')
-                    ->body("Protocol \"{$protocol->perihal_pengajuan}\" has been escalated to your Review Group (Expedited).")
-                    ->info()
-                    ->actions([
-                        Action::make('lihat')
-                            ->label('Review Protocol')
-                            ->url(ProtocolResource::getUrl('view', ['record' => $protocol])),
-                    ])
-                    ->sendToDatabase($kelompok->users);
-
-                // Notifikasi Email
-                app(ReviewerAssignmentNotifier::class)->sendAssignmentEmails($protocol, $kelompok->users);
-            }
-        }
+        // Notifikasi ke Reviewer Kelompok (database + email) dikirim oleh ProtocolObserver
+        // saat status berubah dari Fast Review ke tahap review kelompok.
     }
 
     private function markAsExempted(Protocol $protocol): void
