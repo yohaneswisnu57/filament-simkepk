@@ -35,6 +35,11 @@ class GoogleAuthController extends Controller
                 ->withErrors(['email' => 'Login dengan Google gagal atau dibatalkan. Silakan coba lagi.']);
         }
 
+        if (! $this->isEmailVerified($googleUser)) {
+            return redirect()->route('filament.user.auth.login')
+                ->withErrors(['email' => 'Email Google Anda belum terverifikasi.']);
+        }
+
         $user = $this->resolveUser($googleUser);
 
         if (! $user->is_active) {
@@ -45,6 +50,13 @@ class GoogleAuthController extends Controller
         Auth::guard('web')->login($user, remember: true);
 
         return redirect()->intended('/user');
+    }
+
+    private function isEmailVerified(SocialiteUser $googleUser): bool
+    {
+        $raw = $googleUser->getRaw();
+
+        return filter_var($raw['email_verified'] ?? $raw['verified_email'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 
     private function resolveUser(SocialiteUser $googleUser): User
